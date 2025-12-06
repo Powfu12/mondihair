@@ -1340,62 +1340,65 @@
             font-size: 1.2em;
         }
 
-        /* Footer - Enhanced */
+        /* Footer - Enhanced Grid */
         .footer {
             background: var(--darker);
-            padding: 50px 20px 30px;
-            text-align: center;
+            padding: 60px 20px 20px;
             border-top: 1px solid rgba(195, 227, 33, 0.15);
         }
 
-        @media (min-width: 768px) {
-            .footer {
-                padding: 60px 20px 30px;
-            }
-        }
-
         .footer-content {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+            }
+        }
+
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         .footer-logo {
-            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
             font-weight: 900;
             color: var(--lime);
-            margin-bottom: 20px;
             letter-spacing: 1px;
         }
 
-        .footer-info {
+        .footer-description {
             color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 30px;
-            line-height: 2;
-            font-size: clamp(0.9rem, 2.5vw, 0.98rem);
-        }
-
-        .footer-info p {
-            margin-bottom: 12px;
-        }
-
-        .footer-info i {
-            color: var(--lime);
-            margin-right: 8px;
-            width: 20px;
-            display: inline-block;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin: 0;
         }
 
         .footer-social {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .social-icon {
-            width: 52px;
-            height: 52px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: var(--dark);
             border: 2px solid var(--lime);
@@ -1403,7 +1406,7 @@
             align-items: center;
             justify-content: center;
             color: var(--lime);
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             text-decoration: none;
             transition: var(--transition);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -1420,11 +1423,194 @@
             transform: scale(0.95);
         }
 
+        .footer-heading {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--lime);
+            margin: 0;
+        }
+
+        .footer-subheading {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--lime);
+            margin: 15px 0 10px;
+        }
+
+        .footer-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--lime);
+            padding-left: 5px;
+        }
+
+        .footer-contact {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-contact li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .footer-contact i {
+            color: var(--lime);
+            font-size: 1.1rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .footer-contact a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-contact a:hover {
+            color: var(--lime);
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .payment-methods i {
+            transition: var(--transition);
+        }
+
+        .payment-methods i:hover {
+            color: var(--lime);
+            transform: scale(1.1);
+        }
+
+        .newsletter-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--dark);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--light-text);
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--lime);
+        }
+
+        .newsletter-form button {
+            background: var(--lime);
+            color: var(--dark);
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--lime-dark);
+            transform: scale(1.05);
+        }
+
+        .newsletter-form button:active {
+            transform: scale(0.95);
+        }
+
+        .newsletter-status {
+            font-size: 0.85rem;
+            margin: 0;
+            padding: 8px 0;
+        }
+
+        .newsletter-status.success {
+            color: #4caf50;
+        }
+
+        .newsletter-status.error {
+            color: #f44336;
+        }
+
         .footer-bottom {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 20px;
+            padding-top: 25px;
             color: rgba(255, 255, 255, 0.5);
             font-size: 0.88rem;
+        }
+
+        .footer-bottom-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .footer-bottom-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .footer-bottom-content p {
+            margin: 0;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .footer-legal a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-legal a:hover {
+            color: var(--lime);
         }
 
         /* Mobile Navigation - Enhanced */
@@ -1647,6 +1833,571 @@
             white-space: nowrap;
             border-width: 0;
         }
+
+        /* Cookie Consent Banner */
+        .cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 15, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px;
+            z-index: 10001;
+            border-top: 2px solid var(--lime);
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.7);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cookie-consent.show {
+            transform: translateY(0);
+        }
+
+        .cookie-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .cookie-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .cookie-consent {
+                padding: 20px 15px calc(env(safe-area-inset-bottom) + 15px);
+            }
+        }
+
+        .cookie-icon {
+            font-size: 2.5rem;
+            color: var(--lime);
+        }
+
+        @media (max-width: 768px) {
+            .cookie-icon {
+                display: none;
+            }
+        }
+
+        .cookie-text {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cookie-title {
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            font-weight: 700;
+            color: var(--light-text);
+            margin: 0;
+        }
+
+        .cookie-description {
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .cookie-link {
+            color: var(--lime);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .cookie-link:hover {
+            text-decoration: underline;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .cookie-buttons {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        .cookie-btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            white-space: nowrap;
+        }
+
+        .cookie-btn-accept {
+            background: var(--lime);
+            color: var(--dark);
+            box-shadow: 0 4px 15px rgba(195, 227, 33, 0.3);
+        }
+
+        .cookie-btn-accept:hover {
+            background: var(--lime-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(195, 227, 33, 0.5);
+        }
+
+        .cookie-btn-accept:active {
+            transform: translateY(0);
+        }
+
+        .cookie-btn-reject {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cookie-btn-reject:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .cookie-btn-reject:active {
+            transform: translateY(0);
+        }
+
+        /* Contact Form Section */
+        .contact-section {
+            padding: 60px 20px;
+            background: var(--dark);
+        }
+
+        @media (min-width: 768px) {
+            .contact-section {
+                padding: 80px 20px;
+            }
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        @media (min-width: 1024px) {
+            .contact-container {
+                grid-template-columns: 2fr 1fr;
+                gap: 50px;
+            }
+        }
+
+        .contact-form {
+            background: var(--darker);
+            padding: 35px 30px;
+            border-radius: 24px;
+            border: 2px solid rgba(195, 227, 33, 0.1);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: var(--lime);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: var(--dark);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: var(--light-text);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--lime);
+            box-shadow: 0 0 0 3px rgba(195, 227, 33, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-label a {
+            color: var(--lime);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+        .form-status {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .form-status.success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4caf50;
+            color: #4caf50;
+            display: block;
+        }
+
+        .form-status.error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 2px solid #f44336;
+            color: #f44336;
+            display: block;
+        }
+
+        .form-submit-btn {
+            width: 100%;
+            background: var(--lime);
+            color: var(--dark);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 20px rgba(195, 227, 33, 0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-submit-btn:hover {
+            background: var(--lime-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(195, 227, 33, 0.5);
+        }
+
+        .form-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-submit-btn i {
+            font-size: 1.1em;
+        }
+
+        .contact-info-box {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-info-item {
+            background: var(--darker);
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid rgba(195, 227, 33, 0.1);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            transition: var(--transition);
+        }
+
+        .contact-info-item:hover {
+            border-color: var(--lime);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .contact-info-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(195, 227, 33, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--lime);
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .contact-info-item h3 {
+            color: var(--lime);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .contact-info-item p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .contact-info-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-info-item a:hover {
+            color: var(--lime);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 60px 20px;
+            background: var(--darker);
+        }
+
+        @media (min-width: 768px) {
+            .faq-section {
+                padding: 80px 20px;
+            }
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .faq-item {
+            background: var(--dark);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid rgba(195, 227, 33, 0.1);
+            transition: var(--transition);
+        }
+
+        .faq-item.active {
+            border-color: var(--lime);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 20px 25px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            font-weight: 600;
+            color: var(--light-text);
+            transition: var(--transition);
+        }
+
+        .faq-question:hover {
+            color: var(--lime);
+        }
+
+        .faq-question i {
+            color: var(--lime);
+            font-size: 0.9em;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            padding: 0 25px 20px;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 60px 20px;
+            background: var(--dark);
+        }
+
+        @media (min-width: 768px) {
+            .testimonials-section {
+                padding: 80px 20px;
+            }
+        }
+
+        .testimonials-grid {
+            max-width: 1200px;
+            margin: 0 auto 50px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .testimonials-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .testimonial-card {
+            background: var(--darker);
+            padding: 30px 25px;
+            border-radius: 20px;
+            border: 2px solid rgba(195, 227, 33, 0.1);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .testimonial-card:hover {
+            border-color: var(--lime);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .testimonial-rating {
+            display: flex;
+            gap: 5px;
+            color: #ffc107;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-text {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+            font-style: italic;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(195, 227, 33, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--lime);
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .author-name {
+            font-weight: 700;
+            color: var(--light-text);
+            font-size: 1.05rem;
+        }
+
+        .author-location {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .testimonial-cta {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .testimonial-cta p {
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            color: var(--light-text);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -1656,6 +2407,26 @@
     <!-- Page Loader -->
     <div class="page-loader" id="pageLoader">
         <img src="3dmondi.gif" alt="Loading..." class="loader-logo">
+    </div>
+
+    <!-- GDPR Cookie Consent Banner -->
+    <div class="cookie-consent" id="cookieConsent" role="dialog" aria-live="polite" aria-label="Cookie consent" aria-describedby="cookieConsentDesc">
+        <div class="cookie-content">
+            <div class="cookie-icon">
+                <i class="fas fa-cookie-bite" aria-hidden="true"></i>
+            </div>
+            <div class="cookie-text">
+                <h3 class="cookie-title" data-en="We Value Your Privacy" data-gr="Σεβόμαστε το Απόρρητό σας">We Value Your Privacy</h3>
+                <p id="cookieConsentDesc" class="cookie-description" data-en="We use cookies to enhance your browsing experience and analyze our traffic. By clicking 'Accept All', you consent to our use of cookies." data-gr="Χρησιμοποιούμε cookies για να βελτιώσουμε την εμπειρία σας. Κάνοντας κλικ στο 'Αποδοχή Όλων', συναινείτε στη χρήση cookies.">
+                    We use cookies to enhance your browsing experience and analyze our traffic. By clicking 'Accept All', you consent to our use of cookies.
+                </p>
+                <a href="privacy-policy.html" class="cookie-link" data-en="Privacy Policy" data-gr="Πολιτική Απορρήτου">Privacy Policy</a>
+            </div>
+            <div class="cookie-buttons">
+                <button class="cookie-btn cookie-btn-reject" onclick="rejectCookies()" data-en="Reject All" data-gr="Απόρριψη Όλων">Reject All</button>
+                <button class="cookie-btn cookie-btn-accept" onclick="acceptCookies()" data-en="Accept All" data-gr="Αποδοχή Όλων">Accept All</button>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
@@ -1907,6 +2678,124 @@
             </div>
         </section>
 
+        <!-- FAQ Section -->
+        <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+            <h2 id="faq-heading" class="section-title" data-en="Frequently Asked Questions" data-gr="Συχνές Ερωτήσεις">Frequently Asked Questions</h2>
+            <p class="section-subtitle" data-en="Everything you need to know about our services" data-gr="Όλα όσα πρέπει να γνωρίζετε για τις υπηρεσίες μας">
+                Everything you need to know about our services
+            </p>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="Do I need an appointment?" data-gr="Χρειάζομαι ραντεβού;">Do I need an appointment?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="While walk-ins are welcome based on availability, we highly recommend booking an appointment through Instagram to guarantee your preferred time and barber." data-gr="Ενώ δεχόμαστε και χωρίς ραντεβού ανάλογα με τη διαθεσιμότητα, συνιστούμε ανεπιφύλακτα να κλείσετε ραντεβού μέσω Instagram για να εξασφαλίσετε τον προτιμώμενο χρόνο και κουρέα σας.">
+                            While walk-ins are welcome based on availability, we highly recommend booking an appointment through Instagram to guarantee your preferred time and barber.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="What payment methods do you accept?" data-gr="Ποιες μεθόδους πληρωμής δέχεστε;">What payment methods do you accept?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="We accept cash and all major credit/debit cards (Visa, Mastercard). Contactless payments and mobile wallets are also accepted." data-gr="Δεχόμαστε μετρητά και όλες τις κύριες πιστωτικές/χρεωστικές κάρτες (Visa, Mastercard). Δεχόμαστε επίσης ανέπαφες πληρωμές και mobile πορτοφόλια.">
+                            We accept cash and all major credit/debit cards (Visa, Mastercard). Contactless payments and mobile wallets are also accepted.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="What's your cancellation policy?" data-gr="Ποια είναι η πολιτική ακύρωσης;">What's your cancellation policy?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="Please give us at least 24 hours notice if you need to cancel or reschedule your appointment. This allows us to offer the slot to other clients. You can cancel easily by messaging your barber on Instagram." data-gr="Παρακαλούμε δώστε μας τουλάχιστον 24 ώρες προειδοποίηση εάν χρειάζεται να ακυρώσετε ή να αλλάξετε το ραντεβού σας. Μπορείτε να ακυρώσετε εύκολα στέλνοντας μήνυμα στον κουρέα σας στο Instagram.">
+                            Please give us at least 24 hours notice if you need to cancel or reschedule your appointment. This allows us to offer the slot to other clients. You can cancel easily by messaging your barber on Instagram.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="How long does each service take?" data-gr="Πόσο χρόνο διαρκεί κάθε υπηρεσία;">How long does each service take?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="Classic haircut: 30-45 minutes | Haircut + Beard: 45-60 minutes | Beard trim: 20-30 minutes | Complete grooming package: 60-75 minutes" data-gr="Κούρεμα: 30-45 λεπτά | Κούρεμα + Μούσι: 45-60 λεπτά | Τριμάρισμα γενιών: 20-30 λεπτά | Πλήρες πακέτο: 60-75 λεπτά">
+                            Classic haircut: 30-45 minutes | Haircut + Beard: 45-60 minutes | Beard trim: 20-30 minutes | Complete grooming package: 60-75 minutes
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="Can I request a specific barber?" data-gr="Μπορώ να ζητήσω συγκεκριμένο κουρέα;">Can I request a specific barber?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="Absolutely! Each of our barbers has their own Instagram booking link. Simply book directly with your preferred barber through their Instagram profile." data-gr="Απολύτως! Κάθε κουρέας μας έχει τον δικό του σύνδεσμο κράτησης στο Instagram. Απλά κλείστε ραντεβού απευθείας με τον προτιμώμενο κουρέα μέσω του προφίλ του στο Instagram.">
+                            Absolutely! Each of our barbers has their own Instagram booking link. Simply book directly with your preferred barber through their Instagram profile.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="What if I'm running late?" data-gr="Τι γίνεται αν αργήσω;">What if I'm running late?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="If you're running more than 15 minutes late, we may need to reschedule your appointment to accommodate other clients. Please message your barber on Instagram as soon as possible if you're delayed." data-gr="Εάν αργείτε πάνω από 15 λεπτά, ενδέχεται να χρειαστεί να αλλάξουμε το ραντεβού σας. Παρακαλούμε στείλτε μήνυμα στον κουρέα σας στο Instagram το συντομότερο δυνατόν εάν καθυστερείτε.">
+                            If you're running more than 15 minutes late, we may need to reschedule your appointment to accommodate other clients. Please message your barber on Instagram as soon as possible if you're delayed.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="Do you offer kids' haircuts?" data-gr="Κάνετε παιδικά κουρέματα;">Do you offer kids' haircuts?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="Yes, we welcome clients of all ages! Our barbers are experienced with children's haircuts. We recommend booking during quieter hours for younger children." data-gr="Ναι, καλωσορίζουμε πελάτες όλων των ηλικιών! Οι κουρείς μας έχουν εμπειρία με παιδικά κουρέματα. Συνιστούμε κράτηση σε πιο ήσυχες ώρες για μικρότερα παιδιά.">
+                            Yes, we welcome clients of all ages! Our barbers are experienced with children's haircuts. We recommend booking during quieter hours for younger children.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="Can I buy the products you use?" data-gr="Μπορώ να αγοράσω τα προϊόντα που χρησιμοποιείτε;">Can I buy the products you use?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="Yes! We sell premium grooming products from brands like Uppercut, L3VEL3, and Mentor. All products are available for purchase at the shop. Ask your barber for product recommendations based on your hair type." data-gr="Ναι! Πουλάμε premium προϊόντα περιποίησης από brands όπως Uppercut, L3VEL3, και Mentor. Όλα τα προϊόντα είναι διαθέσιμα προς αγορά στο κατάστημα. Ρωτήστε τον κουρέα σας για συστάσεις προϊόντων.">
+                            Yes! We sell premium grooming products from brands like Uppercut, L3VEL3, and Mentor. All products are available for purchase at the shop. Ask your barber for product recommendations based on your hair type.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-en="Is parking available?" data-gr="Υπάρχει χώρος στάθμευσης;">Is parking available?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-en="Yes, there is street parking available near our shop on Kalliteros Street. Public parking areas are also available within a short walking distance." data-gr="Ναι, υπάρχει δωρεάν στάθμευση στον δρόμο κοντά στο κατάστημά μας στην οδό Καλλιτερος. Δημόσιοι χώροι στάθμευσης είναι επίσης διαθέσιμοι σε μικρή απόσταση με τα πόδια.">
+                            Yes, there is street parking available near our shop on Kalliteros Street. Public parking areas are also available within a short walking distance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Gallery Section - Organized by Barber -->
 <section class="gallery-section" id="gallery" aria-labelledby="gallery-heading">
     <h2 id="gallery-heading" class="section-title" data-en="Our Work" data-gr="Η Δουλειά μας">Our Work</h2>
@@ -1942,7 +2831,7 @@
         <h3 class="barber-gallery-title" data-en="Ervin's Work" data-gr="Δουλειές του Ervin">Ervin's Work</h3>
         <div class="gallery-grid" role="list">
             <div class="gallery-item" role="listitem">
-                <img src="ervin1.jpg" alt="Ervin's haircut work 1" loading="lazy" w>idth="400" height="400">
+                <img src="ervin1.jpg" alt="Ervin's haircut work 1" loading="lazy" width="400" height="400">
                 <div class="gallery-overlay" aria-hidden="true"></div>
             </div>
             <div class="gallery-item" role="listitem">
@@ -2041,31 +2930,377 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
                 </article>
             </div>
         </section>
+
+        <!-- Contact Form Section -->
+        <section class="contact-section" id="contact" aria-labelledby="contact-heading">
+            <h2 id="contact-heading" class="section-title" data-en="Get In Touch" data-gr="Επικοινωνήστε">Get In Touch</h2>
+            <p class="section-subtitle" data-en="Have a question or special request? Send us a message!" data-gr="Έχετε ερώτηση ή ειδικό αίτημα; Στείλτε μας μήνυμα!">
+                Have a question or special request? Send us a message!
+            </p>
+
+            <div class="contact-container">
+                <form class="contact-form" id="contactForm" onsubmit="submitContactForm(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="contactName" data-en="Your Name *" data-gr="Το Όνομά σας *">Your Name *</label>
+                            <input
+                                type="text"
+                                id="contactName"
+                                name="name"
+                                required
+                                placeholder="John Doe"
+                                aria-required="true"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactEmail" data-en="Email Address *" data-gr="Email *">Email Address *</label>
+                            <input
+                                type="email"
+                                id="contactEmail"
+                                name="email"
+                                required
+                                placeholder="john@example.com"
+                                aria-required="true"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactPhone" data-en="Phone Number" data-gr="Τηλέφωνο">Phone Number</label>
+                            <input
+                                type="tel"
+                                id="contactPhone"
+                                name="phone"
+                                placeholder="+30 123 456 7890"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactSubject" data-en="Subject *" data-gr="Θέμα *">Subject *</label>
+                            <select id="contactSubject" name="subject" required aria-required="true">
+                                <option value="" data-en="Select a subject" data-gr="Επιλέξτε θέμα">Select a subject</option>
+                                <option value="booking" data-en="Booking Inquiry" data-gr="Ερώτημα Κράτησης">Booking Inquiry</option>
+                                <option value="services" data-en="Services Question" data-gr="Ερώτηση Υπηρεσιών">Services Question</option>
+                                <option value="products" data-en="Product Information" data-gr="Πληροφορίες Προϊόντος">Product Information</option>
+                                <option value="feedback" data-en="Feedback" data-gr="Σχόλια">Feedback</option>
+                                <option value="other" data-en="Other" data-gr="Άλλο">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="contactMessage" data-en="Your Message *" data-gr="Το Μήνυμά σας *">Your Message *</label>
+                        <textarea
+                            id="contactMessage"
+                            name="message"
+                            required
+                            rows="6"
+                            placeholder="Tell us what you need..."
+                            aria-required="true"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="contactConsent" name="consent" required aria-required="true">
+                            <span data-en="I agree to the" data-gr="Συμφωνώ με την">I agree to the</span>
+                            <a href="privacy-policy.html" target="_blank" data-en="Privacy Policy" data-gr="Πολιτική Απορρήτου">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+
+                    <button type="submit" class="form-submit-btn">
+                        <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                        <span data-en="Send Message" data-gr="Αποστολή Μηνύματος">Send Message</span>
+                    </button>
+                </form>
+
+                <div class="contact-info-box">
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h3 data-en="Visit Us" data-gr="Επισκεφθείτε μας">Visit Us</h3>
+                            <p data-en="Kalliteros Street, Zakynthos 29100" data-gr="Καλλιτερος, Ζάκυνθος 29100">Kalliteros Street, Zakynthos 29100</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h3 data-en="Call Us" data-gr="Καλέστε μας">Call Us</h3>
+                            <p><a href="tel:+306974628335">+30 697 462 8335</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h3 data-en="Email Us" data-gr="Email">Email Us</h3>
+                            <p><a href="mailto:info@mondihairstyle.gr">info@mondihairstyle.gr</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h3 data-en="Follow Us" data-gr="Ακολουθήστε μας">Follow Us</h3>
+                            <p><a href="https://www.instagram.com/mondi_hairstyle/" target="_blank" rel="noopener noreferrer">@mondi_hairstyle</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section" id="testimonials" aria-labelledby="testimonials-heading">
+            <h2 id="testimonials-heading" class="section-title" data-en="What Our Clients Say" data-gr="Τι Λένε οι Πελάτες μας">What Our Clients Say</h2>
+            <p class="section-subtitle" data-en="Read reviews from our satisfied customers" data-gr="Διαβάστε κριτικές από τους ικανοποιημένους πελάτες μας">
+                Read reviews from our satisfied customers
+            </p>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" data-en="Best barbershop in Zakynthos! Mondi is a true professional. My fade was absolutely perfect. Highly recommend!" data-gr="Το καλύτερο κουρείο στη Ζάκυνθο! Ο Mondi είναι αληθινός επαγγελματίας. Το fade μου ήταν τέλειο. Το συστήνω ανεπιφύλακτα!">
+                        "Best barbershop in Zakynthos! Mondi is a true professional. My fade was absolutely perfect. Highly recommend!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="author-name">Dimitris K.</div>
+                            <div class="author-location" data-en="Zakynthos" data-gr="Ζάκυνθος">Zakynthos</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" data-en="Great atmosphere and skilled barbers. Ervin gave me exactly the style I wanted. Will definitely be back!" data-gr="Υπέροχη ατμόσφαιρα και έμπειροι κουρείς. Ο Ervin μου έδωσε ακριβώς το στυλ που ήθελα. Θα επιστρέψω σίγουρα!">
+                        "Great atmosphere and skilled barbers. Ervin gave me exactly the style I wanted. Will definitely be back!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="author-name">Michael R.</div>
+                            <div class="author-location" data-en="United Kingdom" data-gr="Ηνωμένο Βασίλειο">United Kingdom</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" data-en="Marios is amazing! Very friendly and professional. The complete grooming package is worth every euro." data-gr="Ο Marios είναι καταπληκτικός! Πολύ φιλικός και επαγγελματίας. Το πλήρες πακέτο περιποίησης αξίζει κάθε ευρώ.">
+                        "Marios is amazing! Very friendly and professional. The complete grooming package is worth every euro."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="author-name">Nikos P.</div>
+                            <div class="author-location" data-en="Athens" data-gr="Αθήνα">Athens</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" data-en="Clean shop, great vibes, and top-quality service. Best haircut I've had in years. Five stars!" data-gr="Καθαρό κατάστημα, υπέροχη ατμόσφαιρα και κορυφαία ποιότητα. Το καλύτερο κούρεμα που έκανα τα τελευταία χρόνια!">
+                        "Clean shop, great vibes, and top-quality service. Best haircut I've had in years. Five stars!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="author-name">James T.</div>
+                            <div class="author-location" data-en="Australia" data-gr="Αυστραλία">Australia</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" data-en="Excellent service every time. The products they use are premium quality. My go-to barbershop!" data-gr="Εξαιρετική εξυπηρέτηση κάθε φορά. Τα προϊόντα που χρησιμοποιούν είναι premium ποιότητας. Το αγαπημένο μου κουρείο!">
+                        "Excellent service every time. The products they use are premium quality. My go-to barbershop!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="author-name">Yannis M.</div>
+                            <div class="author-location" data-en="Zakynthos" data-gr="Ζάκυνθος">Zakynthos</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" data-en="Friendly staff, modern techniques, fair prices. Got a beard trim and couldn't be happier with the results!" data-gr="Φιλικό προσωπικό, σύγχρονες τεχνικές, δίκαιες τιμές. Έκανα τριμάρισμα γενιών και είμαι εξαιρετικά ευχαριστημένος!">
+                        "Friendly staff, modern techniques, fair prices. Got a beard trim and couldn't be happier with the results!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="author-name">Thomas S.</div>
+                            <div class="author-location" data-en="Germany" data-gr="Γερμανία">Germany</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-cta">
+                <p data-en="Have you visited us? Leave a review!" data-gr="Μας έχετε επισκεφθεί; Αφήστε μια κριτική!">Have you visited us? Leave a review!</p>
+                <a href="https://www.google.com/maps/place/Mondi+Hairstryle/@37.75944,20.900007,17z" target="_blank" rel="noopener noreferrer" class="cta-button" style="margin: 0;">
+                    <i class="fab fa-google"></i>
+                    <span data-en="Review on Google" data-gr="Κριτική στο Google">Review on Google</span>
+                </a>
+            </div>
+        </section>
     </main>
 
 
     <!-- Footer -->
     <footer class="footer" role="contentinfo">
         <div class="footer-content">
-            <div class="footer-logo">MONDI HAIRSTYLE</div>
-            <div class="footer-info">
-                <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i><span data-en="Kalliteros Street, Zakynthos 29100, Greece" data-gr="Καλλιτερος, Ζάκυνθος 29100, Ελλάδα">Kalliteros Street, Zakynthos 29100, Greece</span></p>
-                <p><i class="fas fa-phone" aria-hidden="true"></i>+306974628335</p>
-                <p><i class="fas fa-envelope" aria-hidden="true"></i>info@mondihairstyle.gr</p>
+            <div class="footer-grid">
+                <!-- About Column -->
+                <div class="footer-column">
+                    <div class="footer-logo">MONDI HAIRSTYLE</div>
+                    <p class="footer-description" data-en="Premium barbershop in Zakynthos offering expert haircuts, beard grooming, and professional styling services." data-gr="Premium κουρείο στη Ζάκυνθο που προσφέρει επαγγελματικά κουρέματα, περιποίηση γενιών και styling υπηρεσίες.">
+                        Premium barbershop in Zakynthos offering expert haircuts, beard grooming, and professional styling services.
+                    </p>
+                    <nav class="footer-social" aria-label="Social Media Links">
+                        <a href="https://www.instagram.com/mondi_hairstyle/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Follow us on Instagram">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Quick Links Column -->
+                <div class="footer-column">
+                    <h3 class="footer-heading" data-en="Quick Links" data-gr="Γρήγοροι Σύνδεσμοι">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#services" data-en="Services" data-gr="Υπηρεσίες">Services</a></li>
+                        <li><a href="#products" data-en="Products" data-gr="Προϊόντα">Products</a></li>
+                        <li><a href="#gallery" data-en="Gallery" data-gr="Γκαλερί">Gallery</a></li>
+                        <li><a href="#barbers" data-en="Our Barbers" data-gr="Οι Κουρείς μας">Our Barbers</a></li>
+                        <li><a href="#faq" data-en="FAQ" data-gr="Συχνές Ερωτήσεις">FAQ</a></li>
+                        <li><a href="#contact" data-en="Contact" data-gr="Επικοινωνία">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Column -->
+                <div class="footer-column">
+                    <h3 class="footer-heading" data-en="Contact Us" data-gr="Επικοινωνήστε">Contact Us</h3>
+                    <ul class="footer-contact">
+                        <li>
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <span data-en="Kalliteros Street, Zakynthos 29100" data-gr="Καλλιτερος, Ζάκυνθος 29100">Kalliteros Street, Zakynthos 29100</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <a href="tel:+306974628335">+30 697 462 8335</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                            <a href="mailto:info@mondihairstyle.gr">info@mondihairstyle.gr</a>
+                        </li>
+                    </ul>
+
+                    <h4 class="footer-subheading" data-en="Payment Methods" data-gr="Μέθοδοι Πληρωμής">Payment Methods</h4>
+                    <div class="payment-methods">
+                        <i class="fas fa-money-bill-wave" title="Cash"></i>
+                        <i class="fab fa-cc-visa" title="Visa"></i>
+                        <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+                        <i class="fas fa-credit-card" title="Debit Card"></i>
+                    </div>
+                </div>
+
+                <!-- Newsletter Column -->
+                <div class="footer-column">
+                    <h3 class="footer-heading" data-en="Stay Updated" data-gr="Μείνετε Ενημερωμένοι">Stay Updated</h3>
+                    <p class="newsletter-text" data-en="Subscribe to get updates on new services and special offers!" data-gr="Εγγραφείτε για ενημερώσεις σχετικά με νέες υπηρεσίες και προσφορές!">
+                        Subscribe to get updates on new services and special offers!
+                    </p>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input
+                            type="email"
+                            id="newsletterEmail"
+                            name="email"
+                            placeholder="Your email..."
+                            required
+                            aria-label="Email for newsletter"
+                        >
+                        <button type="submit" aria-label="Subscribe to newsletter">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                    <p class="newsletter-status" id="newsletterStatus"></p>
+                </div>
             </div>
-            <nav class="footer-social" aria-label="Social Media Links">
-                
-                <a href="https://www.instagram.com/mondi_hairstyle/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Follow us on Instagram">
-                    <i class="fab fa-instagram" aria-hidden="true"></i>
-                </a>
-                
-            </nav>
+
             <div class="footer-bottom">
-                <p>© <span id="currentYear"></span> <span data-en="Mondi Hairstyle. All rights reserved." data-gr="Mondi Hairstyle. Με επιφύλαξη παντός δικαιώματος.">Mondi Hairstyle. All rights reserved.</span></p>
-                <p style="margin-top: 8px; font-size: 0.8rem;">
-                   <!-- // <span data-en="Designed & Developed by" data-gr="Σχεδιασμός & Ανάπτυξη από">Designed & Developed by</span> 
-                    <a href="https://ninjatech.ai" target="_blank" rel="noopener noreferrer" style="color: var(--lime); text-decoration: none; font-weight: 700;">NinjaTech AI</a> // -->
-                </p>
+                <div class="footer-bottom-content">
+                    <p>© <span id="currentYear"></span> <span data-en="Mondi Hairstyle. All rights reserved." data-gr="Mondi Hairstyle. Με επιφύλαξη παντός δικαιώματος.">Mondi Hairstyle. All rights reserved.</span></p>
+                    <div class="footer-legal">
+                        <a href="privacy-policy.html" data-en="Privacy Policy" data-gr="Πολιτική Απορρήτου">Privacy Policy</a>
+                        <span>•</span>
+                        <a href="terms-of-service.html" data-en="Terms of Service" data-gr="Όροι Χρήσης">Terms of Service</a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -2088,9 +3323,9 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
             <i class="fas fa-users" aria-hidden="true"></i>
             <span data-en="Barbers" data-gr="Κουρείς">Barbers</span>
         </a>
-        <a href="#info" class="nav-item" data-section="info" aria-label="Go to contact information">
-            <i class="fas fa-info-circle" aria-hidden="true"></i>
-            <span data-en="Info" data-gr="Πληροφορίες">Info</span>
+        <a href="#contact" class="nav-item" data-section="contact" aria-label="Go to contact form">
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+            <span data-en="Contact" data-gr="Επικοινωνία">Contact</span>
         </a>
     </nav>
 
@@ -2284,8 +3519,159 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
             }
         });
 
+        // Cookie Consent Functions
+        function showCookieConsent() {
+            const consent = localStorage.getItem('cookieConsent');
+            if (!consent) {
+                setTimeout(() => {
+                    document.getElementById('cookieConsent').classList.add('show');
+                }, 1500);
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            document.getElementById('cookieConsent').classList.remove('show');
+            // Here you can initialize analytics or other tracking
+            console.log('Cookies accepted');
+        }
+
+        function rejectCookies() {
+            localStorage.setItem('cookieConsent', 'rejected');
+            document.getElementById('cookieConsent').classList.remove('show');
+            console.log('Cookies rejected');
+        }
+
+        // Show cookie consent on page load
+        showCookieConsent();
+
+        // Contact Form Submission
+        function submitContactForm(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('contactForm');
+            const formStatus = document.getElementById('formStatus');
+            const submitBtn = form.querySelector('.form-submit-btn');
+
+            // Get form data
+            const formData = {
+                name: form.name.value,
+                email: form.email.value,
+                phone: form.phone.value || 'Not provided',
+                subject: form.subject.value,
+                message: form.message.value,
+                consent: form.consent.checked
+            };
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span data-en="Sending..." data-gr="Αποστολή...">Sending...</span>';
+
+            // Simulate form submission (replace with actual backend call)
+            setTimeout(() => {
+                // Show success message
+                formStatus.className = 'form-status success';
+                formStatus.textContent = currentLang === 'en'
+                    ? 'Thank you! Your message has been sent successfully. We will get back to you soon!'
+                    : 'Ευχαριστούμε! Το μήνυμά σας εστάλη επιτυχώς. Θα επικοινωνήσουμε μαζί σας σύντομα!';
+
+                // Reset form
+                form.reset();
+
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> <span data-en="Send Message" data-gr="Αποστολή Μηνύματος">Send Message</span>';
+
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    formStatus.className = 'form-status';
+                    formStatus.textContent = '';
+                }, 5000);
+
+                // Log form data (in production, send to backend)
+                console.log('Form submitted:', formData);
+
+                // TODO: Replace with actual API call
+                // Example:
+                // fetch('/api/contact', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(formData)
+                // })
+                // .then(response => response.json())
+                // .then(data => { /* handle success */ })
+                // .catch(error => { /* handle error */ });
+
+            }, 1500);
+
+            return false;
+        }
+
+        // FAQ Toggle Function
+        function toggleFaq(button) {
+            const faqItem = button.parentElement;
+            const isActive = faqItem.classList.contains('active');
+
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Open clicked item if it wasn't active
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // Newsletter Subscription
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+
+            const emailInput = document.getElementById('newsletterEmail');
+            const statusEl = document.getElementById('newsletterStatus');
+            const email = emailInput.value;
+
+            // Clear previous status
+            statusEl.className = 'newsletter-status';
+            statusEl.textContent = '';
+
+            // Simulate subscription (replace with actual API call)
+            setTimeout(() => {
+                // Show success message
+                statusEl.className = 'newsletter-status success';
+                statusEl.textContent = currentLang === 'en'
+                    ? '✓ Subscribed successfully!'
+                    : '✓ Εγγραφή επιτυχής!';
+
+                // Clear input
+                emailInput.value = '';
+
+                // Clear message after 5 seconds
+                setTimeout(() => {
+                    statusEl.className = 'newsletter-status';
+                    statusEl.textContent = '';
+                }, 5000);
+
+                console.log('Newsletter subscription:', email);
+
+                // TODO: Replace with actual API call
+                // Example:
+                // fetch('/api/newsletter/subscribe', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ email })
+                // })
+                // .then(response => response.json())
+                // .then(data => { /* handle success */ })
+                // .catch(error => { /* handle error */ });
+
+            }, 800);
+
+            return false;
+        }
+
         // Console message
-       
+
     </script>
 </body>
 </html>
