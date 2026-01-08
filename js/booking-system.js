@@ -14,9 +14,23 @@ class BookingSystem {
       const dateStr = date.toISOString().split('T')[0];
       const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
 
+      console.log('Getting slots for:', barberId, dateStr, dayName);
+
       // Check if barber works on this day
       const barber = BARBERS[barberId];
-      if (!barber || barber.workingHours[dayName].closed) {
+      if (!barber) {
+        console.error('Barber not found:', barberId);
+        return [];
+      }
+
+      const daySchedule = barber.workingHours[dayName];
+      if (!daySchedule) {
+        console.error('No schedule for day:', dayName);
+        return [];
+      }
+
+      if (daySchedule.closed) {
+        console.log('Barber is closed on', dayName);
         return [];
       }
 
@@ -28,23 +42,30 @@ class BookingSystem {
         .get();
 
       const bookedSlots = bookingsSnapshot.docs.map(doc => doc.data().timeSlot);
+      console.log('Booked slots:', bookedSlots);
 
       // Filter out booked slots
       const availableSlots = TIME_SLOTS.filter(slot => {
         const slotTime = slot.split(':');
-        const workingHours = barber.workingHours[dayName];
-        const startTime = workingHours.start.split(':');
-        const endTime = workingHours.end.split(':');
+        const startTime = daySchedule.start.split(':');
+        const endTime = daySchedule.end.split(':');
 
         // Check if slot is within working hours
+        const slotHour = parseInt(slotTime[0]);
+        const slotMinute = parseInt(slotTime[1]);
+        const startHour = parseInt(startTime[0]);
+        const endHour = parseInt(endTime[0]);
+
+        // More precise time checking
         const isWithinHours = (
-          parseInt(slotTime[0]) >= parseInt(startTime[0]) &&
-          parseInt(slotTime[0]) < parseInt(endTime[0])
+          (slotHour > startHour || (slotHour === startHour && slotMinute >= 0)) &&
+          slotHour < endHour
         );
 
         return isWithinHours && !bookedSlots.includes(slot);
       });
 
+      console.log('Available slots:', availableSlots);
       return availableSlots;
     } catch (error) {
       console.error('Error getting available slots:', error);
