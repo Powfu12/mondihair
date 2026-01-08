@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Mondi Hairstyle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --lime: #c3e321;
+            --dark: #1a1a1a;
+            --darker: #0f0f0f;
+            --text-light: #ffffff;
+            --text-gray: #b0b0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--lime), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+
+        .booking-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--lime);
+            background: rgba(195, 227, 33, 0.1);
+        }
+
+        .barber-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .barber-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .barber-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--lime);
+        }
+
+        .barber-option.selected {
+            background: var(--lime);
+            color: var(--darker);
+            border-color: var(--lime);
+        }
+
+        .barber-option i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .time-slot {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            border-color: var(--lime);
+        }
+
+        .time-slot.selected {
+            background: var(--lime);
+            color: var(--darker);
+            border-color: var(--lime);
+        }
+
+        .time-slot.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            background: var(--lime);
+            color: var(--darker);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(195, 227, 33, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            margin-right: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--lime);
+            transition: width 0.3s ease;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-message i {
+            font-size: 4rem;
+            color: var(--lime);
+            margin-bottom: 20px;
+        }
+
+        .success-message h2 {
+            margin-bottom: 15px;
+        }
+
+        .success-message p {
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--lime);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--lime);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .booking-card {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .barber-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+
+        <div class="header">
+            <h1>Book Your Appointment</h1>
+            <p>Choose your barber and preferred time</p>
+        </div>
+
+        <div class="booking-card">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+            </div>
+
+            <form id="bookingForm">
+                <!-- Step 1: Select Barber -->
+                <div class="form-step active" data-step="1">
+                    <h2 style="margin-bottom: 20px;">Select Your Barber</h2>
+                    <div class="barber-grid">
+                        <div class="barber-option" data-barber="mondi">
+                            <i class="fas fa-user-tie"></i>
+                            <h3>Mondi</h3>
+                        </div>
+                        <div class="barber-option" data-barber="ervin">
+                            <i class="fas fa-user-tie"></i>
+                            <h3>Ervin</h3>
+                        </div>
+                        <div class="barber-option" data-barber="marios">
+                            <i class="fas fa-user-tie"></i>
+                            <h3>Marios</h3>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <div></div>
+                        <button type="button" class="btn" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Select Service -->
+                <div class="form-step" data-step="2">
+                    <h2 style="margin-bottom: 20px;">Select Service</h2>
+                    <div class="form-group">
+                        <select id="serviceSelect" required>
+                            <option value="">Choose a service...</option>
+                            <option value="Haircut">Haircut - €15</option>
+                            <option value="Beard Trim">Beard Trim - €10</option>
+                            <option value="Haircut + Beard">Haircut + Beard - €20</option>
+                            <option value="Hair Color">Hair Color - €40</option>
+                            <option value="Kids Haircut">Kids Haircut - €12</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button type="button" class="btn" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Select Date & Time -->
+                <div class="form-step" data-step="3">
+                    <h2 style="margin-bottom: 20px;">Select Date & Time</h2>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="dateInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Available Time Slots</label>
+                        <div id="loadingSlots" class="loading" style="display: none;">
+                            <div class="spinner"></div>
+                            <p>Loading available slots...</p>
+                        </div>
+                        <div id="timeSlotsContainer" class="time-slots"></div>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button type="button" class="btn" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Your Details -->
+                <div class="form-step" data-step="4">
+                    <h2 style="margin-bottom: 20px;">Your Details</h2>
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="customerPhone" required placeholder="+357 99 123456">
+                    </div>
+                    <div class="form-group">
+                        <label>Email (Optional)</label>
+                        <input type="email" id="customerEmail" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Special Notes (Optional)</label>
+                        <textarea id="customerNotes" rows="3" placeholder="Any special requests or notes..."></textarea>
+                    </div>
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button type="submit" class="btn">Confirm Booking</button>
+                    </div>
+                </div>
+
+                <!-- Success Message -->
+                <div class="form-step" data-step="5">
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>Booking Confirmed!</h2>
+                        <p>Your appointment has been successfully booked. You will receive a confirmation shortly.</p>
+                        <div id="bookingSummary" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: left;"></div>
+                        <button class="btn" onclick="window.location.href='index.html'">Back to Home</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/booking-system.js"></script>
+
+    <script>
+        let currentStep = 1;
+        let selectedBarber = null;
+        let selectedService = null;
+        let selectedDate = null;
+        let selectedTime = null;
+
+        // Set minimum date to today
+        document.getElementById('dateInput').min = new Date().toISOString().split('T')[0];
+
+        // Barber selection
+        document.querySelectorAll('.barber-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.barber-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedBarber = this.dataset.barber;
+            });
+        });
+
+        // Date change listener
+        document.getElementById('dateInput').addEventListener('change', async function() {
+            selectedDate = this.value;
+            if (selectedBarber && selectedDate) {
+                await loadTimeSlots();
+            }
+        });
+
+        // Load available time slots
+        async function loadTimeSlots() {
+            const container = document.getElementById('timeSlotsContainer');
+            const loading = document.getElementById('loadingSlots');
+
+            loading.style.display = 'block';
+            container.innerHTML = '';
+
+            const date = new Date(selectedDate);
+            const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
+
+            loading.style.display = 'none';
+
+            if (slots.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-gray);">No available slots for this date. Please choose another date.</p>';
+                return;
+            }
+
+            slots.forEach(slot => {
+                const slotDiv = document.createElement('div');
+                slotDiv.className = 'time-slot';
+                slotDiv.textContent = slot;
+                slotDiv.addEventListener('click', function() {
+                    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedTime = slot;
+                });
+                container.appendChild(slotDiv);
+            });
+        }
+
+        // Navigation functions
+        function nextStep() {
+            if (currentStep === 1 && !selectedBarber) {
+                alert('Please select a barber');
+                return;
+            }
+            if (currentStep === 2 && !document.getElementById('serviceSelect').value) {
+                alert('Please select a service');
+                return;
+            }
+            if (currentStep === 3) {
+                if (!selectedDate) {
+                    alert('Please select a date');
+                    return;
+                }
+                if (!selectedTime) {
+                    alert('Please select a time slot');
+                    return;
+                }
+            }
+
+            currentStep++;
+            updateStep();
+        }
+
+        function prevStep() {
+            currentStep--;
+            updateStep();
+        }
+
+        function updateStep() {
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+
+            const progress = (currentStep / 5) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const bookingData = {
+                barberId: selectedBarber,
+                service: document.getElementById('serviceSelect').value,
+                date: selectedDate,
+                timeSlot: selectedTime,
+                customerName: document.getElementById('customerName').value,
+                customerPhone: document.getElementById('customerPhone').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                notes: document.getElementById('customerNotes').value
+            };
+
+            // Show loading state
+            const submitBtn = document.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>';
+
+            const result = await bookingSystem.createBooking(bookingData);
+
+            if (result.success) {
+                // Show success step
+                currentStep = 5;
+                updateStep();
+
+                // Display booking summary
+                const summary = `
+                    <p><strong>Barber:</strong> ${BARBERS[selectedBarber].name}</p>
+                    <p><strong>Service:</strong> ${bookingData.service}</p>
+                    <p><strong>Date:</strong> ${new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p><strong>Time:</strong> ${selectedTime}</p>
+                    <p><strong>Name:</strong> ${bookingData.customerName}</p>
+                    <p><strong>Phone:</strong> ${bookingData.customerPhone}</p>
+                `;
+                document.getElementById('bookingSummary').innerHTML = summary;
+            } else {
+                // Show error
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = result.message;
+                errorDiv.style.display = 'block';
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Confirm Booking';
+            }
+        });
+    </script>
+</body>
+</html>
