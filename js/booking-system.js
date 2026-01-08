@@ -127,14 +127,22 @@ class BookingSystem {
         .where('barberId', '==', barberId)
         .where('date', '>=', startDateStr)
         .where('date', '<=', endDateStr)
-        .orderBy('date', 'asc')
-        .orderBy('timeSlot', 'asc')
         .get();
 
-      return snapshot.docs.map(doc => ({
+      const bookings = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+
+      // Sort in JavaScript
+      bookings.sort((a, b) => {
+        if (a.date !== b.date) {
+          return a.date.localeCompare(b.date);
+        }
+        return a.timeSlot.localeCompare(b.timeSlot);
+      });
+
+      return bookings;
     } catch (error) {
       console.error('Error getting bookings:', error);
       return [];
@@ -173,14 +181,22 @@ class BookingSystem {
   listenToBookings(barberId, callback) {
     return db.collection('bookings')
       .where('barberId', '==', barberId)
-      .orderBy('date', 'desc')
-      .orderBy('timeSlot', 'desc')
-      .limit(50)
+      .limit(100)
       .onSnapshot(snapshot => {
         const bookings = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
+
+        // Sort in JavaScript instead of Firestore (avoids needing index)
+        bookings.sort((a, b) => {
+          // Sort by date (newest first), then by time slot (latest first)
+          if (a.date !== b.date) {
+            return b.date.localeCompare(a.date);
+          }
+          return b.timeSlot.localeCompare(a.timeSlot);
+        });
+
         callback(bookings);
       }, error => {
         console.error('Error listening to bookings:', error);
