@@ -14,9 +14,23 @@ class BookingSystem {
       const dateStr = date.toISOString().split('T')[0];
       const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
 
+      console.log('Getting slots for:', barberId, dateStr, dayName);
+
       // Check if barber works on this day
       const barber = BARBERS[barberId];
-      if (!barber || barber.workingHours[dayName].closed) {
+      if (!barber) {
+        console.error('Barber not found:', barberId);
+        return [];
+      }
+
+      const daySchedule = barber.workingHours[dayName];
+      if (!daySchedule) {
+        console.error('No schedule for day:', dayName);
+        return [];
+      }
+
+      if (daySchedule.closed) {
+        console.log('Barber is closed on', dayName);
         return [];
       }
 
@@ -28,23 +42,30 @@ class BookingSystem {
         .get();
 
       const bookedSlots = bookingsSnapshot.docs.map(doc => doc.data().timeSlot);
+      console.log('Booked slots:', bookedSlots);
 
       // Filter out booked slots
       const availableSlots = TIME_SLOTS.filter(slot => {
         const slotTime = slot.split(':');
-        const workingHours = barber.workingHours[dayName];
-        const startTime = workingHours.start.split(':');
-        const endTime = workingHours.end.split(':');
+        const startTime = daySchedule.start.split(':');
+        const endTime = daySchedule.end.split(':');
 
         // Check if slot is within working hours
+        const slotHour = parseInt(slotTime[0]);
+        const slotMinute = parseInt(slotTime[1]);
+        const startHour = parseInt(startTime[0]);
+        const endHour = parseInt(endTime[0]);
+
+        // More precise time checking
         const isWithinHours = (
-          parseInt(slotTime[0]) >= parseInt(startTime[0]) &&
-          parseInt(slotTime[0]) < parseInt(endTime[0])
+          (slotHour > startHour || (slotHour === startHour && slotMinute >= 0)) &&
+          slotHour < endHour
         );
 
         return isWithinHours && !bookedSlots.includes(slot);
       });
 
+      console.log('Available slots:', availableSlots);
       return availableSlots;
     } catch (error) {
       console.error('Error getting available slots:', error);
@@ -65,7 +86,7 @@ class BookingSystem {
         throw new Error('This time slot is no longer available');
       }
 
-      // Create booking document
+      // Create booking document (automatically confirmed)
       const booking = {
         barberId: bookingData.barberId,
         barberName: BARBERS[bookingData.barberId].name,
@@ -75,8 +96,9 @@ class BookingSystem {
         service: bookingData.service,
         date: bookingData.date,
         timeSlot: bookingData.timeSlot,
-        status: 'pending',
+        status: 'confirmed',
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
         notes: bookingData.notes || ''
       };
 
@@ -106,14 +128,22 @@ class BookingSystem {
         .where('barberId', '==', barberId)
         .where('date', '>=', startDateStr)
         .where('date', '<=', endDateStr)
-        .orderBy('date', 'asc')
-        .orderBy('timeSlot', 'asc')
         .get();
 
-      return snapshot.docs.map(doc => ({
+      const bookings = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+
+      // Sort in JavaScript
+      bookings.sort((a, b) => {
+        if (a.date !== b.date) {
+          return a.date.localeCompare(b.date);
+        }
+        return a.timeSlot.localeCompare(b.timeSlot);
+      });
+
+      return bookings;
     } catch (error) {
       console.error('Error getting bookings:', error);
       return [];
@@ -152,14 +182,22 @@ class BookingSystem {
   listenToBookings(barberId, callback) {
     return db.collection('bookings')
       .where('barberId', '==', barberId)
-      .orderBy('date', 'desc')
-      .orderBy('timeSlot', 'desc')
-      .limit(50)
+      .limit(100)
       .onSnapshot(snapshot => {
         const bookings = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
+
+        // Sort in JavaScript instead of Firestore (avoids needing index)
+        bookings.sort((a, b) => {
+          // Sort by date (newest first), then by time slot (latest first)
+          if (a.date !== b.date) {
+            return b.date.localeCompare(a.date);
+          }
+          return b.timeSlot.localeCompare(a.timeSlot);
+        });
+
         callback(bookings);
       }, error => {
         console.error('Error listening to bookings:', error);

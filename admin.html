@@ -533,8 +533,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js"></script>
-    <script src="js/booking-system.js"></script>
+    <script src="js/firebase-config.js?v=6"></script>
+    <script src="js/booking-system.js?v=6"></script>
 
     <script>
         let currentUser = null;
@@ -565,10 +565,19 @@
                     const userCredential = await auth.signInWithEmailAndPassword(email, password);
                     currentUser = userCredential.user;
                 } catch (error) {
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    if (error.code === 'auth/user-not-found' ||
+                        error.code === 'auth/wrong-password' ||
+                        error.code === 'auth/invalid-login-credentials') {
                         // Create new account
-                        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                        currentUser = userCredential.user;
+                        try {
+                            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                            currentUser = userCredential.user;
+                        } catch (createError) {
+                            if (createError.code === 'auth/email-already-in-use') {
+                                throw new Error('Account exists. Please enter the correct password.');
+                            }
+                            throw createError;
+                        }
                     } else {
                         throw error;
                     }

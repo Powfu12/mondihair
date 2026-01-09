@@ -3,12 +3,12 @@
 // Get these from: Firebase Console → Project Settings → Your Apps → Web App
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyACwhlu2BLBgS_OVDbifCHcWuoA6VTRM0E",
+  authDomain: "mondi-hairstyle.firebaseapp.com",
+  projectId: "mondi-hairstyle",
+  storageBucket: "mondi-hairstyle.firebasestorage.app",
+  messagingSenderId: "1022691382356",
+  appId: "1:1022691382356:web:fd5480391f79a8685049c1"
 };
 
 // Initialize Firebase
