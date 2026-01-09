@@ -44,25 +44,32 @@ class BookingSystem {
       const bookedSlots = bookingsSnapshot.docs.map(doc => doc.data().timeSlot);
       console.log('Booked slots:', bookedSlots);
 
-      // Filter out booked slots
-      const availableSlots = TIME_SLOTS.filter(slot => {
+      // Check if slot is within ANY of the time ranges for this day
+      const isSlotInWorkingHours = (slot, ranges) => {
         const slotTime = slot.split(':');
-        const startTime = daySchedule.start.split(':');
-        const endTime = daySchedule.end.split(':');
-
-        // Check if slot is within working hours
         const slotHour = parseInt(slotTime[0]);
         const slotMinute = parseInt(slotTime[1]);
-        const startHour = parseInt(startTime[0]);
-        const endHour = parseInt(endTime[0]);
 
-        // More precise time checking
-        const isWithinHours = (
-          (slotHour > startHour || (slotHour === startHour && slotMinute >= 0)) &&
-          slotHour < endHour
-        );
+        return ranges.some(range => {
+          const startTime = range.start.split(':');
+          const endTime = range.end.split(':');
+          const startHour = parseInt(startTime[0]);
+          const startMinute = parseInt(startTime[1]);
+          const endHour = parseInt(endTime[0]);
+          const endMinute = parseInt(endTime[1]);
 
-        return isWithinHours && !bookedSlots.includes(slot);
+          // Convert to minutes for easier comparison
+          const slotMinutes = slotHour * 60 + slotMinute;
+          const startMinutes = startHour * 60 + startMinute;
+          const endMinutes = endHour * 60 + endMinute;
+
+          return slotMinutes >= startMinutes && slotMinutes < endMinutes;
+        });
+      };
+
+      // Filter out booked slots and check against time ranges
+      const availableSlots = TIME_SLOTS.filter(slot => {
+        return isSlotInWorkingHours(slot, daySchedule.ranges) && !bookedSlots.includes(slot);
       });
 
       console.log('Available slots:', availableSlots);

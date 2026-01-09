@@ -21,6 +21,7 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 // Barbers configuration
+// Working hours now support multiple time ranges per day (for breaks)
 const BARBERS = {
   mondi: {
     id: 'mondi',
@@ -28,12 +29,40 @@ const BARBERS = {
     email: 'mondi@mondihair.com',
     services: ['Haircut', 'Beard Trim', 'Haircut + Beard', 'Hair Color', 'Kids Haircut'],
     workingHours: {
-      monday: { start: '09:00', end: '20:00' },
-      tuesday: { start: '09:00', end: '20:00' },
-      wednesday: { start: '09:00', end: '20:00' },
-      thursday: { start: '09:00', end: '20:00' },
-      friday: { start: '09:00', end: '20:00' },
-      saturday: { start: '09:00', end: '18:00' },
+      monday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      tuesday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      wednesday: {
+        ranges: [
+          { start: '09:00', end: '17:00' }
+        ]
+      },
+      thursday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      friday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      saturday: {
+        ranges: [
+          { start: '09:00', end: '21:00' }
+        ]
+      },
       sunday: { closed: true }
     }
   },
@@ -43,12 +72,40 @@ const BARBERS = {
     email: 'ervin@mondihair.com',
     services: ['Haircut', 'Beard Trim', 'Haircut + Beard', 'Hair Color', 'Kids Haircut'],
     workingHours: {
-      monday: { start: '09:00', end: '20:00' },
-      tuesday: { start: '09:00', end: '20:00' },
-      wednesday: { start: '09:00', end: '20:00' },
-      thursday: { start: '09:00', end: '20:00' },
-      friday: { start: '09:00', end: '20:00' },
-      saturday: { start: '09:00', end: '18:00' },
+      monday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      tuesday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      wednesday: {
+        ranges: [
+          { start: '09:00', end: '17:00' }
+        ]
+      },
+      thursday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      friday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      saturday: {
+        ranges: [
+          { start: '09:00', end: '21:00' }
+        ]
+      },
       sunday: { closed: true }
     }
   },
@@ -58,23 +115,51 @@ const BARBERS = {
     email: 'marios@mondihair.com',
     services: ['Haircut', 'Beard Trim', 'Haircut + Beard', 'Hair Color', 'Kids Haircut'],
     workingHours: {
-      monday: { start: '09:00', end: '20:00' },
-      tuesday: { start: '09:00', end: '20:00' },
-      wednesday: { start: '09:00', end: '20:00' },
-      thursday: { start: '09:00', end: '20:00' },
-      friday: { start: '09:00', end: '20:00' },
-      saturday: { start: '09:00', end: '18:00' },
+      monday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      tuesday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      wednesday: {
+        ranges: [
+          { start: '09:00', end: '17:00' }
+        ]
+      },
+      thursday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      friday: {
+        ranges: [
+          { start: '09:00', end: '14:00' },
+          { start: '17:00', end: '21:00' }
+        ]
+      },
+      saturday: {
+        ranges: [
+          { start: '09:00', end: '21:00' }
+        ]
+      },
       sunday: { closed: true }
     }
   }
 };
 
-// Time slots (30-minute intervals)
+// Time slots (30-minute intervals) - Extended to 21:00
 const TIME_SLOTS = [
   '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
   '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
   '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
-  '18:00', '18:30', '19:00', '19:30', '20:00'
+  '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'
 ];
 
 // Service prices

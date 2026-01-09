@@ -1747,8 +1747,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=9"></script>
-    <script src="js/booking-system.js?v=9"></script>
+    <script src="js/firebase-config.js?v=10"></script>
+    <script src="js/booking-system.js?v=10"></script>
 
     <script>
         let currentUser = null;
@@ -1975,12 +1975,26 @@
                 'sunday': 'Κυριακή'
             };
 
-            let html = '';
+            let html = '<div style="padding: 15px; background: rgba(195, 227, 33, 0.1); border-radius: 12px; margin-bottom: 20px;">';
+            html += '<p style="color: var(--text-light); margin-bottom: 10px;"><strong>Σημείωση:</strong> Τα ωράρια είναι προκαθορισμένα για όλους τους κομμωτές:</p>';
+            html += '<ul style="color: var(--text-gray); margin-left: 20px;">';
+            html += '<li>Δευ-Τρι-Πεμ-Παρ: 9:00-14:00 & 17:00-21:00</li>';
+            html += '<li>Τετάρτη: 9:00-17:00</li>';
+            html += '<li>Σάββατο: 9:00-21:00</li>';
+            html += '<li>Κυριακή: Κλειστά</li>';
+            html += '</ul>';
+            html += '<p style="color: var(--text-gray); margin-top: 10px; font-size: 0.9rem;">Μπορείτε μόνο να ενεργοποιήσετε/απενεργοποιήσετε ημέρες παρακάτω.</p>';
+            html += '</div>';
+
             Object.keys(days).forEach(day => {
                 const schedule = barberSchedule[day] || BARBERS[currentBarberId].workingHours[day];
                 const isClosed = schedule.closed || false;
-                const startTime = schedule.start || '09:00';
-                const endTime = schedule.end || '20:00';
+
+                // Format the time ranges for display
+                let timeRangesText = '';
+                if (!isClosed && schedule.ranges) {
+                    timeRangesText = schedule.ranges.map(r => `${r.start}-${r.end}`).join(' & ');
+                }
 
                 html += `
                     <div class="schedule-day">
@@ -1996,16 +2010,11 @@
                                 <span>${!isClosed ? 'Ανοιχτά' : 'Κλειστά'}</span>
                             </div>
                         </div>
-                        <div class="schedule-times ${isClosed ? 'disabled' : ''}" id="times-${day}">
-                            <div class="form-group">
-                                <label>Ώρα Έναρξης</label>
-                                <input type="time" id="start-${day}" value="${startTime}">
+                        ${!isClosed && timeRangesText ? `
+                            <div class="schedule-times" id="times-${day}" style="padding: 15px; color: var(--text-gray);">
+                                <i class="fas fa-clock"></i> ${timeRangesText}
                             </div>
-                            <div class="form-group">
-                                <label>Ώρα Λήξης</label>
-                                <input type="time" id="end-${day}" value="${endTime}">
-                            </div>
-                        </div>
+                        ` : ''}
                     </div>
                 `;
             });
@@ -2016,10 +2025,7 @@
         // Toggle Day Open/Closed
         function toggleDay(day) {
             const checkbox = document.getElementById(`toggle-${day}`);
-            const timesDiv = document.getElementById(`times-${day}`);
             const isOpen = checkbox.checked;
-
-            timesDiv.classList.toggle('disabled', !isOpen);
             checkbox.nextElementSibling.nextElementSibling.textContent = isOpen ? 'Ανοιχτά' : 'Κλειστά';
         }
 
@@ -2031,10 +2037,8 @@
             days.forEach(day => {
                 const isOpen = document.getElementById(`toggle-${day}`).checked;
                 if (isOpen) {
-                    newSchedule[day] = {
-                        start: document.getElementById(`start-${day}`).value,
-                        end: document.getElementById(`end-${day}`).value
-                    };
+                    // Use default ranges from BARBERS config
+                    newSchedule[day] = BARBERS[currentBarberId].workingHours[day];
                 } else {
                     newSchedule[day] = { closed: true };
                 }
@@ -2173,10 +2177,13 @@
                 b.date === dateStr && b.status !== 'cancelled'
             );
 
-            // Create time slots from 9:00 to 20:00
+            // Create time slots from 9:00 to 21:00
             let html = '';
-            for (let hour = 9; hour <= 20; hour++) {
+            for (let hour = 9; hour <= 21; hour++) {
                 for (let minute = 0; minute < 60; minute += 30) {
+                    // Skip 21:30 since we end at 21:00
+                    if (hour === 21 && minute === 30) break;
+
                     const timeSlot = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
                     const bookingsAtTime = dayBookings.filter(b => b.timeSlot === timeSlot);
 
