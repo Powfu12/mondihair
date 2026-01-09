@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Mondi Hairstyle</title>
-    <meta name="description" content="Admin dashboard for Mondi Hairstyle booking management">
+    <title>Πίνακας Διαχείρισης - Mondi Hairstyle</title>
+    <meta name="description" content="Πίνακας διαχείρισης για το Mondi Hairstyle">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -1127,6 +1127,287 @@
             background: var(--text-gray);
         }
 
+        /* =========================
+           ACTION BUTTONS
+        ========================= */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .add-booking-btn,
+        .edit-schedule-btn {
+            padding: 12px 30px;
+            background: var(--lime);
+            color: var(--darker);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-booking-btn:hover,
+        .edit-schedule-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(195, 227, 33, 0.4);
+        }
+
+        .edit-schedule-btn {
+            background: var(--blue);
+            color: white;
+        }
+
+        .edit-schedule-btn:hover {
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.4);
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--lime), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            margin-bottom: 30px;
+        }
+
+        .modal-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-form .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .modal-form .form-group input,
+        .modal-form .form-group select,
+        .modal-form .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-form .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-form .form-group input:focus,
+        .modal-form .form-group select:focus,
+        .modal-form .form-group textarea:focus {
+            outline: none;
+            border-color: var(--lime);
+            background: rgba(195, 227, 33, 0.05);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background: var(--lime);
+            color: var(--darker);
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(195, 227, 33, 0.4);
+        }
+
+        .modal-btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Schedule Editor Specific */
+        .schedule-editor {
+            display: grid;
+            gap: 15px;
+        }
+
+        .schedule-day {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .schedule-day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .schedule-day-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .schedule-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--lime);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .schedule-times {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .schedule-times.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .dashboard-header {
@@ -1209,14 +1490,14 @@
     ========================= -->
     <div id="loginScreen" class="login-container">
         <div class="login-card">
-            <h1><i class="fas fa-user-shield"></i> Admin Login</h1>
-            <p class="subtitle">Access your barber dashboard</p>
+            <h1><i class="fas fa-user-shield"></i> Σύνδεση Διαχειριστή</h1>
+            <p class="subtitle">Πρόσβαση στον πίνακα διαχείρισης</p>
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label>Select Barber Profile</label>
+                    <label>Επιλέξτε Προφίλ Κομμωτή</label>
                     <select id="barberSelect" required>
-                        <option value="">Choose your profile...</option>
+                        <option value="">Επιλέξτε το προφίλ σας...</option>
                         <option value="mondi">Mondi</option>
                         <option value="ervin">Ervin</option>
                         <option value="marios">Marios</option>
@@ -1225,21 +1506,21 @@
 
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" id="emailInput" placeholder="your@email.com" required>
+                    <input type="email" id="emailInput" placeholder="το@email.σας" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="passwordInput" placeholder="Enter your password" required>
+                    <label>Κωδικός</label>
+                    <input type="password" id="passwordInput" placeholder="Εισάγετε τον κωδικό σας" required>
                 </div>
 
                 <button type="submit" class="btn">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>Login to Dashboard</span>
+                    <span>Σύνδεση</span>
                 </button>
 
                 <p class="login-note">
-                    First time? Create your account by logging in with any email and password
+                    Πρώτη φορά; Δημιουργήστε λογαριασμό συνδεόμενοι με οποιοδήποτε email και κωδικό
                 </p>
             </form>
         </div>
@@ -1253,17 +1534,13 @@
         <div class="dashboard-header">
             <div class="header-content">
                 <div class="header-left">
-                    <h1><i class="fas fa-calendar-check"></i> <span id="dashboardTitle">Dashboard</span></h1>
+                    <h1><i class="fas fa-calendar-check"></i> <span id="dashboardTitle">Πίνακας Διαχείρισης</span></h1>
                     <p class="header-subtitle" id="userEmail"></p>
                 </div>
                 <div class="header-right">
-                    <div class="language-toggle">
-                        <button id="langEn" class="active" onclick="switchLanguage('en')">EN</button>
-                        <button id="langGr" onclick="switchLanguage('gr')">ΕΛ</button>
-                    </div>
                     <button class="logout-btn" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i>
-                        <span data-en="Logout" data-gr="Αποσύνδεση">Logout</span>
+                        <span>Αποσύνδεση</span>
                     </button>
                 </div>
             </div>
@@ -1279,7 +1556,7 @@
                             <i class="fas fa-calendar-day"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 data-en="Today's Bookings" data-gr="Σημερινά Ραντεβού">Today's Bookings</h3>
+                            <h3>Σημερινά Ραντεβού</h3>
                             <div class="stat-number" id="todayCount">0</div>
                         </div>
                     </div>
@@ -1291,7 +1568,7 @@
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 data-en="Confirmed" data-gr="Επιβεβαιωμένα">Confirmed</h3>
+                            <h3>Επιβεβαιωμένα</h3>
                             <div class="stat-number" id="confirmedCount">0</div>
                         </div>
                     </div>
@@ -1303,7 +1580,7 @@
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 data-en="Pending" data-gr="Εκκρεμή">Pending</h3>
+                            <h3>Εκκρεμή</h3>
                             <div class="stat-number" id="pendingCount">0</div>
                         </div>
                     </div>
@@ -1315,68 +1592,34 @@
                             <i class="fas fa-calendar-week"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 data-en="This Week" data-gr="Αυτή την Εβδομάδα">This Week</h3>
+                            <h3>Αυτή την Εβδομάδα</h3>
                             <div class="stat-number" id="weekCount">0</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- View Toggle -->
-            <div class="view-toggle">
-                <button class="view-toggle-btn active" onclick="switchMainView('list')">
-                    <i class="fas fa-list"></i>
-                    <span data-en="List View" data-gr="Προβολή Λίστας">List View</span>
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="add-booking-btn" onclick="openAddBookingModal()">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Προσθήκη Ραντεβού</span>
                 </button>
-                <button class="view-toggle-btn" onclick="switchMainView('calendar')">
-                    <i class="fas fa-calendar"></i>
-                    <span data-en="Calendar View" data-gr="Προβολή Ημερολογίου">Calendar View</span>
+                <button class="edit-schedule-btn" onclick="openEditScheduleModal()">
+                    <i class="fas fa-calendar-edit"></i>
+                    <span>Επεξεργασία Ωραρίου</span>
                 </button>
-            </div>
-
-            <!-- LIST VIEW -->
-            <div class="list-view" id="listView">
-                <!-- Filters -->
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-filter"></i>
-                        <span data-en="Filter Bookings" data-gr="Φίλτρα">Filter Bookings</span>
-                    </h2>
-                </div>
-                <div class="filters">
-                    <button class="filter-btn active" data-filter="all" onclick="filterByStatus('all')">
-                        <span data-en="All" data-gr="Όλα">All</span>
-                    </button>
-                    <button class="filter-btn" data-filter="confirmed" onclick="filterByStatus('confirmed')">
-                        <span data-en="Confirmed" data-gr="Επιβεβαιωμένα">Confirmed</span>
-                    </button>
-                    <button class="filter-btn" data-filter="pending" onclick="filterByStatus('pending')">
-                        <span data-en="Pending" data-gr="Εκκρεμή">Pending</span>
-                    </button>
-                    <button class="filter-btn" data-filter="completed" onclick="filterByStatus('completed')">
-                        <span data-en="Completed" data-gr="Ολοκληρωμένα">Completed</span>
-                    </button>
-                </div>
-
-                <!-- Loading -->
-                <div id="loadingBookings" class="loading-container">
-                    <div class="spinner"></div>
-                    <p data-en="Loading bookings..." data-gr="Φόρτωση ραντεβού...">Loading bookings...</p>
-                </div>
-
-                <!-- Bookings Container -->
-                <div id="bookingsContainer"></div>
             </div>
 
             <!-- CALENDAR VIEW -->
-            <div class="calendar-view" id="calendarView">
+            <div class="calendar-view active" id="calendarView">
                 <!-- Calendar Header -->
                 <div class="calendar-header">
                     <div class="calendar-nav">
                         <button class="calendar-nav-btn" onclick="navigateCalendar(-1)">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <h3 class="calendar-title" id="calendarTitle">January 2026</h3>
+                        <h3 class="calendar-title" id="calendarTitle">Ιανουάριος 2026</h3>
                         <button class="calendar-nav-btn" onclick="navigateCalendar(1)">
                             <i class="fas fa-chevron-right"></i>
                         </button>
@@ -1387,13 +1630,13 @@
 
                     <div class="calendar-view-tabs">
                         <button class="calendar-view-tab" data-view="day" onclick="switchCalendarView('day')">
-                            <span data-en="Day" data-gr="Ημέρα">Day</span>
+                            <span>Ημέρα</span>
                         </button>
                         <button class="calendar-view-tab active" data-view="week" onclick="switchCalendarView('week')">
-                            <span data-en="Week" data-gr="Εβδομάδα">Week</span>
+                            <span>Εβδομάδα</span>
                         </button>
                         <button class="calendar-view-tab" data-view="month" onclick="switchCalendarView('month')">
-                            <span data-en="Month" data-gr="Μήνας">Month</span>
+                            <span>Μήνας</span>
                         </button>
                     </div>
                 </div>
@@ -1416,14 +1659,96 @@
         </div>
     </div>
 
+    <!-- =========================
+         ADD BOOKING MODAL
+    ========================= -->
+    <div id="addBookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Προσθήκη Νέου Ραντεβού</h2>
+                <button class="modal-close" onclick="closeAddBookingModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addBookingForm" class="modal-form">
+                    <div class="form-group">
+                        <label>Όνομα Πελάτη *</label>
+                        <input type="text" id="newCustomerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Τηλέφωνο *</label>
+                        <input type="tel" id="newCustomerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="newCustomerEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Υπηρεσία *</label>
+                        <select id="newService" required>
+                            <option value="">Επιλέξτε υπηρεσία...</option>
+                            <option value="Haircut">Haircut</option>
+                            <option value="Beard Trim">Beard Trim</option>
+                            <option value="Haircut + Beard">Haircut + Beard</option>
+                            <option value="Hair Color">Hair Color</option>
+                            <option value="Kids Haircut">Kids Haircut</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ημερομηνία *</label>
+                        <input type="date" id="newDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ώρα *</label>
+                        <select id="newTime" required>
+                            <option value="">Επιλέξτε ώρα...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Σημειώσεις</label>
+                        <textarea id="newNotes" placeholder="Προσθέστε τυχόν σημειώσεις..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeAddBookingModal()">Ακύρωση</button>
+                <button class="modal-btn modal-btn-primary" onclick="submitNewBooking()">Δημιουργία Ραντεβού</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+         EDIT SCHEDULE MODAL
+    ========================= -->
+    <div id="editScheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Επεξεργασία Ωραρίου</h2>
+                <button class="modal-close" onclick="closeEditScheduleModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="schedule-editor" id="scheduleEditor">
+                    <!-- Schedule days will be generated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeEditScheduleModal()">Ακύρωση</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveSchedule()">Αποθήκευση</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=8"></script>
-    <script src="js/booking-system.js?v=8"></script>
+    <script src="js/firebase-config.js?v=9"></script>
+    <script src="js/booking-system.js?v=9"></script>
 
     <script>
         let currentUser = null;
@@ -1431,26 +1756,20 @@
         let allBookings = [];
         let unsubscribeBookings = null;
         let currentFilter = 'all';
-        let currentLanguage = 'en';
+        let barberSchedule = {};
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            const savedLang = localStorage.getItem('language') || 'en';
-            switchLanguage(savedLang);
+            // Check for saved barber session
+            const savedBarberId = localStorage.getItem('currentBarberId');
+            const savedEmail = localStorage.getItem('currentEmail');
+
+            if (savedBarberId && savedEmail) {
+                // Pre-fill the form
+                document.getElementById('barberSelect').value = savedBarberId;
+                document.getElementById('emailInput').value = savedEmail;
+            }
         });
-
-        // Language Switching
-        function switchLanguage(lang) {
-            currentLanguage = lang;
-            localStorage.setItem('language', lang);
-
-            document.getElementById('langEn').classList.toggle('active', lang === 'en');
-            document.getElementById('langGr').classList.toggle('active', lang === 'gr');
-
-            document.querySelectorAll('[data-en]').forEach(el => {
-                el.textContent = el.getAttribute(`data-${lang}`);
-            });
-        }
 
         // Login
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -1461,7 +1780,7 @@
             const password = document.getElementById('passwordInput').value;
 
             if (!barber) {
-                alert('Please select a barber');
+                alert('Παρακαλώ επιλέξτε κομμωτή');
                 return;
             }
 
@@ -1482,7 +1801,7 @@
                             currentUser = userCredential.user;
                         } catch (createError) {
                             if (createError.code === 'auth/email-already-in-use') {
-                                throw new Error('Account exists. Please enter the correct password.');
+                                throw new Error('Ο λογαριασμός υπάρχει. Παρακαλώ εισάγετε τον σωστό κωδικό.');
                             }
                             throw createError;
                         }
@@ -1492,21 +1811,45 @@
                 }
 
                 currentBarberId = barber;
+
+                // Save to localStorage for persistent login
+                localStorage.setItem('currentBarberId', barber);
+                localStorage.setItem('currentEmail', email);
+
+                // Load barber schedule
+                await loadBarberSchedule();
+
                 showDashboard();
             } catch (error) {
                 console.error('Login error:', error);
-                alert('Login failed: ' + error.message);
+                alert('Αποτυχία σύνδεσης: ' + error.message);
                 const submitBtn = this.querySelector('button[type="submit"]');
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Login to Dashboard</span>';
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Σύνδεση</span>';
             }
         });
+
+        // Load Barber Schedule from Firestore
+        async function loadBarberSchedule() {
+            try {
+                const scheduleDoc = await db.collection('schedules').doc(currentBarberId).get();
+                if (scheduleDoc.exists) {
+                    barberSchedule = scheduleDoc.data();
+                } else {
+                    // Use default schedule from BARBERS config
+                    barberSchedule = BARBERS[currentBarberId].workingHours;
+                }
+            } catch (error) {
+                console.error('Error loading schedule:', error);
+                barberSchedule = BARBERS[currentBarberId].workingHours;
+            }
+        }
 
         // Show Dashboard
         function showDashboard() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
-            document.getElementById('dashboardTitle').textContent = BARBERS[currentBarberId].name + (currentLanguage === 'en' ? "'s Dashboard" : " Dashboard");
+            document.getElementById('dashboardTitle').textContent = 'Πίνακας Διαχείρισης - ' + BARBERS[currentBarberId].name;
             document.getElementById('userEmail').textContent = currentUser.email;
 
             loadBookings();
@@ -1514,17 +1857,14 @@
 
         // Load Bookings
         function loadBookings() {
-            document.getElementById('loadingBookings').style.display = 'block';
-
             if (unsubscribeBookings) {
                 unsubscribeBookings();
             }
 
             unsubscribeBookings = bookingSystem.listenToBookings(currentBarberId, (bookings) => {
                 allBookings = bookings;
-                document.getElementById('loadingBookings').style.display = 'none';
                 updateStats();
-                displayBookings();
+                renderCalendar();
             });
         }
 
@@ -1546,226 +1886,183 @@
             document.getElementById('weekCount').textContent = weekBookings.length;
         }
 
-        // Filter by Status
-        function filterByStatus(status) {
-            currentFilter = status;
+        // =========================
+        // MODAL FUNCTIONS
+        // =========================
 
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.filter === status);
-            });
-
-            displayBookings();
+        // Open Add Booking Modal
+        function openAddBookingModal() {
+            document.getElementById('addBookingModal').classList.add('active');
+            document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
         }
 
-        // Display Bookings
-        function displayBookings() {
-            const container = document.getElementById('bookingsContainer');
+        // Close Add Booking Modal
+        function closeAddBookingModal() {
+            document.getElementById('addBookingModal').classList.remove('active');
+            document.getElementById('addBookingForm').reset();
+        }
 
-            let filtered = [...allBookings];
-            if (currentFilter !== 'all') {
-                filtered = filtered.filter(b => b.status === currentFilter);
+        // Update time slots when date changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('newDate');
+            if (dateInput) {
+                dateInput.addEventListener('change', async function() {
+                    const selectedDate = new Date(this.value);
+                    const timeSelect = document.getElementById('newTime');
+                    timeSelect.innerHTML = '<option value="">Επιλέξτε ώρα...</option>';
+
+                    // Get available slots
+                    const slots = await bookingSystem.getAvailableTimeSlots(currentBarberId, selectedDate);
+                    slots.forEach(slot => {
+                        const option = document.createElement('option');
+                        option.value = slot;
+                        option.textContent = slot;
+                        timeSelect.appendChild(option);
+                    });
+                });
             }
+        });
 
-            // Remove cancelled from main view
-            filtered = filtered.filter(b => b.status !== 'cancelled');
-
-            if (filtered.length === 0) {
-                const emptyText = currentLanguage === 'en'
-                    ? 'No bookings found'
-                    : 'Δεν βρέθηκαν ραντεβού';
-                const emptyDesc = currentLanguage === 'en'
-                    ? 'Bookings will appear here once customers make appointments'
-                    : 'Τα ραντεβού θα εμφανιστούν εδώ όταν οι πελάτες κάνουν κρατήσεις';
-
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-calendar-times"></i>
-                        <h3>${emptyText}</h3>
-                        <p>${emptyDesc}</p>
-                    </div>
-                `;
+        // Submit New Booking
+        async function submitNewBooking() {
+            const form = document.getElementById('addBookingForm');
+            if (!form.checkValidity()) {
+                alert('Παρακαλώ συμπληρώστε όλα τα υποχρεωτικά πεδία');
                 return;
             }
 
-            // Group by date categories
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const todayStr = today.toISOString().split('T')[0];
+            const bookingData = {
+                barberId: currentBarberId,
+                customerName: document.getElementById('newCustomerName').value,
+                customerPhone: document.getElementById('newCustomerPhone').value,
+                customerEmail: document.getElementById('newCustomerEmail').value,
+                service: document.getElementById('newService').value,
+                date: document.getElementById('newDate').value,
+                timeSlot: document.getElementById('newTime').value,
+                notes: document.getElementById('newNotes').value
+            };
 
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+            const result = await bookingSystem.createBooking(bookingData);
+            if (result.success) {
+                alert('Το ραντεβού δημιουργήθηκε επιτυχώς!');
+                closeAddBookingModal();
+            } else {
+                alert('Αποτυχία δημιουργίας: ' + result.message);
+            }
+        }
 
-            const todayBookings = filtered.filter(b => b.date === todayStr);
-            const tomorrowBookings = filtered.filter(b => b.date === tomorrowStr);
-            const upcomingBookings = filtered.filter(b => b.date > tomorrowStr);
+        // Open Edit Schedule Modal
+        function openEditScheduleModal() {
+            document.getElementById('editScheduleModal').classList.add('active');
+            renderScheduleEditor();
+        }
+
+        // Close Edit Schedule Modal
+        function closeEditScheduleModal() {
+            document.getElementById('editScheduleModal').classList.remove('active');
+        }
+
+        // Render Schedule Editor
+        function renderScheduleEditor() {
+            const container = document.getElementById('scheduleEditor');
+            const days = {
+                'monday': 'Δευτέρα',
+                'tuesday': 'Τρίτη',
+                'wednesday': 'Τετάρτη',
+                'thursday': 'Πέμπτη',
+                'friday': 'Παρασκευή',
+                'saturday': 'Σάββατο',
+                'sunday': 'Κυριακή'
+            };
 
             let html = '';
+            Object.keys(days).forEach(day => {
+                const schedule = barberSchedule[day] || BARBERS[currentBarberId].workingHours[day];
+                const isClosed = schedule.closed || false;
+                const startTime = schedule.start || '09:00';
+                const endTime = schedule.end || '20:00';
 
-            // TODAY
-            if (todayBookings.length > 0) {
                 html += `
-                    <div class="date-section">
-                        <div class="date-section-header today">
-                            <i class="fas fa-calendar-day"></i>
-                            <h3 class="date-section-title" data-en="TODAY" data-gr="ΣΗΜΕΡΑ">${currentLanguage === 'en' ? 'TODAY' : 'ΣΗΜΕΡΑ'}</h3>
-                            <span class="date-section-count">${todayBookings.length}</span>
+                    <div class="schedule-day">
+                        <div class="schedule-day-header">
+                            <span class="schedule-day-name">${days[day]}</span>
+                            <div class="schedule-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-${day}"
+                                           ${!isClosed ? 'checked' : ''}
+                                           onchange="toggleDay('${day}')">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span>${!isClosed ? 'Ανοιχτά' : 'Κλειστά'}</span>
+                            </div>
                         </div>
-                        <div class="bookings-list">
-                            ${todayBookings.map(booking => renderBookingCard(booking)).join('')}
+                        <div class="schedule-times ${isClosed ? 'disabled' : ''}" id="times-${day}">
+                            <div class="form-group">
+                                <label>Ώρα Έναρξης</label>
+                                <input type="time" id="start-${day}" value="${startTime}">
+                            </div>
+                            <div class="form-group">
+                                <label>Ώρα Λήξης</label>
+                                <input type="time" id="end-${day}" value="${endTime}">
+                            </div>
                         </div>
                     </div>
                 `;
-            }
-
-            // TOMORROW
-            if (tomorrowBookings.length > 0) {
-                html += `
-                    <div class="date-section">
-                        <div class="date-section-header tomorrow">
-                            <i class="fas fa-calendar-plus"></i>
-                            <h3 class="date-section-title" data-en="TOMORROW" data-gr="ΑΥΡΙΟ">${currentLanguage === 'en' ? 'TOMORROW' : 'ΑΥΡΙΟ'}</h3>
-                            <span class="date-section-count">${tomorrowBookings.length}</span>
-                        </div>
-                        <div class="bookings-list">
-                            ${tomorrowBookings.map(booking => renderBookingCard(booking)).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-
-            // UPCOMING
-            if (upcomingBookings.length > 0) {
-                html += `
-                    <div class="date-section">
-                        <div class="date-section-header upcoming">
-                            <i class="fas fa-calendar-alt"></i>
-                            <h3 class="date-section-title" data-en="UPCOMING" data-gr="ΕΠΟΜΕΝΑ">${currentLanguage === 'en' ? 'UPCOMING' : 'ΕΠΟΜΕΝΑ'}</h3>
-                            <span class="date-section-count">${upcomingBookings.length}</span>
-                        </div>
-                        <div class="bookings-list">
-                            ${upcomingBookings.map(booking => renderBookingCard(booking)).join('')}
-                        </div>
-                    </div>
-                `;
-            }
+            });
 
             container.innerHTML = html;
         }
 
-        // Render Booking Card
-        function renderBookingCard(booking) {
-            const date = new Date(booking.date);
-            const formattedDate = date.toLocaleDateString(currentLanguage === 'en' ? 'en-US' : 'el-GR', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric'
-            });
+        // Toggle Day Open/Closed
+        function toggleDay(day) {
+            const checkbox = document.getElementById(`toggle-${day}`);
+            const timesDiv = document.getElementById(`times-${day}`);
+            const isOpen = checkbox.checked;
 
-            const statusText = {
-                confirmed: currentLanguage === 'en' ? 'Confirmed' : 'Επιβεβαιωμένο',
-                pending: currentLanguage === 'en' ? 'Pending' : 'Εκκρεμές',
-                completed: currentLanguage === 'en' ? 'Completed' : 'Ολοκληρωμένο',
-                cancelled: currentLanguage === 'en' ? 'Cancelled' : 'Ακυρωμένο'
-            };
-
-            return `
-                <div class="booking-card status-${booking.status}">
-                    <div class="booking-header">
-                        <div class="booking-customer">
-                            <h3 class="customer-name">${booking.customerName}</h3>
-                            <div class="booking-time">
-                                <i class="fas fa-clock"></i>
-                                ${booking.timeSlot}
-                            </div>
-                        </div>
-                        <span class="booking-status status-${booking.status}">
-                            ${statusText[booking.status]}
-                        </span>
-                    </div>
-
-                    <div class="booking-details">
-                        <div class="detail-item">
-                            <i class="fas fa-scissors"></i>
-                            <div class="detail-content">
-                                <div class="detail-label">${currentLanguage === 'en' ? 'Service' : 'Υπηρεσία'}</div>
-                                <div class="detail-value">${booking.service}</div>
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-calendar"></i>
-                            <div class="detail-content">
-                                <div class="detail-label">${currentLanguage === 'en' ? 'Date' : 'Ημερομηνία'}</div>
-                                <div class="detail-value">${formattedDate}</div>
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-phone"></i>
-                            <div class="detail-content">
-                                <div class="detail-label">${currentLanguage === 'en' ? 'Phone' : 'Τηλέφωνο'}</div>
-                                <div class="detail-value">${booking.customerPhone}</div>
-                            </div>
-                        </div>
-                        ${booking.customerEmail ? `
-                            <div class="detail-item">
-                                <i class="fas fa-envelope"></i>
-                                <div class="detail-content">
-                                    <div class="detail-label">Email</div>
-                                    <div class="detail-value">${booking.customerEmail}</div>
-                                </div>
-                            </div>
-                        ` : ''}
-                    </div>
-
-                    ${booking.notes ? `
-                        <div class="booking-notes">
-                            <i class="fas fa-note-sticky"></i> ${booking.notes}
-                        </div>
-                    ` : ''}
-
-                    <div class="booking-actions">
-                        ${booking.status === 'pending' ? `
-                            <button class="action-btn btn-confirm" onclick="updateStatus('${booking.id}', 'confirmed')">
-                                <i class="fas fa-check"></i>
-                                <span data-en="Confirm" data-gr="Επιβεβαίωση">${currentLanguage === 'en' ? 'Confirm' : 'Επιβεβαίωση'}</span>
-                            </button>
-                        ` : ''}
-                        ${booking.status === 'confirmed' ? `
-                            <button class="action-btn btn-complete" onclick="updateStatus('${booking.id}', 'completed')">
-                                <i class="fas fa-check-double"></i>
-                                <span data-en="Complete" data-gr="Ολοκλήρωση">${currentLanguage === 'en' ? 'Complete' : 'Ολοκλήρωση'}</span>
-                            </button>
-                        ` : ''}
-                        <button class="action-btn btn-cancel" onclick="cancelBooking('${booking.id}')">
-                            <i class="fas fa-times"></i>
-                            <span data-en="Cancel" data-gr="Ακύρωση">${currentLanguage === 'en' ? 'Cancel' : 'Ακύρωση'}</span>
-                        </button>
-                    </div>
-                </div>
-            `;
+            timesDiv.classList.toggle('disabled', !isOpen);
+            checkbox.nextElementSibling.nextElementSibling.textContent = isOpen ? 'Ανοιχτά' : 'Κλειστά';
         }
 
-        // Update Status
-        async function updateStatus(bookingId, status) {
-            const result = await bookingSystem.updateBookingStatus(bookingId, status);
-            if (!result.success) {
-                alert('Failed to update: ' + result.message);
+        // Save Schedule
+        async function saveSchedule() {
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            const newSchedule = {};
+
+            days.forEach(day => {
+                const isOpen = document.getElementById(`toggle-${day}`).checked;
+                if (isOpen) {
+                    newSchedule[day] = {
+                        start: document.getElementById(`start-${day}`).value,
+                        end: document.getElementById(`end-${day}`).value
+                    };
+                } else {
+                    newSchedule[day] = { closed: true };
+                }
+            });
+
+            try {
+                await db.collection('schedules').doc(currentBarberId).set(newSchedule);
+                barberSchedule = newSchedule;
+                alert('Το ωράριο αποθηκεύτηκε επιτυχώς!');
+                closeEditScheduleModal();
+            } catch (error) {
+                console.error('Error saving schedule:', error);
+                alert('Αποτυχία αποθήκευσης ωραρίου');
             }
         }
 
-        // Cancel Booking
-        async function cancelBooking(bookingId) {
-            const confirmText = currentLanguage === 'en'
-                ? 'Are you sure you want to cancel this booking?'
-                : 'Είστε σίγουροι ότι θέλετε να ακυρώσετε αυτό το ραντεβού;';
-
-            if (!confirm(confirmText)) {
+        // Delete Booking (Permanent)
+        async function deleteBooking(bookingId) {
+            if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε οριστικά αυτό το ραντεβού;')) {
                 return;
             }
 
-            const result = await bookingSystem.cancelBooking(bookingId);
-            if (!result.success) {
-                alert('Failed to cancel: ' + result.message);
+            try {
+                await db.collection('bookings').doc(bookingId).delete();
+                alert('Το ραντεβού διαγράφηκε επιτυχώς');
+            } catch (error) {
+                console.error('Error deleting booking:', error);
+                alert('Αποτυχία διαγραφής: ' + error.message);
             }
         }
 
@@ -1774,6 +2071,10 @@
             if (unsubscribeBookings) {
                 unsubscribeBookings();
             }
+
+            // Clear localStorage
+            localStorage.removeItem('currentBarberId');
+            localStorage.removeItem('currentEmail');
 
             auth.signOut().then(() => {
                 document.getElementById('dashboard').classList.remove('active');
@@ -1784,11 +2085,16 @@
             });
         }
 
-        // Auth state
-        auth.onAuthStateChanged(user => {
-            if (user && currentBarberId) {
+        // Auth state with persistent login
+        auth.onAuthStateChanged(async user => {
+            if (user) {
                 currentUser = user;
-                showDashboard();
+                const savedBarberId = localStorage.getItem('currentBarberId');
+                if (savedBarberId && !currentBarberId) {
+                    currentBarberId = savedBarberId;
+                    await loadBarberSchedule();
+                    showDashboard();
+                }
             }
         });
 
@@ -1797,24 +2103,6 @@
         // =========================
         let currentCalendarView = 'week';
         let currentCalendarDate = new Date();
-
-        // Switch between list and calendar main views
-        function switchMainView(view) {
-            // Update toggle buttons
-            document.querySelectorAll('.view-toggle-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.view-toggle-btn').classList.add('active');
-
-            if (view === 'list') {
-                document.getElementById('listView').classList.remove('hidden');
-                document.getElementById('calendarView').classList.remove('active');
-            } else {
-                document.getElementById('listView').classList.add('hidden');
-                document.getElementById('calendarView').classList.add('active');
-                renderCalendar();
-            }
-        }
 
         // Switch between day/week/month calendar views
         function switchCalendarView(view) {
@@ -1871,10 +2159,7 @@
                 options.day = 'numeric';
                 options.weekday = 'long';
             }
-            const title = currentCalendarDate.toLocaleDateString(
-                currentLanguage === 'en' ? 'en-US' : 'el-GR',
-                options
-            );
+            const title = currentCalendarDate.toLocaleDateString('el-GR', options);
             document.getElementById('calendarTitle').textContent = title;
         }
 
@@ -1937,10 +2222,7 @@
                     b.date === dateStr && b.status !== 'cancelled'
                 );
 
-                const dayName = date.toLocaleDateString(
-                    currentLanguage === 'en' ? 'en-US' : 'el-GR',
-                    { weekday: 'short' }
-                );
+                const dayName = date.toLocaleDateString('el-GR', { weekday: 'short' });
 
                 html += `
                     <div class="week-day-col ${isToday ? 'today' : ''}">
@@ -1980,10 +2262,8 @@
 
             let html = '';
 
-            // Day headers
-            const dayNames = currentLanguage === 'en'
-                ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                : ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ'];
+            // Day headers (Greek)
+            const dayNames = ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ'];
 
             dayNames.forEach(day => {
                 html += `<div class="month-day-header">${day}</div>`;
