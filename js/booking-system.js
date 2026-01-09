@@ -86,7 +86,7 @@ class BookingSystem {
         throw new Error('This time slot is no longer available');
       }
 
-      // Create booking document
+      // Create booking document (automatically confirmed)
       const booking = {
         barberId: bookingData.barberId,
         barberName: BARBERS[bookingData.barberId].name,
@@ -96,8 +96,9 @@ class BookingSystem {
         service: bookingData.service,
         date: bookingData.date,
         timeSlot: bookingData.timeSlot,
-        status: 'pending',
+        status: 'confirmed',
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
         notes: bookingData.notes || ''
       };
 
