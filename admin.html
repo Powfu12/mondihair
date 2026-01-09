@@ -732,6 +732,401 @@
             margin-bottom: 10px;
         }
 
+        /* =========================
+           VIEW TOGGLE & CALENDAR
+        ========================= */
+        .view-toggle {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .view-toggle-btn {
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .view-toggle-btn.active {
+            background: var(--lime);
+            color: var(--darker);
+            border-color: var(--lime);
+        }
+
+        .view-toggle-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Calendar Container */
+        .calendar-view {
+            display: none;
+        }
+
+        .calendar-view.active {
+            display: block;
+        }
+
+        .list-view {
+            display: block;
+        }
+
+        .list-view.hidden {
+            display: none;
+        }
+
+        /* Calendar Header */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .calendar-nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav-btn:hover {
+            background: var(--lime);
+            color: var(--darker);
+            border-color: var(--lime);
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .calendar-view-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-view-tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-view-tab.active {
+            background: var(--lime);
+            color: var(--darker);
+            border-color: var(--lime);
+        }
+
+        .calendar-view-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Day View */
+        .day-view-container {
+            display: none;
+        }
+
+        .day-view-container.active {
+            display: block;
+        }
+
+        .time-grid {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .time-slot-row {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .time-slot-row:last-child {
+            border-bottom: none;
+        }
+
+        .time-label {
+            color: var(--text-gray);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .time-slot-content {
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .calendar-booking-item {
+            background: rgba(195, 227, 33, 0.1);
+            border-left: 4px solid var(--lime);
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-booking-item:hover {
+            background: rgba(195, 227, 33, 0.15);
+            transform: translateX(5px);
+        }
+
+        .calendar-booking-item.status-confirmed {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: var(--success);
+        }
+
+        .calendar-booking-item.status-pending {
+            background: rgba(255, 152, 0, 0.1);
+            border-left-color: var(--warning);
+        }
+
+        .calendar-booking-item.status-completed {
+            background: rgba(176, 176, 176, 0.1);
+            border-left-color: #9e9e9e;
+        }
+
+        .calendar-booking-name {
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-light);
+        }
+
+        .calendar-booking-service {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        /* Week View */
+        .week-view-container {
+            display: none;
+        }
+
+        .week-view-container.active {
+            display: block;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .week-day-col {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 500px;
+        }
+
+        .week-day-header {
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .week-day-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 5px;
+        }
+
+        .week-day-date {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-light);
+        }
+
+        .week-day-col.today .week-day-date {
+            color: var(--lime);
+        }
+
+        .week-day-bookings {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .week-booking-item {
+            background: rgba(195, 227, 33, 0.1);
+            border-left: 3px solid var(--lime);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .week-booking-item:hover {
+            background: rgba(195, 227, 33, 0.15);
+        }
+
+        .week-booking-item.status-confirmed {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: var(--success);
+        }
+
+        .week-booking-item.status-pending {
+            background: rgba(255, 152, 0, 0.1);
+            border-left-color: var(--warning);
+        }
+
+        .week-booking-item.status-completed {
+            background: rgba(176, 176, 176, 0.1);
+            border-left-color: #9e9e9e;
+        }
+
+        .week-booking-time {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .week-booking-name {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* Month View */
+        .month-view-container {
+            display: none;
+        }
+
+        .month-view-container.active {
+            display: block;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .month-day-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .month-day-cell {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px 10px;
+            min-height: 120px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .month-day-cell:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .month-day-cell.other-month {
+            opacity: 0.3;
+        }
+
+        .month-day-cell.today {
+            background: rgba(195, 227, 33, 0.1);
+            border: 2px solid var(--lime);
+        }
+
+        .month-day-number {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+
+        .month-day-cell.today .month-day-number {
+            color: var(--lime);
+        }
+
+        .month-bookings-count {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--lime);
+            color: var(--darker);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .month-booking-dots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .month-booking-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--lime);
+        }
+
+        .month-booking-dot.confirmed {
+            background: var(--success);
+        }
+
+        .month-booking-dot.pending {
+            background: var(--warning);
+        }
+
+        .month-booking-dot.completed {
+            background: var(--text-gray);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .dashboard-header {
@@ -778,7 +1173,34 @@
             .login-card {
                 padding: 30px 25px;
             }
+
+            .calendar-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .calendar-view-tabs {
+                width: 100%;
+            }
+
+            .calendar-view-tab {
+                flex: 1;
+                text-align: center;
+            }
+
+            .week-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .time-grid {
+                padding: 15px;
+            }
+
+            .time-slot-row {
+                grid-template-columns: 60px 1fr;
+            }
         }
+
     </style>
 </head>
 <body>
@@ -900,36 +1322,97 @@
                 </div>
             </div>
 
-            <!-- Filters -->
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-filter"></i>
-                    <span data-en="Filter Bookings" data-gr="Φίλτρα">Filter Bookings</span>
-                </h2>
-            </div>
-            <div class="filters">
-                <button class="filter-btn active" data-filter="all" onclick="filterByStatus('all')">
-                    <span data-en="All" data-gr="Όλα">All</span>
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button class="view-toggle-btn active" onclick="switchMainView('list')">
+                    <i class="fas fa-list"></i>
+                    <span data-en="List View" data-gr="Προβολή Λίστας">List View</span>
                 </button>
-                <button class="filter-btn" data-filter="confirmed" onclick="filterByStatus('confirmed')">
-                    <span data-en="Confirmed" data-gr="Επιβεβαιωμένα">Confirmed</span>
-                </button>
-                <button class="filter-btn" data-filter="pending" onclick="filterByStatus('pending')">
-                    <span data-en="Pending" data-gr="Εκκρεμή">Pending</span>
-                </button>
-                <button class="filter-btn" data-filter="completed" onclick="filterByStatus('completed')">
-                    <span data-en="Completed" data-gr="Ολοκληρωμένα">Completed</span>
+                <button class="view-toggle-btn" onclick="switchMainView('calendar')">
+                    <i class="fas fa-calendar"></i>
+                    <span data-en="Calendar View" data-gr="Προβολή Ημερολογίου">Calendar View</span>
                 </button>
             </div>
 
-            <!-- Loading -->
-            <div id="loadingBookings" class="loading-container">
-                <div class="spinner"></div>
-                <p data-en="Loading bookings..." data-gr="Φόρτωση ραντεβού...">Loading bookings...</p>
+            <!-- LIST VIEW -->
+            <div class="list-view" id="listView">
+                <!-- Filters -->
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-filter"></i>
+                        <span data-en="Filter Bookings" data-gr="Φίλτρα">Filter Bookings</span>
+                    </h2>
+                </div>
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all" onclick="filterByStatus('all')">
+                        <span data-en="All" data-gr="Όλα">All</span>
+                    </button>
+                    <button class="filter-btn" data-filter="confirmed" onclick="filterByStatus('confirmed')">
+                        <span data-en="Confirmed" data-gr="Επιβεβαιωμένα">Confirmed</span>
+                    </button>
+                    <button class="filter-btn" data-filter="pending" onclick="filterByStatus('pending')">
+                        <span data-en="Pending" data-gr="Εκκρεμή">Pending</span>
+                    </button>
+                    <button class="filter-btn" data-filter="completed" onclick="filterByStatus('completed')">
+                        <span data-en="Completed" data-gr="Ολοκληρωμένα">Completed</span>
+                    </button>
+                </div>
+
+                <!-- Loading -->
+                <div id="loadingBookings" class="loading-container">
+                    <div class="spinner"></div>
+                    <p data-en="Loading bookings..." data-gr="Φόρτωση ραντεβού...">Loading bookings...</p>
+                </div>
+
+                <!-- Bookings Container -->
+                <div id="bookingsContainer"></div>
             </div>
 
-            <!-- Bookings Container -->
-            <div id="bookingsContainer"></div>
+            <!-- CALENDAR VIEW -->
+            <div class="calendar-view" id="calendarView">
+                <!-- Calendar Header -->
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" onclick="navigateCalendar(-1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h3 class="calendar-title" id="calendarTitle">January 2026</h3>
+                        <button class="calendar-nav-btn" onclick="navigateCalendar(1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="calendar-nav-btn" onclick="goToToday()">
+                            <i class="fas fa-calendar-day"></i>
+                        </button>
+                    </div>
+
+                    <div class="calendar-view-tabs">
+                        <button class="calendar-view-tab" data-view="day" onclick="switchCalendarView('day')">
+                            <span data-en="Day" data-gr="Ημέρα">Day</span>
+                        </button>
+                        <button class="calendar-view-tab active" data-view="week" onclick="switchCalendarView('week')">
+                            <span data-en="Week" data-gr="Εβδομάδα">Week</span>
+                        </button>
+                        <button class="calendar-view-tab" data-view="month" onclick="switchCalendarView('month')">
+                            <span data-en="Month" data-gr="Μήνας">Month</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Day View -->
+                <div class="day-view-container" id="dayViewContainer">
+                    <div class="time-grid" id="dayViewGrid"></div>
+                </div>
+
+                <!-- Week View -->
+                <div class="week-view-container active" id="weekViewContainer">
+                    <div class="week-grid" id="weekViewGrid"></div>
+                </div>
+
+                <!-- Month View -->
+                <div class="month-view-container" id="monthViewContainer">
+                    <div class="month-grid" id="monthViewGrid"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -939,8 +1422,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=7"></script>
-    <script src="js/booking-system.js?v=7"></script>
+    <script src="js/firebase-config.js?v=8"></script>
+    <script src="js/booking-system.js?v=8"></script>
 
     <script>
         let currentUser = null;
@@ -1308,6 +1791,244 @@
                 showDashboard();
             }
         });
+
+        // =========================
+        // CALENDAR VIEW FUNCTIONS
+        // =========================
+        let currentCalendarView = 'week';
+        let currentCalendarDate = new Date();
+
+        // Switch between list and calendar main views
+        function switchMainView(view) {
+            // Update toggle buttons
+            document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.view-toggle-btn').classList.add('active');
+
+            if (view === 'list') {
+                document.getElementById('listView').classList.remove('hidden');
+                document.getElementById('calendarView').classList.remove('active');
+            } else {
+                document.getElementById('listView').classList.add('hidden');
+                document.getElementById('calendarView').classList.add('active');
+                renderCalendar();
+            }
+        }
+
+        // Switch between day/week/month calendar views
+        function switchCalendarView(view) {
+            currentCalendarView = view;
+
+            // Update tab buttons
+            document.querySelectorAll('.calendar-view-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            });
+
+            // Show/hide containers
+            document.getElementById('dayViewContainer').classList.toggle('active', view === 'day');
+            document.getElementById('weekViewContainer').classList.toggle('active', view === 'week');
+            document.getElementById('monthViewContainer').classList.toggle('active', view === 'month');
+
+            renderCalendar();
+        }
+
+        // Navigate calendar (prev/next)
+        function navigateCalendar(direction) {
+            if (currentCalendarView === 'day') {
+                currentCalendarDate.setDate(currentCalendarDate.getDate() + direction);
+            } else if (currentCalendarView === 'week') {
+                currentCalendarDate.setDate(currentCalendarDate.getDate() + (direction * 7));
+            } else if (currentCalendarView === 'month') {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            }
+            renderCalendar();
+        }
+
+        // Go to today
+        function goToToday() {
+            currentCalendarDate = new Date();
+            renderCalendar();
+        }
+
+        // Main render function
+        function renderCalendar() {
+            updateCalendarTitle();
+
+            if (currentCalendarView === 'day') {
+                renderDayView();
+            } else if (currentCalendarView === 'week') {
+                renderWeekView();
+            } else if (currentCalendarView === 'month') {
+                renderMonthView();
+            }
+        }
+
+        // Update calendar title
+        function updateCalendarTitle() {
+            const options = { month: 'long', year: 'numeric' };
+            if (currentCalendarView === 'day') {
+                options.day = 'numeric';
+                options.weekday = 'long';
+            }
+            const title = currentCalendarDate.toLocaleDateString(
+                currentLanguage === 'en' ? 'en-US' : 'el-GR',
+                options
+            );
+            document.getElementById('calendarTitle').textContent = title;
+        }
+
+        // Render Day View
+        function renderDayView() {
+            const container = document.getElementById('dayViewGrid');
+            const dateStr = currentCalendarDate.toISOString().split('T')[0];
+
+            // Get bookings for this day
+            const dayBookings = allBookings.filter(b =>
+                b.date === dateStr && b.status !== 'cancelled'
+            );
+
+            // Create time slots from 9:00 to 20:00
+            let html = '';
+            for (let hour = 9; hour <= 20; hour++) {
+                for (let minute = 0; minute < 60; minute += 30) {
+                    const timeSlot = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    const bookingsAtTime = dayBookings.filter(b => b.timeSlot === timeSlot);
+
+                    html += `
+                        <div class="time-slot-row">
+                            <div class="time-label">${timeSlot}</div>
+                            <div class="time-slot-content">
+                                ${bookingsAtTime.map(booking => `
+                                    <div class="calendar-booking-item status-${booking.status}">
+                                        <div class="calendar-booking-name">${booking.customerName}</div>
+                                        <div class="calendar-booking-service">${booking.service}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Render Week View
+        function renderWeekView() {
+            const container = document.getElementById('weekViewGrid');
+
+            // Get start of week (Sunday)
+            const startOfWeek = new Date(currentCalendarDate);
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+            const today = new Date().toISOString().split('T')[0];
+            let html = '';
+
+            // Create 7 columns for each day
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(date.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                const isToday = dateStr === today;
+
+                // Get bookings for this day
+                const dayBookings = allBookings.filter(b =>
+                    b.date === dateStr && b.status !== 'cancelled'
+                );
+
+                const dayName = date.toLocaleDateString(
+                    currentLanguage === 'en' ? 'en-US' : 'el-GR',
+                    { weekday: 'short' }
+                );
+
+                html += `
+                    <div class="week-day-col ${isToday ? 'today' : ''}">
+                        <div class="week-day-header">
+                            <div class="week-day-name">${dayName}</div>
+                            <div class="week-day-date">${date.getDate()}</div>
+                        </div>
+                        <div class="week-day-bookings">
+                            ${dayBookings.map(booking => `
+                                <div class="week-booking-item status-${booking.status}">
+                                    <div class="week-booking-time">${booking.timeSlot}</div>
+                                    <div class="week-booking-name">${booking.customerName}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Render Month View
+        function renderMonthView() {
+            const container = document.getElementById('monthViewGrid');
+
+            // Get first day of month
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            // Get day of week for first day (0 = Sunday)
+            const startDay = firstDay.getDay();
+
+            const today = new Date().toISOString().split('T')[0];
+
+            let html = '';
+
+            // Day headers
+            const dayNames = currentLanguage === 'en'
+                ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                : ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ'];
+
+            dayNames.forEach(day => {
+                html += `<div class="month-day-header">${day}</div>`;
+            });
+
+            // Empty cells before first day
+            for (let i = 0; i < startDay; i++) {
+                html += `<div class="month-day-cell other-month"></div>`;
+            }
+
+            // Days of month
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                const dateStr = date.toISOString().split('T')[0];
+                const isToday = dateStr === today;
+
+                // Get bookings for this day
+                const dayBookings = allBookings.filter(b =>
+                    b.date === dateStr && b.status !== 'cancelled'
+                );
+
+                html += `
+                    <div class="month-day-cell ${isToday ? 'today' : ''}">
+                        <div class="month-day-number">${day}</div>
+                        ${dayBookings.length > 0 ? `
+                            <div class="month-bookings-count">${dayBookings.length}</div>
+                            <div class="month-booking-dots">
+                                ${dayBookings.slice(0, 4).map(booking => `
+                                    <div class="month-booking-dot ${booking.status}"></div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            // Fill remaining cells
+            const totalCells = startDay + lastDay.getDate();
+            const remainingCells = 35 - totalCells; // 5 rows * 7 days = 35
+            for (let i = 0; i < remainingCells; i++) {
+                html += `<div class="month-day-cell other-month"></div>`;
+            }
+
+            container.innerHTML = html;
+        }
     </script>
 </body>
 </html>
