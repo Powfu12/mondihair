@@ -1991,8 +1991,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=27"></script>
-    <script src="js/booking-system.js?v=27"></script>
+    <script src="js/firebase-config.js?v=28"></script>
+    <script src="js/booking-system.js?v=28"></script>
 
     <script>
         let currentUser = null;
@@ -2387,17 +2387,37 @@
         // Load custom closures from Firestore
         async function loadCustomClosures() {
             try {
+                // Get today's date in local timezone
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const todayStr = `${year}-${month}-${day}`;
+
                 const closuresSnapshot = await db.collection('customClosures')
                     .where('barberId', '==', currentBarberId)
-                    .where('date', '>=', new Date().toISOString().split('T')[0])
+                    .where('date', '>=', todayStr)
                     .orderBy('date')
-                    .orderBy('startTime')
                     .get();
 
                 customClosures = closuresSnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
+
+                // Sort by date, then by time (if exists)
+                customClosures.sort((a, b) => {
+                    if (a.date !== b.date) {
+                        return a.date.localeCompare(b.date);
+                    }
+                    // If same date, sort by start time (full day closures first)
+                    if (a.type === 'fullDay' && b.type === 'timeRange') return -1;
+                    if (a.type === 'timeRange' && b.type === 'fullDay') return 1;
+                    if (a.startTime && b.startTime) {
+                        return a.startTime.localeCompare(b.startTime);
+                    }
+                    return 0;
+                });
 
                 renderClosuresList();
             } catch (error) {
