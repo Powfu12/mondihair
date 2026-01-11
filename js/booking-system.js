@@ -79,6 +79,11 @@ class BookingSystem {
       return availableSlots;
     } catch (error) {
       console.error('Error getting available slots:', error);
+      // Re-throw permissions errors so calendar can detect them
+      if (error.code === 'permission-denied' ||
+          (error.message && error.message.toLowerCase().includes('permission'))) {
+        throw error;
+      }
       return [];
     }
   }

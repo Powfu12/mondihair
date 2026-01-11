@@ -1191,8 +1191,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=13"></script>
-    <script src="js/booking-system.js?v=13"></script>
+    <script src="js/firebase-config.js?v=14"></script>
+    <script src="js/booking-system.js?v=14"></script>
 
     <script>
         let currentStep = 1;
@@ -1384,55 +1384,12 @@
 
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const today = new Date().toISOString().split('T')[0];
+            const barber = BARBERS[selectedBarber];
 
-            // Test if we have permissions by trying one day first
-            let hasPermissions = true;
-            try {
-                const testDate = new Date(year, month, new Date().getDate());
-                await bookingSystem.getAvailableTimeSlots(selectedBarber, testDate);
-            } catch (error) {
-                if (error.message && error.message.includes('permission')) {
-                    hasPermissions = false;
-                    console.warn('Firestore permissions not set up yet. Calendar will show all days as available.');
+            // Build availability WITHOUT making any Firebase calls
+            // We'll just show based on working hours
+            let permissionsDetected = false;
 
-                    // Show warning message to user
-                    const warningDiv = document.createElement('div');
-                    warningDiv.style.cssText = 'background: rgba(255,152,0,0.1); border: 1px solid rgba(255,152,0,0.3); border-radius: 8px; padding: 12px; margin-bottom: 15px; color: #ff9800; font-size: 0.9rem; text-align: center;';
-                    warningDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Calendar working in preview mode. Please deploy Firestore rules to see real availability.';
-
-                    const calendarContainer = document.querySelector('.custom-calendar');
-                    if (!document.querySelector('.permissions-warning')) {
-                        warningDiv.className = 'permissions-warning';
-                        calendarContainer.insertBefore(warningDiv, calendarContainer.firstChild);
-                    }
-                }
-            }
-
-            // If no permissions, show all open days as available
-            if (!hasPermissions) {
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dateObj = new Date(year, month, day);
-                    const dateStr = dateObj.toISOString().split('T')[0];
-
-                    // Skip past dates
-                    if (dateStr < today) continue;
-
-                    const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-                    const barber = BARBERS[selectedBarber];
-                    const daySchedule = barber.workingHours[dayName];
-
-                    // Check if closed
-                    if (!daySchedule || daySchedule.closed) {
-                        monthAvailability[dateStr] = { status: 'closed', available: 0 };
-                    } else {
-                        // Show as available (we can't check real availability)
-                        monthAvailability[dateStr] = { status: 'available', available: 99 };
-                    }
-                }
-                return;
-            }
-
-            // We have permissions - calculate real availability
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateObj = new Date(year, month, day);
                 const dateStr = dateObj.toISOString().split('T')[0];
@@ -1441,7 +1398,6 @@
                 if (dateStr < today) continue;
 
                 const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-                const barber = BARBERS[selectedBarber];
                 const daySchedule = barber.workingHours[dayName];
 
                 // Check if closed
@@ -1450,23 +1406,70 @@
                     continue;
                 }
 
-                // Get available slots
-                try {
-                    const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, dateObj);
-                    const totalSlots = getTimeSlotsForBarber(selectedBarber).length;
+                // If we haven't detected permissions yet, try ONE call
+                if (!permissionsDetected) {
+                    try {
+                        const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, dateObj);
+                        const totalSlots = getTimeSlotsForBarber(selectedBarber).length;
 
-                    if (slots.length === 0) {
-                        monthAvailability[dateStr] = { status: 'full', available: 0 };
-                    } else if (slots.length <= totalSlots * 0.3) {
-                        // 30% or less available = busy
-                        monthAvailability[dateStr] = { status: 'busy', available: slots.length };
-                    } else {
-                        monthAvailability[dateStr] = { status: 'available', available: slots.length };
+                        if (slots.length === 0) {
+                            monthAvailability[dateStr] = { status: 'full', available: 0 };
+                        } else if (slots.length <= totalSlots * 0.3) {
+                            monthAvailability[dateStr] = { status: 'busy', available: slots.length };
+                        } else {
+                            monthAvailability[dateStr] = { status: 'available', available: slots.length };
+                        }
+                        permissionsDetected = true; // Success! We have permissions
+                    } catch (error) {
+                        // Permissions error - switch to preview mode
+                        console.warn('Firestore permissions not set. Using preview mode.');
+
+                        // Show warning
+                        const existingWarning = document.querySelector('.permissions-warning');
+                        if (!existingWarning) {
+                            const warningDiv = document.createElement('div');
+                            warningDiv.className = 'permissions-warning';
+                            warningDiv.style.cssText = 'background: rgba(255,152,0,0.1); border: 1px solid rgba(255,152,0,0.3); border-radius: 8px; padding: 12px; margin-bottom: 15px; color: #ff9800; font-size: 0.85rem; text-align: center;';
+                            warningDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <strong>Preview Mode:</strong> Firestore rules not deployed. <a href="https://console.firebase.google.com" target="_blank" style="color: #c3e321; text-decoration: underline;">Deploy rules now</a>';
+
+                            const calendarContainer = document.querySelector('.custom-calendar');
+                            calendarContainer.insertBefore(warningDiv, calendarContainer.firstChild);
+                        }
+
+                        // Fill rest of month as available without Firebase calls
+                        for (let d = day; d <= daysInMonth; d++) {
+                            const dObj = new Date(year, month, d);
+                            const dStr = dObj.toISOString().split('T')[0];
+                            if (dStr < today) continue;
+
+                            const dName = dObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+                            const dSched = barber.workingHours[dName];
+
+                            if (!dSched || dSched.closed) {
+                                monthAvailability[dStr] = { status: 'closed', available: 0 };
+                            } else {
+                                monthAvailability[dStr] = { status: 'available', available: 99 };
+                            }
+                        }
+                        return; // Exit early
                     }
-                } catch (error) {
-                    console.error('Error calculating availability:', error);
-                    // On error, assume available (let user try)
-                    monthAvailability[dateStr] = { status: 'available', available: 99 };
+                } else {
+                    // We have permissions - check real availability
+                    try {
+                        const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, dateObj);
+                        const totalSlots = getTimeSlotsForBarber(selectedBarber).length;
+
+                        if (slots.length === 0) {
+                            monthAvailability[dateStr] = { status: 'full', available: 0 };
+                        } else if (slots.length <= totalSlots * 0.3) {
+                            monthAvailability[dateStr] = { status: 'busy', available: slots.length };
+                        } else {
+                            monthAvailability[dateStr] = { status: 'available', available: slots.length };
+                        }
+                    } catch (error) {
+                        console.error('Error checking availability:', error);
+                        monthAvailability[dateStr] = { status: 'available', available: 99 };
+                    }
                 }
             }
         }
