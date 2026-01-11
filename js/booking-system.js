@@ -71,13 +71,19 @@ class BookingSystem {
 
       // Get barber-specific time slots (20 min for Mondi, 30 min for others)
       const timeSlots = getTimeSlotsForBarber(barberId);
+      console.log('Total time slots for barber:', timeSlots.length);
+      console.log('Barber slot interval:', barber.slotInterval);
+      console.log('Day schedule ranges:', JSON.stringify(daySchedule.ranges));
 
       // Filter out booked slots and check against time ranges
       const availableSlots = timeSlots.filter(slot => {
-        return isSlotInWorkingHours(slot, daySchedule.ranges) && !bookedSlots.includes(slot);
+        const inWorkingHours = isSlotInWorkingHours(slot, daySchedule.ranges);
+        const isBooked = bookedSlots.includes(slot);
+        return inWorkingHours && !isBooked;
       });
 
       console.log('Available slots:', availableSlots);
+      console.log('Total available:', availableSlots.length);
       return availableSlots;
     } catch (error) {
       console.error('Error getting available slots:', error);
@@ -98,19 +104,38 @@ class BookingSystem {
       const [year, month, day] = bookingData.date.split('-').map(Number);
       const bookingDate = new Date(year, month - 1, day);
 
-      console.log('Validating booking for:', bookingData.barberId, bookingData.date, bookingData.timeSlot);
+      console.log('=== BOOKING VALIDATION DEBUG ===');
+      console.log('Barber ID:', bookingData.barberId);
+      console.log('Date string:', bookingData.date);
+      console.log('Date object:', bookingDate);
+      console.log('Day of week:', bookingDate.getDay());
+      console.log('Time slot:', bookingData.timeSlot);
+      console.log('Time slot type:', typeof bookingData.timeSlot);
 
       const availableSlots = await this.getAvailableTimeSlots(
         bookingData.barberId,
         bookingDate
       );
 
-      console.log('Available slots for validation:', availableSlots);
-      console.log('Requested time slot:', bookingData.timeSlot);
+      console.log('Available slots:', availableSlots);
+      console.log('Available slots length:', availableSlots.length);
+      console.log('First few available slots:', availableSlots.slice(0, 5));
+      console.log('Checking if slot exists...');
+      console.log('Exact match test:', availableSlots.includes(bookingData.timeSlot));
+
+      // Check if any slot matches (in case of spacing or format issues)
+      const matchingSlots = availableSlots.filter(slot => slot.trim() === bookingData.timeSlot.trim());
+      console.log('Matching slots after trim:', matchingSlots);
 
       if (!availableSlots.includes(bookingData.timeSlot)) {
+        console.error('VALIDATION FAILED: Time slot not found in available slots');
+        console.error('Requested:', JSON.stringify(bookingData.timeSlot));
+        console.error('Available:', JSON.stringify(availableSlots));
         throw new Error('This time slot is no longer available');
       }
+
+      console.log('Validation passed, creating booking...');
+      console.log('=== END DEBUG ===');
 
       // Create booking document (automatically confirmed)
       const booking = {
