@@ -863,57 +863,190 @@
         }
 
         /* Responsive Design */
+        /* Enhanced Mobile Responsiveness */
         @media (max-width: 768px) {
             .container {
                 margin-top: 80px;
-                padding: 0 15px;
+                padding: 0 10px;
             }
 
             .booking-card {
-                padding: 30px 20px;
-                border-radius: 20px;
+                padding: 20px 15px;
+                border-radius: 16px;
+            }
+
+            .header {
+                padding: 20px 10px;
             }
 
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .header p {
-                font-size: 0.95rem;
+                font-size: 0.9rem;
+            }
+
+            .header-icon {
+                font-size: 2rem;
             }
 
             .barber-grid {
                 grid-template-columns: 1fr;
+                gap: 12px;
             }
 
+            .barber-option {
+                padding: 20px;
+            }
+
+            .service-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .service-option {
+                padding: 16px;
+            }
+
+            /* Calendar Mobile Improvements */
+            .custom-calendar {
+                padding: 15px;
+            }
+
+            .calendar-header h3 {
+                font-size: 1rem;
+            }
+
+            .calendar-nav button {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+
+            .calendar-weekday {
+                font-size: 0.75rem;
+                padding: 6px 0;
+            }
+
+            .calendar-day {
+                min-height: 50px;
+                font-size: 0.85rem;
+            }
+
+            .calendar-day-number {
+                font-size: 0.9rem;
+            }
+
+            .calendar-day-status {
+                font-size: 0.55rem;
+            }
+
+            .calendar-legend {
+                gap: 12px;
+                font-size: 0.75rem;
+            }
+
+            .legend-dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            /* Time Slots Mobile */
             .time-slots {
                 grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
             }
 
+            .time-slot {
+                padding: 12px 8px;
+                font-size: 0.9rem;
+            }
+
+            /* Buttons Mobile */
             .button-group {
                 flex-direction: column;
+                gap: 10px;
             }
 
             .btn {
                 width: 100%;
                 justify-content: center;
+                padding: 14px 30px;
+                font-size: 0.95rem;
             }
 
+            /* Progress Steps - Hide on Mobile */
             .progress-steps {
                 display: none;
             }
 
+            /* Top Navigation Mobile */
             .top-nav {
-                padding: 15px;
+                padding: 12px 15px;
+            }
+
+            .back-link span {
+                display: none; /* Hide text, keep icon */
             }
 
             .language-toggle {
-                gap: 5px;
+                gap: 6px;
             }
 
             .language-toggle button {
-                padding: 6px 12px;
+                padding: 8px 14px;
                 font-size: 0.85rem;
+            }
+
+            /* Form Inputs Mobile */
+            .form-group input,
+            .form-group textarea {
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+
+            /* Step Titles Mobile */
+            .step-title {
+                font-size: 1.5rem;
+            }
+
+            .step-description {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Extra Small Devices */
+        @media (max-width: 400px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .calendar-day {
+                min-height: 45px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Tablet Optimization */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 700px;
+            }
+
+            .barber-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .service-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -1057,7 +1190,13 @@
                 <!-- Step 3: Select Date & Time -->
                 <div class="form-step" data-step="3">
                     <h2 class="step-title" data-en="Select Date & Time" data-gr="Επιλέξτε Ημερομηνία & Ώρα">Select Date & Time</h2>
-                    <p class="step-description" data-en="Pick your preferred date - green means available, yellow means busy, red means full" data-gr="Επιλέξτε ημερομηνία - πράσινο σημαίνει διαθέσιμο, κίτρινο σημαίνει πολυάσχολο, κόκκινο σημαίνει πλήρες">Pick your preferred date - green means available, yellow means busy, red means full</p>
+                    <p class="step-description" data-en="Pick your preferred date within the next 30 days" data-gr="Επιλέξτε ημερομηνία εντός των επόμενων 30 ημερών">Pick your preferred date within the next 30 days</p>
+                    <div style="background: rgba(195, 227, 33, 0.1); border-radius: 8px; padding: 10px; margin-bottom: 15px; text-align: center;">
+                        <small style="color: var(--text-gray);">
+                            <i class="fas fa-info-circle" style="color: var(--lime);"></i>
+                            <span data-en="Green = Available  •  Yellow = Busy  •  Red = Full/Closed" data-gr="Πράσινο = Διαθέσιμο  •  Κίτρινο = Πολυάσχολο  •  Κόκκινο = Πλήρες/Κλειστά">Green = Available  •  Yellow = Busy  •  Red = Full/Closed</span>
+                        </small>
+                    </div>
 
                     <!-- Custom Calendar -->
                     <div class="custom-calendar">
@@ -1191,8 +1330,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=16"></script>
-    <script src="js/booking-system.js?v=16"></script>
+    <script src="js/firebase-config.js?v=17"></script>
+    <script src="js/booking-system.js?v=17"></script>
 
     <script>
         let currentStep = 1;
@@ -1265,10 +1404,17 @@
 
             document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
 
-            // Disable prev button if current or past month
+            // Disable prev/next buttons based on 30-day booking window
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const maxDate = new Date(today);
+            maxDate.setDate(maxDate.getDate() + 30);
+
             const isPastMonth = year < today.getFullYear() || (year === today.getFullYear() && month < today.getMonth());
+            const isBeyond30Days = year > maxDate.getFullYear() || (year === maxDate.getFullYear() && month > maxDate.getMonth());
+
             document.getElementById('prevMonth').disabled = isPastMonth;
+            document.getElementById('nextMonth').disabled = isBeyond30Days;
 
             // Show loading
             const loadingEl = document.getElementById('loadingCalendar');
@@ -1308,18 +1454,25 @@
 
             // Add days of the month
             const todayStr = today.toISOString().split('T')[0];
+            const maxDateStr = maxDate.toISOString().split('T')[0];
+            const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateObj = new Date(year, month, day);
                 const dateStr = dateObj.toISOString().split('T')[0];
-                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+                const dayName = dayNames[dateObj.getDay()]; // Fix timezone issue
 
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'calendar-day';
 
-                // Check if past
+                // Check if past or beyond 30 days
                 if (dateStr < todayStr) {
                     dayDiv.classList.add('past');
+                } else if (dateStr > maxDateStr) {
+                    dayDiv.classList.add('past');
+                    dayDiv.title = currentLanguage === 'en'
+                        ? 'Bookings only available for next 30 days'
+                        : 'Κρατήσεις διαθέσιμες μόνο για τις επόμενες 30 ημέρες';
                 }
 
                 // Check if selected
@@ -1397,7 +1550,8 @@
                 // Skip past dates
                 if (dateStr < today) continue;
 
-                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+                const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                const dayName = dayNames[dateObj.getDay()];
                 const daySchedule = barber.workingHours[dayName];
 
                 // Check if closed

@@ -12,7 +12,9 @@ class BookingSystem {
   async getAvailableTimeSlots(barberId, date) {
     try {
       const dateStr = date.toISOString().split('T')[0];
-      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+      // Fix timezone issue: use getDay() instead of toLocaleDateString
+      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const dayName = dayNames[date.getDay()];
 
       console.log('Getting slots for:', barberId, dateStr, dayName);
 
