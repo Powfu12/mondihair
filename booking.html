@@ -464,6 +464,207 @@
             margin-top: 5px;
         }
 
+        /* Custom Calendar */
+        .custom-calendar {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h3 {
+            color: var(--lime);
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav button:hover:not(:disabled) {
+            background: rgba(195, 227, 33, 0.1);
+            border-color: var(--lime);
+        }
+
+        .calendar-nav button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 0;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .calendar-day.empty {
+            cursor: default;
+            background: transparent;
+            border: none;
+        }
+
+        .calendar-day.past {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .calendar-day.closed {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: rgba(255, 0, 0, 0.05);
+            border-color: rgba(255, 0, 0, 0.2);
+        }
+
+        .calendar-day.available {
+            border-color: rgba(76, 175, 80, 0.3);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .calendar-day.available:hover {
+            border-color: var(--success);
+            background: rgba(76, 175, 80, 0.15);
+            transform: scale(1.05);
+        }
+
+        .calendar-day.busy {
+            border-color: rgba(255, 152, 0, 0.3);
+            background: rgba(255, 152, 0, 0.05);
+        }
+
+        .calendar-day.busy:hover {
+            border-color: var(--warning);
+            background: rgba(255, 152, 0, 0.15);
+            transform: scale(1.05);
+        }
+
+        .calendar-day.full {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: rgba(244, 67, 54, 0.05);
+            border-color: rgba(244, 67, 54, 0.2);
+            pointer-events: none;
+        }
+
+        .calendar-day.selected {
+            border-color: var(--lime) !important;
+            background: var(--lime) !important;
+            color: var(--dark) !important;
+            transform: scale(1.05);
+        }
+
+        .calendar-day-number {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .calendar-day-status {
+            font-size: 0.65rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-day.available .calendar-day-status {
+            color: var(--success);
+        }
+
+        .calendar-day.busy .calendar-day-status {
+            color: var(--warning);
+        }
+
+        .calendar-day.full .calendar-day-status,
+        .calendar-day.closed .calendar-day-status {
+            color: var(--danger);
+        }
+
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.available {
+            background: var(--success);
+        }
+
+        .legend-dot.busy {
+            background: var(--warning);
+        }
+
+        .legend-dot.full {
+            background: var(--danger);
+        }
+
         /* Time Slots */
         .time-slots {
             display: grid;
@@ -817,28 +1018,27 @@
                     <div class="service-grid" id="serviceGrid">
                         <div class="service-option" data-service="Haircut">
                             <div class="service-name" data-en="Haircut" data-gr="Κούρεμα">Haircut</div>
-                            <div class="service-price">€15</div>
+                            <div class="service-price">€13</div>
                             <div class="service-duration" data-en="30 minutes" data-gr="30 λεπτά">30 minutes</div>
-                        </div>
-                        <div class="service-option" data-service="Beard Trim">
-                            <div class="service-name" data-en="Beard Trim" data-gr="Περιποίηση Γενιών">Beard Trim</div>
-                            <div class="service-price">€10</div>
-                            <div class="service-duration" data-en="20 minutes" data-gr="20 λεπτά">20 minutes</div>
+                            <div class="service-desc" data-en="Traditional barbering with modern precision" data-gr="Παραδοσιακό κούρεμα με σύγχρονη ακρίβεια" style="font-size: 0.8rem; color: #b0b0b0; margin-top: 5px;">Traditional barbering with modern precision</div>
                         </div>
                         <div class="service-option" data-service="Haircut + Beard">
                             <div class="service-name" data-en="Haircut + Beard" data-gr="Κούρεμα + Γένια">Haircut + Beard</div>
-                            <div class="service-price">€20</div>
+                            <div class="service-price">€15</div>
                             <div class="service-duration" data-en="45 minutes" data-gr="45 λεπτά">45 minutes</div>
+                            <div class="service-desc" data-en="Complete haircut and beard service" data-gr="Πλήρης υπηρεσία κουρέματος και γενιών" style="font-size: 0.8rem; color: #b0b0b0; margin-top: 5px;">Complete haircut and beard service</div>
                         </div>
-                        <div class="service-option" data-service="Hair Color">
-                            <div class="service-name" data-en="Hair Color" data-gr="Βαφή Μαλλιών">Hair Color</div>
-                            <div class="service-price">€40</div>
+                        <div class="service-option" data-service="Beard Trim & Shape">
+                            <div class="service-name" data-en="Beard Trim & Shape" data-gr="Περιποίηση & Σχηματισμός Γενιών">Beard Trim & Shape</div>
+                            <div class="service-price">€10</div>
+                            <div class="service-duration" data-en="20 minutes" data-gr="20 λεπτά">20 minutes</div>
+                            <div class="service-desc" data-en="Professional beard grooming with class" data-gr="Επαγγελματική περιποίηση γενιών με στυλ" style="font-size: 0.8rem; color: #b0b0b0; margin-top: 5px;">Professional beard grooming with class</div>
+                        </div>
+                        <div class="service-option" data-service="Haircut + Beard + Wash + Styling">
+                            <div class="service-name" data-en="Haircut + Beard + Wash + Styling" data-gr="Κούρεμα + Γένια + Πλύσιμο + Styling">Haircut + Beard + Wash + Styling</div>
+                            <div class="service-price">€20</div>
                             <div class="service-duration" data-en="60 minutes" data-gr="60 λεπτά">60 minutes</div>
-                        </div>
-                        <div class="service-option" data-service="Kids Haircut">
-                            <div class="service-name" data-en="Kids Haircut" data-gr="Παιδικό Κούρεμα">Kids Haircut</div>
-                            <div class="service-price">€12</div>
-                            <div class="service-duration" data-en="25 minutes" data-gr="25 λεπτά">25 minutes</div>
+                            <div class="service-desc" data-en="Complete grooming package - Most popular!" data-gr="Πλήρες πακέτο περιποίησης - Το πιο δημοφιλές!" style="font-size: 0.8rem; color: #c3e321; margin-top: 5px; font-weight: 600;">Complete grooming package - Most popular!</div>
                         </div>
                     </div>
 
@@ -857,14 +1057,56 @@
                 <!-- Step 3: Select Date & Time -->
                 <div class="form-step" data-step="3">
                     <h2 class="step-title" data-en="Select Date & Time" data-gr="Επιλέξτε Ημερομηνία & Ώρα">Select Date & Time</h2>
-                    <p class="step-description" data-en="Pick your preferred date and available time slot" data-gr="Διαλέξτε την ημερομηνία και τη διαθέσιμη ώρα">Pick your preferred date and available time slot</p>
+                    <p class="step-description" data-en="Pick your preferred date - green means available, yellow means busy, red means full" data-gr="Επιλέξτε ημερομηνία - πράσινο σημαίνει διαθέσιμο, κίτρινο σημαίνει πολυάσχολο, κόκκινο σημαίνει πλήρες">Pick your preferred date - green means available, yellow means busy, red means full</p>
 
-                    <div class="form-group">
-                        <label data-en="Date" data-gr="Ημερομηνία">Date <span class="required">*</span></label>
-                        <input type="date" id="dateInput" required>
+                    <!-- Custom Calendar -->
+                    <div class="custom-calendar">
+                        <div class="calendar-header">
+                            <h3 id="calendarMonth">January 2026</h3>
+                            <div class="calendar-nav">
+                                <button type="button" id="prevMonth" onclick="changeMonth(-1)">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button type="button" id="nextMonth" onclick="changeMonth(1)">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-weekdays">
+                            <div class="calendar-weekday" data-en="Sun" data-gr="Κυρ">Sun</div>
+                            <div class="calendar-weekday" data-en="Mon" data-gr="Δευ">Mon</div>
+                            <div class="calendar-weekday" data-en="Tue" data-gr="Τρι">Tue</div>
+                            <div class="calendar-weekday" data-en="Wed" data-gr="Τετ">Wed</div>
+                            <div class="calendar-weekday" data-en="Thu" data-gr="Πεμ">Thu</div>
+                            <div class="calendar-weekday" data-en="Fri" data-gr="Παρ">Fri</div>
+                            <div class="calendar-weekday" data-en="Sat" data-gr="Σαβ">Sat</div>
+                        </div>
+
+                        <div id="loadingCalendar" class="loading-container" style="display: none;">
+                            <div class="spinner"></div>
+                            <p class="loading-text" data-en="Loading availability..." data-gr="Φόρτωση διαθεσιμότητας...">Loading availability...</p>
+                        </div>
+
+                        <div class="calendar-days" id="calendarDays"></div>
+
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <div class="legend-dot available"></div>
+                                <span data-en="Available" data-gr="Διαθέσιμο">Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot busy"></div>
+                                <span data-en="Busy" data-gr="Πολυάσχολο">Busy</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot full"></div>
+                                <span data-en="Full/Closed" data-gr="Πλήρες/Κλειστά">Full/Closed</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="timeSlotsSection" style="display: none;">
                         <label data-en="Available Time Slots" data-gr="Διαθέσιμες Ώρες">Available Time Slots <span class="required">*</span></label>
                         <div id="loadingSlots" class="loading-container" style="display: none;">
                             <div class="spinner"></div>
@@ -949,8 +1191,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=11"></script>
-    <script src="js/booking-system.js?v=11"></script>
+    <script src="js/firebase-config.js?v=12"></script>
+    <script src="js/booking-system.js?v=12"></script>
 
     <script>
         let currentStep = 1;
@@ -959,15 +1201,17 @@
         let selectedDate = null;
         let selectedTime = null;
         let currentLanguage = 'en';
+        let currentCalendarMonth = new Date();
+        let monthAvailability = {};
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Set minimum date to today
-            document.getElementById('dateInput').min = new Date().toISOString().split('T')[0];
-
             // Load saved language preference
             const savedLang = localStorage.getItem('language') || 'en';
             switchLanguage(savedLang);
+
+            // Initialize calendar
+            renderCalendar();
         });
 
         // Language Switching
@@ -1009,13 +1253,183 @@
             });
         });
 
-        // Date change listener
-        document.getElementById('dateInput').addEventListener('change', async function() {
-            selectedDate = this.value;
-            if (selectedBarber && selectedDate) {
-                await loadTimeSlots();
+        // Calendar Functions
+        async function renderCalendar() {
+            const year = currentCalendarMonth.getFullYear();
+            const month = currentCalendarMonth.getMonth();
+
+            // Update calendar header
+            const monthNames = currentLanguage === 'en'
+                ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                : ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
+
+            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
+
+            // Disable prev button if current or past month
+            const today = new Date();
+            const isPastMonth = year < today.getFullYear() || (year === today.getFullYear() && month < today.getMonth());
+            document.getElementById('prevMonth').disabled = isPastMonth;
+
+            // Show loading
+            document.getElementById('loadingCalendar').style.display = 'block';
+            document.getElementById('calendarDays').innerHTML = '';
+
+            // Calculate availability for the month (if barber is selected)
+            if (selectedBarber) {
+                await calculateMonthAvailability(year, month);
             }
-        });
+
+            // Hide loading
+            document.getElementById('loadingCalendar').style.display = 'none';
+
+            // Get first day of month and total days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const container = document.getElementById('calendarDays');
+            container.innerHTML = '';
+
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                container.appendChild(emptyDay);
+            }
+
+            // Add days of the month
+            const todayStr = today.toISOString().split('T')[0];
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateObj = new Date(year, month, day);
+                const dateStr = dateObj.toISOString().split('T')[0];
+                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+
+                // Check if past
+                if (dateStr < todayStr) {
+                    dayDiv.classList.add('past');
+                }
+
+                // Check if selected
+                if (selectedDate === dateStr) {
+                    dayDiv.classList.add('selected');
+                }
+
+                // Add status if barber selected
+                if (selectedBarber && !dayDiv.classList.contains('past')) {
+                    const availability = monthAvailability[dateStr];
+
+                    if (availability) {
+                        if (availability.status === 'closed') {
+                            dayDiv.classList.add('closed');
+                        } else if (availability.status === 'available') {
+                            dayDiv.classList.add('available');
+                        } else if (availability.status === 'busy') {
+                            dayDiv.classList.add('busy');
+                        } else if (availability.status === 'full') {
+                            dayDiv.classList.add('full');
+                        }
+
+                        // Add status text
+                        const statusText = document.createElement('div');
+                        statusText.className = 'calendar-day-status';
+                        statusText.textContent = currentLanguage === 'en'
+                            ? availability.status.charAt(0).toUpperCase() + availability.status.slice(1)
+                            : getGreekStatus(availability.status);
+
+                        dayDiv.innerHTML = `
+                            <div class="calendar-day-number">${day}</div>
+                        `;
+                        dayDiv.appendChild(statusText);
+
+                        // Add click handler if available or busy
+                        if (availability.status === 'available' || availability.status === 'busy') {
+                            dayDiv.addEventListener('click', function() {
+                                selectDate(dateStr);
+                            });
+                        }
+                    }
+                } else {
+                    dayDiv.innerHTML = `<div class="calendar-day-number">${day}</div>`;
+                }
+
+                container.appendChild(dayDiv);
+            }
+        }
+
+        function getGreekStatus(status) {
+            const translations = {
+                'available': 'Διαθ.',
+                'busy': 'Απασχ.',
+                'full': 'Πλήρες',
+                'closed': 'Κλειστά'
+            };
+            return translations[status] || status;
+        }
+
+        async function calculateMonthAvailability(year, month) {
+            monthAvailability = {};
+
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date().toISOString().split('T')[0];
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateObj = new Date(year, month, day);
+                const dateStr = dateObj.toISOString().split('T')[0];
+
+                // Skip past dates
+                if (dateStr < today) continue;
+
+                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+                const barber = BARBERS[selectedBarber];
+                const daySchedule = barber.workingHours[dayName];
+
+                // Check if closed
+                if (!daySchedule || daySchedule.closed) {
+                    monthAvailability[dateStr] = { status: 'closed', available: 0 };
+                    continue;
+                }
+
+                // Get available slots
+                try {
+                    const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, dateObj);
+                    const totalSlots = getTimeSlotsForBarber(selectedBarber).length;
+
+                    if (slots.length === 0) {
+                        monthAvailability[dateStr] = { status: 'full', available: 0 };
+                    } else if (slots.length <= totalSlots * 0.3) {
+                        // 30% or less available = busy
+                        monthAvailability[dateStr] = { status: 'busy', available: slots.length };
+                    } else {
+                        monthAvailability[dateStr] = { status: 'available', available: slots.length };
+                    }
+                } catch (error) {
+                    console.error('Error calculating availability:', error);
+                    monthAvailability[dateStr] = { status: 'available', available: 0 };
+                }
+            }
+        }
+
+        function changeMonth(direction) {
+            currentCalendarMonth.setMonth(currentCalendarMonth.getMonth() + direction);
+            renderCalendar();
+        }
+
+        async function selectDate(dateStr) {
+            selectedDate = dateStr;
+            selectedTime = null;
+            renderCalendar();
+
+            // Show and load time slots
+            document.getElementById('timeSlotsSection').style.display = 'block';
+            await loadTimeSlots();
+
+            // Scroll to time slots
+            document.getElementById('timeSlotsSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
 
         // Load available time slots
         async function loadTimeSlots() {
@@ -1102,6 +1516,14 @@
                     step.classList.remove('active', 'completed');
                 }
             });
+
+            // If navigating to step 3 and barber is selected, render calendar
+            if (currentStep === 3 && selectedBarber) {
+                setTimeout(() => {
+                    currentCalendarMonth = new Date();
+                    renderCalendar();
+                }, 100);
+            }
 
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
