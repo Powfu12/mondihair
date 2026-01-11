@@ -112,24 +112,24 @@
         .container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px 16px;
+            padding: 16px 12px;
         }
 
         /* Title */
         .page-title {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .page-title h1 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .page-title p {
             color: var(--text-gray);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         /* Progress Dots */
@@ -137,7 +137,7 @@
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .progress-dot {
@@ -158,15 +158,15 @@
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         /* Barber Grid */
@@ -269,24 +269,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .calendar-month {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
         }
 
         .calendar-nav {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .calendar-nav-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
             color: var(--text-light);
             display: flex;
@@ -294,6 +294,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 12px;
         }
 
         .calendar-nav-btn:disabled {
@@ -308,37 +309,38 @@
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 8px;
+            gap: 3px;
+            margin-bottom: 6px;
         }
 
         .weekday {
             text-align: center;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 600;
             color: var(--text-gray);
-            padding: 8px 0;
+            padding: 4px 0;
         }
 
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
+            gap: 3px;
         }
 
         .calendar-day {
             aspect-ratio: 1;
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
             background: rgba(255, 255, 255, 0.02);
-            border: 2px solid transparent;
+            border: 1.5px solid transparent;
+            min-height: 42px;
         }
 
         .calendar-day.empty {
@@ -384,15 +386,16 @@
         }
 
         .day-number {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         .day-status {
-            font-size: 9px;
+            font-size: 8px;
             margin-top: 2px;
             text-transform: uppercase;
             font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         /* Time Slots */
@@ -584,13 +587,13 @@
 
         /* Alert */
         .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            font-size: 14px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .alert-warning {
@@ -609,22 +612,22 @@
         .legend {
             display: flex;
             justify-content: center;
-            gap: 16px;
+            gap: 12px;
             flex-wrap: wrap;
-            margin-top: 16px;
-            font-size: 12px;
+            margin-top: 12px;
+            font-size: 10px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             color: var(--text-gray);
         }
 
         .legend-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
         }
 
@@ -886,8 +889,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="js/firebase-config.js?v=19"></script>
-    <script src="js/booking-system.js?v=19"></script>
+    <script src="js/firebase-config.js?v=20"></script>
+    <script src="js/booking-system.js?v=20"></script>
 
     <script>
         let currentStep = 1;
@@ -897,6 +900,7 @@
         let selectedTime = null;
         let currentMonth = new Date();
         let availability = {};
+        let slotsCache = {}; // Cache for time slots
 
         // Language (simplified for now)
         function switchLang(lang) {
@@ -1072,16 +1076,20 @@
                     const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
                     const totalSlots = getTimeSlotsForBarber(selectedBarber).length;
 
+                    // Cache the actual slots for faster loading
+                    const cacheKey = `${selectedBarber}_${dateStr}`;
+                    slotsCache[cacheKey] = slots;
+
                     if (slots.length === 0) {
-                        availability[dateStr] = { status: 'full', slots: 0 };
+                        availability[dateStr] = { status: 'full', slots: 0, slotList: [] };
                     } else if (slots.length <= totalSlots * 0.3) {
-                        availability[dateStr] = { status: 'busy', slots: slots.length };
+                        availability[dateStr] = { status: 'busy', slots: slots.length, slotList: slots };
                     } else {
-                        availability[dateStr] = { status: 'available', slots: slots.length };
+                        availability[dateStr] = { status: 'available', slots: slots.length, slotList: slots };
                     }
                 } catch (err) {
                     console.error('Error loading availability:', err);
-                    availability[dateStr] = { status: 'available', slots: 99 };
+                    availability[dateStr] = { status: 'available', slots: 99, slotList: [] };
                 }
             }
         }
@@ -1101,25 +1109,53 @@
             document.getElementById('loadingSlots').classList.remove('hidden');
             document.getElementById('timeSlots').innerHTML = '';
 
-            const date = new Date(selectedDate);
-            const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
+            try {
+                // Create date object properly with UTC to avoid timezone issues
+                const [year, month, day] = selectedDate.split('-').map(Number);
+                const date = new Date(year, month - 1, day);
 
-            document.getElementById('loadingSlots').classList.add('hidden');
+                console.log('Selected date:', selectedDate);
+                console.log('Date object:', date);
+                console.log('Day of week:', date.getDay());
+                console.log('Day name:', ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][date.getDay()]);
 
-            const container = document.getElementById('timeSlots');
-            slots.forEach(slot => {
-                const div = document.createElement('div');
-                div.className = 'time-slot';
-                div.textContent = slot;
-                div.onclick = () => {
-                    selectedTime = slot;
-                    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-                    div.classList.add('selected');
-                };
-                container.appendChild(div);
-            });
+                // Use cache for faster loading
+                const cacheKey = `${selectedBarber}_${selectedDate}`;
+                let slots = slotsCache[cacheKey];
 
-            document.getElementById('timeSlotsCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                if (!slots) {
+                    slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
+                    slotsCache[cacheKey] = slots;
+                }
+
+                console.log('Available slots:', slots);
+
+                document.getElementById('loadingSlots').classList.add('hidden');
+
+                const container = document.getElementById('timeSlots');
+
+                if (slots.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;color:var(--text-gray);padding:20px;">No time slots available for this date</div>';
+                } else {
+                    slots.forEach(slot => {
+                        const div = document.createElement('div');
+                        div.className = 'time-slot';
+                        div.textContent = slot;
+                        div.onclick = () => {
+                            selectedTime = slot;
+                            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                            div.classList.add('selected');
+                        };
+                        container.appendChild(div);
+                    });
+                }
+
+                document.getElementById('timeSlotsCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } catch (error) {
+                console.error('Error loading time slots:', error);
+                document.getElementById('loadingSlots').classList.add('hidden');
+                document.getElementById('timeSlots').innerHTML = '<div style="text-align:center;color:var(--danger);padding:20px;">Error loading time slots. Please try again.</div>';
+            }
         }
 
         async function submitBooking() {
