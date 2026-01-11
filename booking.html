@@ -1191,8 +1191,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=12"></script>
-    <script src="js/booking-system.js?v=12"></script>
+    <script src="js/firebase-config.js?v=13"></script>
+    <script src="js/booking-system.js?v=13"></script>
 
     <script>
         let currentStep = 1;
@@ -1271,16 +1271,26 @@
             document.getElementById('prevMonth').disabled = isPastMonth;
 
             // Show loading
-            document.getElementById('loadingCalendar').style.display = 'block';
+            const loadingEl = document.getElementById('loadingCalendar');
+            loadingEl.style.display = 'block';
             document.getElementById('calendarDays').innerHTML = '';
 
-            // Calculate availability for the month (if barber is selected)
-            if (selectedBarber) {
-                await calculateMonthAvailability(year, month);
+            try {
+                // Calculate availability for the month (if barber is selected)
+                if (selectedBarber) {
+                    await calculateMonthAvailability(year, month);
+                }
+            } catch (error) {
+                console.error('Error rendering calendar:', error);
+                // Show error message
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'text-align: center; padding: 20px; color: #f44336;';
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 10px;"></i><p>Error loading calendar. Please refresh the page.</p>';
+                document.getElementById('calendarDays').appendChild(errorDiv);
+            } finally {
+                // Always hide loading
+                loadingEl.style.display = 'none';
             }
-
-            // Hide loading
-            document.getElementById('loadingCalendar').style.display = 'none';
 
             // Get first day of month and total days
             const firstDay = new Date(year, month, 1).getDay();
@@ -1375,6 +1385,54 @@
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const today = new Date().toISOString().split('T')[0];
 
+            // Test if we have permissions by trying one day first
+            let hasPermissions = true;
+            try {
+                const testDate = new Date(year, month, new Date().getDate());
+                await bookingSystem.getAvailableTimeSlots(selectedBarber, testDate);
+            } catch (error) {
+                if (error.message && error.message.includes('permission')) {
+                    hasPermissions = false;
+                    console.warn('Firestore permissions not set up yet. Calendar will show all days as available.');
+
+                    // Show warning message to user
+                    const warningDiv = document.createElement('div');
+                    warningDiv.style.cssText = 'background: rgba(255,152,0,0.1); border: 1px solid rgba(255,152,0,0.3); border-radius: 8px; padding: 12px; margin-bottom: 15px; color: #ff9800; font-size: 0.9rem; text-align: center;';
+                    warningDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Calendar working in preview mode. Please deploy Firestore rules to see real availability.';
+
+                    const calendarContainer = document.querySelector('.custom-calendar');
+                    if (!document.querySelector('.permissions-warning')) {
+                        warningDiv.className = 'permissions-warning';
+                        calendarContainer.insertBefore(warningDiv, calendarContainer.firstChild);
+                    }
+                }
+            }
+
+            // If no permissions, show all open days as available
+            if (!hasPermissions) {
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateObj = new Date(year, month, day);
+                    const dateStr = dateObj.toISOString().split('T')[0];
+
+                    // Skip past dates
+                    if (dateStr < today) continue;
+
+                    const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+                    const barber = BARBERS[selectedBarber];
+                    const daySchedule = barber.workingHours[dayName];
+
+                    // Check if closed
+                    if (!daySchedule || daySchedule.closed) {
+                        monthAvailability[dateStr] = { status: 'closed', available: 0 };
+                    } else {
+                        // Show as available (we can't check real availability)
+                        monthAvailability[dateStr] = { status: 'available', available: 99 };
+                    }
+                }
+                return;
+            }
+
+            // We have permissions - calculate real availability
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateObj = new Date(year, month, day);
                 const dateStr = dateObj.toISOString().split('T')[0];
@@ -1407,7 +1465,8 @@
                     }
                 } catch (error) {
                     console.error('Error calculating availability:', error);
-                    monthAvailability[dateStr] = { status: 'available', available: 0 };
+                    // On error, assume available (let user try)
+                    monthAvailability[dateStr] = { status: 'available', available: 99 };
                 }
             }
         }
