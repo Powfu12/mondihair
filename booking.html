@@ -1191,8 +1191,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=14"></script>
-    <script src="js/booking-system.js?v=14"></script>
+    <script src="js/firebase-config.js?v=15"></script>
+    <script src="js/booking-system.js?v=15"></script>
 
     <script>
         let currentStep = 1;
@@ -1420,6 +1420,12 @@
                             monthAvailability[dateStr] = { status: 'available', available: slots.length };
                         }
                         permissionsDetected = true; // Success! We have permissions
+
+                        // Remove warning if it exists (permissions are working now!)
+                        const existingWarning = document.querySelector('.permissions-warning');
+                        if (existingWarning) {
+                            existingWarning.remove();
+                        }
                     } catch (error) {
                         // Permissions error - switch to preview mode
                         console.warn('Firestore permissions not set. Using preview mode.');
