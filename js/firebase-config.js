@@ -3,12 +3,13 @@
 // Get these from: Firebase Console → Project Settings → Your Apps → Web App
 
 const firebaseConfig = {
-  apiKey: "AIzaSyACwhlu2BLBgS_OVDbifCHcWuoA6VTRM0E",
-  authDomain: "mondi-hairstyle.firebaseapp.com",
-  projectId: "mondi-hairstyle",
-  storageBucket: "mondi-hairstyle.firebasestorage.app",
-  messagingSenderId: "1022691382356",
-  appId: "1:1022691382356:web:fd5480391f79a8685049c1"
+  apiKey: "AIzaSyBH_OsOcoOmpU2e2X_2oJC1S7aaW_BOIh8",
+  authDomain: "mondi-2aeae.firebaseapp.com",
+  projectId: "mondi-2aeae",
+  storageBucket: "mondi-2aeae.firebasestorage.app",
+  messagingSenderId: "991484333412",
+  appId: "1:991484333412:web:5d8147f3b8f18f34fdbe71",
+  measurementId: "G-5R79ZF6XN8"
 };
 
 // Initialize Firebase

@@ -12,7 +12,9 @@ class BookingSystem {
   async getAvailableTimeSlots(barberId, date) {
     try {
       const dateStr = date.toISOString().split('T')[0];
-      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+      // Fix timezone issue: use getDay() instead of toLocaleDateString
+      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const dayName = dayNames[date.getDay()];
 
       console.log('Getting slots for:', barberId, dateStr, dayName);
 
@@ -79,6 +81,11 @@ class BookingSystem {
       return availableSlots;
     } catch (error) {
       console.error('Error getting available slots:', error);
+      // Re-throw permissions errors so calendar can detect them
+      if (error.code === 'permission-denied' ||
+          (error.message && error.message.toLowerCase().includes('permission'))) {
+        throw error;
+      }
       return [];
     }
   }
