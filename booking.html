@@ -642,6 +642,329 @@
         .legend-dot.full {
             background: var(--danger);
         }
+
+        /* ===========================
+           MOBILE RESPONSIVE DESIGN
+        =========================== */
+
+        /* Small phones (320px - 374px) */
+        @media (max-width: 374px) {
+            .container {
+                padding: 12px 8px;
+            }
+
+            .page-title h1 {
+                font-size: 20px;
+            }
+
+            .page-title p {
+                font-size: 12px;
+            }
+
+            .card {
+                padding: 12px;
+            }
+
+            .card-title {
+                font-size: 15px;
+            }
+
+            .barber-item {
+                padding: 12px;
+                gap: 10px;
+            }
+
+            .barber-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .barber-info h3 {
+                font-size: 14px;
+            }
+
+            .barber-info p {
+                font-size: 11px;
+            }
+
+            .service-item {
+                padding: 12px;
+            }
+
+            .service-name {
+                font-size: 14px;
+            }
+
+            .service-price {
+                font-size: 16px;
+            }
+
+            .service-desc {
+                font-size: 12px;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+
+            .time-slot {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .calendar-day {
+                min-height: 38px;
+                font-size: 12px;
+            }
+
+            .day-number {
+                font-size: 12px;
+            }
+
+            .day-status {
+                font-size: 7px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .input-field {
+                font-size: 16px; /* Prevent iOS zoom */
+                padding: 10px 14px;
+            }
+
+            .summary-row {
+                flex-direction: column;
+                gap: 4px;
+                padding: 10px 0;
+            }
+
+            .summary-label,
+            .summary-value {
+                font-size: 13px;
+            }
+        }
+
+        /* Standard phones (375px - 479px) */
+        @media (min-width: 375px) and (max-width: 479px) {
+            .container {
+                padding: 14px 10px;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .calendar-day {
+                min-height: 40px;
+            }
+        }
+
+        /* Large phones / Small tablets (480px - 599px) */
+        @media (min-width: 480px) and (max-width: 599px) {
+            .container {
+                padding: 16px 12px;
+                max-width: 500px;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .barber-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Tablets and up (600px+) */
+        @media (min-width: 600px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            .page-title h1 {
+                font-size: 28px;
+            }
+
+            .page-title p {
+                font-size: 15px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            .card-title {
+                font-size: 18px;
+            }
+
+            .barber-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .btn-group {
+                gap: 16px;
+            }
+
+            .calendar-day {
+                min-height: 48px;
+                font-size: 14px;
+            }
+        }
+
+        /* Large tablets / Small desktops (768px+) */
+        @media (min-width: 768px) {
+            .time-slots {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .barber-item {
+                padding: 20px;
+            }
+
+            .service-item {
+                padding: 20px;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .container {
+                padding: 12px;
+            }
+
+            .page-title {
+                margin-bottom: 12px;
+            }
+
+            .card {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .success-screen {
+                padding: 20px;
+            }
+
+            .success-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+                margin-bottom: 16px;
+            }
+
+            .success-title {
+                font-size: 20px;
+            }
+        }
+
+        /* Touch-specific improvements */
+        @media (hover: none) and (pointer: coarse) {
+            /* Larger touch targets for mobile */
+            .barber-item,
+            .service-item,
+            .calendar-day:not(.empty):not(.past):not(.full):not(.closed),
+            .time-slot,
+            .btn {
+                min-height: 44px; /* iOS recommended touch target */
+            }
+
+            .calendar-nav-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            /* Remove hover effects on touch devices */
+            .back-btn:hover {
+                color: var(--text-gray);
+            }
+
+            /* Better active states for touch */
+            .barber-item:active {
+                transform: scale(0.97);
+                opacity: 0.8;
+            }
+
+            .service-item:active {
+                transform: scale(0.97);
+                opacity: 0.8;
+            }
+
+            .calendar-day:not(.empty):not(.past):not(.full):not(.closed):active {
+                transform: scale(0.93);
+            }
+
+            .time-slot:active {
+                transform: scale(0.93);
+            }
+
+            .btn:active {
+                transform: scale(0.96);
+            }
+        }
+
+        /* High DPI screens (Retina) */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .calendar-day,
+            .time-slot,
+            .barber-item,
+            .service-item {
+                border-width: 1.5px;
+            }
+        }
+
+        /* Dark mode support (in case user prefers dark) */
+        @media (prefers-color-scheme: dark) {
+            /* Already dark by default, but ensuring consistency */
+            body {
+                background: var(--darker);
+            }
+        }
+
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .spinner {
+                animation: none;
+                border-top-color: var(--lime);
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .header,
+            .progress,
+            .btn-group {
+                display: none;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            body::before {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -889,8 +1212,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="js/firebase-config.js?v=28"></script>
-    <script src="js/booking-system.js?v=28"></script>
+    <script src="js/firebase-config.js?v=29"></script>
+    <script src="js/booking-system.js?v=29"></script>
 
     <script>
         let currentStep = 1;
