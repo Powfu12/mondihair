@@ -1138,7 +1138,8 @@
         }
 
         .add-booking-btn,
-        .edit-schedule-btn {
+        .edit-schedule-btn,
+        .manage-availability-btn {
             padding: 12px 30px;
             background: var(--lime);
             color: var(--darker);
@@ -1155,7 +1156,8 @@
         }
 
         .add-booking-btn:hover,
-        .edit-schedule-btn:hover {
+        .edit-schedule-btn:hover,
+        .manage-availability-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(195, 227, 33, 0.4);
         }
@@ -1167,6 +1169,15 @@
 
         .edit-schedule-btn:hover {
             box-shadow: 0 10px 30px rgba(33, 150, 243, 0.4);
+        }
+
+        .manage-availability-btn {
+            background: var(--warning);
+            color: white;
+        }
+
+        .manage-availability-btn:hover {
+            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.4);
         }
 
         /* =========================
@@ -1408,6 +1419,131 @@
             pointer-events: none;
         }
 
+        /* Custom Closures Management */
+        .closures-section {
+            margin-bottom: 25px;
+        }
+
+        .section-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            margin-bottom: 15px;
+        }
+
+        .closure-form {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .closure-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .closure-type-select {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .closure-type-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .closure-type-btn.active {
+            background: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+
+        .time-range-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .time-range-inputs.hidden {
+            display: none;
+        }
+
+        .closure-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .closure-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .closure-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .closure-info {
+            flex: 1;
+        }
+
+        .closure-date {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 5px;
+        }
+
+        .closure-time {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .closure-label {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .delete-closure-btn {
+            padding: 8px 16px;
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: var(--danger);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .delete-closure-btn:hover {
+            background: rgba(244, 67, 54, 0.2);
+        }
+
+        .empty-closures {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-gray);
+            font-style: italic;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .dashboard-header {
@@ -1479,6 +1615,43 @@
 
             .time-slot-row {
                 grid-template-columns: 60px 1fr;
+            }
+
+            .closure-form-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .closure-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .delete-closure-btn {
+                width: 100%;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .add-booking-btn,
+            .edit-schedule-btn,
+            .manage-availability-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .modal-content {
+                max-width: 95%;
+                margin: 20px auto;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .schedule-times {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1608,6 +1781,10 @@
                 <button class="edit-schedule-btn" onclick="openEditScheduleModal()">
                     <i class="fas fa-calendar-edit"></i>
                     <span>Επεξεργασία Ωραρίου</span>
+                </button>
+                <button class="manage-availability-btn" onclick="openManageAvailabilityModal()">
+                    <i class="fas fa-calendar-times"></i>
+                    <span>Διαχείριση Διαθεσιμότητας</span>
                 </button>
             </div>
 
@@ -1741,14 +1918,81 @@
         </div>
     </div>
 
+    <!-- =========================
+         MANAGE AVAILABILITY MODAL
+    ========================= -->
+    <div id="manageAvailabilityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Διαχείριση Διαθεσιμότητας</h2>
+                <button class="modal-close" onclick="closeManageAvailabilityModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="closures-section">
+                    <p class="section-subtitle">Ορίστε ημέρες ή ώρες που δεν θα είστε διαθέσιμοι για ραντεβού</p>
+
+                    <!-- Add Closure Form -->
+                    <div class="closure-form">
+                        <div class="closure-type-select">
+                            <button type="button" class="closure-type-btn active" id="fullDayBtn" onclick="selectClosureType('fullDay')">
+                                <i class="fas fa-calendar-day"></i> Ολόκληρη Ημέρα
+                            </button>
+                            <button type="button" class="closure-type-btn" id="timeRangeBtn" onclick="selectClosureType('timeRange')">
+                                <i class="fas fa-clock"></i> Συγκεκριμένες Ώρες
+                            </button>
+                        </div>
+
+                        <div class="closure-form-row">
+                            <div class="form-group">
+                                <label>Ημερομηνία *</label>
+                                <input type="date" id="closureDate" required>
+                            </div>
+
+                            <div class="time-range-inputs hidden" id="timeRangeInputs">
+                                <div class="form-group">
+                                    <label>Από *</label>
+                                    <input type="time" id="closureStartTime">
+                                </div>
+                                <div class="form-group">
+                                    <label>Έως *</label>
+                                    <input type="time" id="closureEndTime">
+                                </div>
+                            </div>
+
+                            <button type="button" class="modal-btn modal-btn-primary" onclick="addClosure()" style="height: fit-content; padding: 12px 24px;">
+                                <i class="fas fa-plus"></i> Προσθήκη
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Closures List -->
+                    <div>
+                        <h3 style="margin-bottom: 15px; font-size: 1.1rem;">Μη Διαθέσιμες Περίοδοι</h3>
+                        <div class="closure-list" id="closuresList">
+                            <div class="empty-closures">
+                                <i class="fas fa-calendar-check" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                                <p>Δεν υπάρχουν προγραμματισμένες μη διαθέσιμες περίοδοι</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeManageAvailabilityModal()">Κλείσιμο</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=10"></script>
-    <script src="js/booking-system.js?v=10"></script>
+    <script src="js/firebase-config.js?v=27"></script>
+    <script src="js/booking-system.js?v=27"></script>
 
     <script>
         let currentUser = null;
@@ -2101,6 +2345,186 @@
                 }
             }
         });
+
+        // =========================
+        // AVAILABILITY MANAGEMENT
+        // =========================
+        let customClosures = [];
+        let currentClosureType = 'fullDay';
+
+        // Open Manage Availability Modal
+        async function openManageAvailabilityModal() {
+            document.getElementById('manageAvailabilityModal').classList.add('active');
+            await loadCustomClosures();
+        }
+
+        // Close Manage Availability Modal
+        function closeManageAvailabilityModal() {
+            document.getElementById('manageAvailabilityModal').classList.remove('active');
+            // Reset form
+            document.getElementById('closureDate').value = '';
+            document.getElementById('closureStartTime').value = '';
+            document.getElementById('closureEndTime').value = '';
+        }
+
+        // Select closure type (fullDay or timeRange)
+        function selectClosureType(type) {
+            currentClosureType = type;
+
+            // Update button states
+            document.getElementById('fullDayBtn').classList.toggle('active', type === 'fullDay');
+            document.getElementById('timeRangeBtn').classList.toggle('active', type === 'timeRange');
+
+            // Show/hide time inputs
+            const timeInputs = document.getElementById('timeRangeInputs');
+            if (type === 'timeRange') {
+                timeInputs.classList.remove('hidden');
+            } else {
+                timeInputs.classList.add('hidden');
+            }
+        }
+
+        // Load custom closures from Firestore
+        async function loadCustomClosures() {
+            try {
+                const closuresSnapshot = await db.collection('customClosures')
+                    .where('barberId', '==', currentBarberId)
+                    .where('date', '>=', new Date().toISOString().split('T')[0])
+                    .orderBy('date')
+                    .orderBy('startTime')
+                    .get();
+
+                customClosures = closuresSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                renderClosuresList();
+            } catch (error) {
+                console.error('Error loading closures:', error);
+                customClosures = [];
+                renderClosuresList();
+            }
+        }
+
+        // Render closures list
+        function renderClosuresList() {
+            const container = document.getElementById('closuresList');
+
+            if (customClosures.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-closures">
+                        <i class="fas fa-calendar-check" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                        <p>Δεν υπάρχουν προγραμματισμένες μη διαθέσιμες περίοδοι</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            customClosures.forEach(closure => {
+                const date = new Date(closure.date + 'T00:00:00');
+                const dateStr = date.toLocaleDateString('el-GR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                let timeInfo = '';
+                if (closure.type === 'fullDay') {
+                    timeInfo = '<span class="closure-label">Ολόκληρη η ημέρα</span>';
+                } else {
+                    timeInfo = `<span class="closure-time">${closure.startTime} - ${closure.endTime}</span>`;
+                }
+
+                html += `
+                    <div class="closure-item">
+                        <div class="closure-info">
+                            <div class="closure-date">${dateStr}</div>
+                            ${timeInfo}
+                        </div>
+                        <button class="delete-closure-btn" onclick="deleteClosure('${closure.id}')">
+                            <i class="fas fa-trash"></i> Διαγραφή
+                        </button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Add new closure
+        async function addClosure() {
+            const date = document.getElementById('closureDate').value;
+
+            if (!date) {
+                alert('Παρακαλώ επιλέξτε ημερομηνία');
+                return;
+            }
+
+            let closureData = {
+                barberId: currentBarberId,
+                date: date,
+                type: currentClosureType,
+                createdAt: new Date().toISOString()
+            };
+
+            if (currentClosureType === 'timeRange') {
+                const startTime = document.getElementById('closureStartTime').value;
+                const endTime = document.getElementById('closureEndTime').value;
+
+                if (!startTime || !endTime) {
+                    alert('Παρακαλώ επιλέξτε ώρες έναρξης και λήξης');
+                    return;
+                }
+
+                if (startTime >= endTime) {
+                    alert('Η ώρα έναρξης πρέπει να είναι πριν την ώρα λήξης');
+                    return;
+                }
+
+                closureData.startTime = startTime;
+                closureData.endTime = endTime;
+            }
+
+            try {
+                await db.collection('customClosures').add(closureData);
+
+                // Clear form
+                document.getElementById('closureDate').value = '';
+                document.getElementById('closureStartTime').value = '';
+                document.getElementById('closureEndTime').value = '';
+
+                // Reload closures list
+                await loadCustomClosures();
+
+                // Refresh calendar to show updated availability
+                renderCalendar();
+
+                alert('Η μη διαθέσιμη περίοδος προστέθηκε επιτυχώς!');
+            } catch (error) {
+                console.error('Error adding closure:', error);
+                alert('Σφάλμα κατά την προσθήκη. Παρακαλώ δοκιμάστε ξανά.');
+            }
+        }
+
+        // Delete closure
+        async function deleteClosure(closureId) {
+            if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτήν την περίοδο;')) {
+                return;
+            }
+
+            try {
+                await db.collection('customClosures').doc(closureId).delete();
+                await loadCustomClosures();
+                renderCalendar();
+                alert('Η περίοδος διαγράφηκε επιτυχώς!');
+            } catch (error) {
+                console.error('Error deleting closure:', error);
+                alert('Σφάλμα κατά τη διαγραφή. Παρακαλώ δοκιμάστε ξανά.');
+            }
+        }
 
         // =========================
         // CALENDAR VIEW FUNCTIONS

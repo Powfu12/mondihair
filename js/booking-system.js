@@ -41,6 +41,22 @@ class BookingSystem {
         return [];
       }
 
+      // Check for custom closures (full day or time range)
+      const closuresSnapshot = await db.collection('customClosures')
+        .where('barberId', '==', barberId)
+        .where('date', '==', dateStr)
+        .get();
+
+      const customClosures = closuresSnapshot.docs.map(doc => doc.data());
+      console.log('Custom closures for this date:', customClosures);
+
+      // If there's a full day closure, return empty
+      const hasFullDayClosure = customClosures.some(c => c.type === 'fullDay');
+      if (hasFullDayClosure) {
+        console.log('Barber has full day closure on', dateStr);
+        return [];
+      }
+
       // Get all bookings for this barber on this date
       const bookingsSnapshot = await db.collection('bookings')
         .where('barberId', '==', barberId)
@@ -80,11 +96,30 @@ class BookingSystem {
       console.log('Barber slot interval:', barber.slotInterval);
       console.log('Day schedule ranges:', JSON.stringify(daySchedule.ranges));
 
+      // Check if slot is within a custom closure time range
+      const isSlotInClosureRange = (slot) => {
+        const timeRangeClosures = customClosures.filter(c => c.type === 'timeRange');
+        return timeRangeClosures.some(closure => {
+          const slotTime = slot.split(':');
+          const slotHour = parseInt(slotTime[0]);
+          const slotMinute = parseInt(slotTime[1]);
+          const slotMinutes = slotHour * 60 + slotMinute;
+
+          const startTime = closure.startTime.split(':');
+          const endTime = closure.endTime.split(':');
+          const startMinutes = parseInt(startTime[0]) * 60 + parseInt(startTime[1]);
+          const endMinutes = parseInt(endTime[0]) * 60 + parseInt(endTime[1]);
+
+          return slotMinutes >= startMinutes && slotMinutes < endMinutes;
+        });
+      };
+
       // Filter out booked slots and check against time ranges
       const availableSlots = timeSlots.filter(slot => {
         const inWorkingHours = isSlotInWorkingHours(slot, daySchedule.ranges);
         const isBooked = bookedSlots.includes(slot);
-        return inWorkingHours && !isBooked;
+        const inClosureRange = isSlotInClosureRange(slot);
+        return inWorkingHours && !isBooked && !inClosureRange;
       });
 
       console.log('Available slots:', availableSlots);
