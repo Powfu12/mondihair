@@ -94,10 +94,19 @@ class BookingSystem {
   async createBooking(bookingData) {
     try {
       // Validate that the time slot is still available
+      // Fix: Parse date correctly to avoid timezone issues
+      const [year, month, day] = bookingData.date.split('-').map(Number);
+      const bookingDate = new Date(year, month - 1, day);
+
+      console.log('Validating booking for:', bookingData.barberId, bookingData.date, bookingData.timeSlot);
+
       const availableSlots = await this.getAvailableTimeSlots(
         bookingData.barberId,
-        new Date(bookingData.date)
+        bookingDate
       );
+
+      console.log('Available slots for validation:', availableSlots);
+      console.log('Requested time slot:', bookingData.timeSlot);
 
       if (!availableSlots.includes(bookingData.timeSlot)) {
         throw new Error('This time slot is no longer available');
