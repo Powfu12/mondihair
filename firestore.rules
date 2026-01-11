@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Bookings collection
+    // Allow public read access (needed to check availability)
+    // Allow public create access (customers can make bookings)
+    // Only authenticated admins can update/delete
+    match /bookings/{bookingId} {
+      // Anyone can read bookings (to check availability)
+      allow read: if true;
+
+      // Anyone can create new bookings
+      allow create: if true;
+
+      // Only authenticated users (admins) can update or delete
+      allow update, delete: if request.auth != null;
+    }
+
+    // Admin users collection (if you add one later)
+    match /admins/{adminId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Barber schedules collection (if you store them in Firestore later)
+    match /schedules/{scheduleId} {
+      // Anyone can read schedules
+      allow read: if true;
+
+      // Only authenticated users can modify schedules
+      allow write: if request.auth != null;
+    }
+  }
+}

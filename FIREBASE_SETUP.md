@@ -105,30 +105,34 @@ The booking system includes:
 
 ## 🔒 Step 5: Configure Security Rules
 
-Once you're ready to deploy, update Firestore security rules:
+⚠️ **IMPORTANT:** You must update the security rules to fix the "Missing or insufficient permissions" error.
 
 1. **Go to Firestore Database**
    - Click **"Rules"** tab
 
 2. **Update Rules**
+   Copy and paste these rules (also available in `firestore.rules` file):
+
    ```javascript
    rules_version = '2';
    service cloud.firestore {
      match /databases/{database}/documents {
-       // Bookings: Anyone can create, only authenticated users can read/update
-       match /bookings/{booking} {
-         allow create: if true;  // Customers can book
-         allow read, update, delete: if request.auth != null;  // Only admins can manage
+       // Bookings: Public read/create, authenticated update/delete
+       match /bookings/{bookingId} {
+         allow read: if true;  // Anyone can read (needed to check availability)
+         allow create: if true;  // Customers can create bookings
+         allow update, delete: if request.auth != null;  // Only admins can manage
        }
 
-       // Barbers: Only authenticated users can read
-       match /barbers/{barber} {
-         allow read: if request.auth != null;
+       // Admin users collection
+       match /admins/{adminId} {
+         allow read, write: if request.auth != null;
        }
 
-       // Users: Only authenticated users can access
-       match /users/{user} {
-         allow read, write: if request.auth != null && request.auth.uid == user;
+       // Barber schedules collection
+       match /schedules/{scheduleId} {
+         allow read: if true;  // Anyone can read schedules
+         allow write: if request.auth != null;  // Only admins can modify
        }
      }
    }
@@ -136,6 +140,10 @@ Once you're ready to deploy, update Firestore security rules:
 
 3. **Publish Rules**
    - Click **"Publish"**
+   - Wait for deployment (5-10 seconds)
+
+**Why Public Read Access?**
+The booking page needs to read existing bookings to determine which time slots are available. Without public read access, customers will see a "Missing or insufficient permissions" error.
 
 ---
 
