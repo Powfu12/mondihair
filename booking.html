@@ -663,8 +663,8 @@
     <div class="container">
         <!-- Title -->
         <div class="page-title">
-            <h1>Book Your Appointment</h1>
-            <p>Select your barber, service, and preferred time</p>
+            <h1>Κλείστε το Ραντεβού σας</h1>
+            <p>Επιλέξτε κομμωτή, υπηρεσία και προτιμώμενη ώρα</p>
         </div>
 
         <!-- Progress -->
@@ -678,7 +678,7 @@
         <!-- Step 1: Select Barber -->
         <div id="step1" class="step">
             <div class="card">
-                <h2 class="card-title">Select Your Barber</h2>
+                <h2 class="card-title">Επιλέξτε Κομμωτή</h2>
                 <div class="barber-grid">
                     <div class="barber-item" onclick="selectBarber('mondi')">
                         <div class="barber-icon">
@@ -686,7 +686,7 @@
                         </div>
                         <div class="barber-info">
                             <h3>Mondi</h3>
-                            <p>Master Barber • 20min slots</p>
+                            <p>Μαστρο Κομμωτής • 20λ διαστήματα</p>
                         </div>
                     </div>
                     <div class="barber-item" onclick="selectBarber('ervin')">
@@ -695,7 +695,7 @@
                         </div>
                         <div class="barber-info">
                             <h3>Ervin</h3>
-                            <p>Senior Barber • 30min slots</p>
+                            <p>Έμπειρος Κομμωτής • 30λ διαστήματα</p>
                         </div>
                     </div>
                     <div class="barber-item" onclick="selectBarber('marios')">
@@ -704,14 +704,14 @@
                         </div>
                         <div class="barber-info">
                             <h3>Marios</h3>
-                            <p>Barber Stylist • 30min slots</p>
+                            <p>Κομμωτής Στυλίστας • 30λ διαστήματα</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="btn-group">
                 <button class="btn btn-primary" onclick="nextStep()">
-                    Next <i class="fas fa-arrow-right"></i>
+                    Επόμενο <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
         </div>
@@ -719,44 +719,44 @@
         <!-- Step 2: Select Service -->
         <div id="step2" class="step hidden">
             <div class="card">
-                <h2 class="card-title">Select Service</h2>
+                <h2 class="card-title">Επιλέξτε Υπηρεσία</h2>
                 <div class="service-grid">
                     <div class="service-item" onclick="selectService('Haircut')">
                         <div class="service-header">
-                            <div class="service-name">Haircut</div>
+                            <div class="service-name">Κούρεμα</div>
                             <div class="service-price">€13</div>
                         </div>
-                        <div class="service-desc">Traditional barbering with modern precision</div>
+                        <div class="service-desc">Παραδοσιακό κούρεμα με σύγχρονη ακρίβεια</div>
                     </div>
                     <div class="service-item" onclick="selectService('Haircut + Beard')">
                         <div class="service-header">
-                            <div class="service-name">Haircut + Beard</div>
+                            <div class="service-name">Κούρεμα + Γένια</div>
                             <div class="service-price">€15</div>
                         </div>
-                        <div class="service-desc">Complete haircut and beard service</div>
+                        <div class="service-desc">Πλήρης υπηρεσία κουρέματος και περιποίησης γενιών</div>
                     </div>
                     <div class="service-item" onclick="selectService('Beard Trim & Shape')">
                         <div class="service-header">
-                            <div class="service-name">Beard Trim & Shape</div>
+                            <div class="service-name">Περιποίηση Γενιών</div>
                             <div class="service-price">€10</div>
                         </div>
-                        <div class="service-desc">Professional beard grooming with class</div>
+                        <div class="service-desc">Επαγγελματική περιποίηση γενιών με στυλ</div>
                     </div>
                     <div class="service-item" onclick="selectService('Haircut + Beard + Wash + Styling')">
                         <div class="service-header">
-                            <div class="service-name">Complete Package</div>
+                            <div class="service-name">Πλήρες Πακέτο</div>
                             <div class="service-price">€20</div>
                         </div>
-                        <div class="service-desc">Full grooming package - Most popular!</div>
+                        <div class="service-desc">Πλήρες πακέτο περιποίησης - Το πιο δημοφιλές!</div>
                     </div>
                 </div>
             </div>
             <div class="btn-group">
                 <button class="btn btn-secondary" onclick="prevStep()">
-                    <i class="fas fa-arrow-left"></i> Back
+                    <i class="fas fa-arrow-left"></i> Πίσω
                 </button>
                 <button class="btn btn-primary" onclick="nextStep()">
-                    Next <i class="fas fa-arrow-right"></i>
+                    Επόμενο <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
         </div>
@@ -764,14 +764,14 @@
         <!-- Step 3: Select Date & Time -->
         <div id="step3" class="step hidden">
             <div class="card">
-                <h2 class="card-title">Select Date</h2>
+                <h2 class="card-title">Επιλέξτε Ημερομηνία</h2>
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
-                    <span>Bookings available for the next 30 days</span>
+                    <span>Διαθέσιμα ραντεβού για τις επόμενες 30 ημέρες</span>
                 </div>
 
                 <div class="calendar-header">
-                    <div class="calendar-month" id="calendarMonth">January 2026</div>
+                    <div class="calendar-month" id="calendarMonth">Ιανουάριος 2026</div>
                     <div class="calendar-nav">
                         <button class="calendar-nav-btn" id="prevMonth" onclick="changeMonth(-1)">
                             <i class="fas fa-chevron-left"></i>
@@ -783,18 +783,18 @@
                 </div>
 
                 <div class="weekdays">
-                    <div class="weekday">S</div>
-                    <div class="weekday">M</div>
-                    <div class="weekday">T</div>
-                    <div class="weekday">W</div>
-                    <div class="weekday">T</div>
-                    <div class="weekday">F</div>
-                    <div class="weekday">S</div>
+                    <div class="weekday">Κ</div>
+                    <div class="weekday">Δ</div>
+                    <div class="weekday">Τ</div>
+                    <div class="weekday">Τ</div>
+                    <div class="weekday">Π</div>
+                    <div class="weekday">Π</div>
+                    <div class="weekday">Σ</div>
                 </div>
 
                 <div id="loadingCalendar" class="loading hidden">
                     <div class="spinner"></div>
-                    <div>Loading availability...</div>
+                    <div>Φόρτωση διαθεσιμότητας...</div>
                 </div>
 
                 <div class="calendar-days" id="calendarDays"></div>
@@ -802,34 +802,34 @@
                 <div class="legend">
                     <div class="legend-item">
                         <div class="legend-dot available"></div>
-                        <span>Available</span>
+                        <span>Διαθέσιμο</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-dot busy"></div>
-                        <span>Busy</span>
+                        <span>Πολυάσχολο</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-dot full"></div>
-                        <span>Full</span>
+                        <span>Πλήρες</span>
                     </div>
                 </div>
             </div>
 
             <div id="timeSlotsCard" class="card hidden">
-                <h2 class="card-title">Select Time</h2>
+                <h2 class="card-title">Επιλέξτε Ώρα</h2>
                 <div id="loadingSlots" class="loading hidden">
                     <div class="spinner"></div>
-                    <div>Loading time slots...</div>
+                    <div>Φόρτωση ωρών...</div>
                 </div>
                 <div class="time-slots" id="timeSlots"></div>
             </div>
 
             <div class="btn-group">
                 <button class="btn btn-secondary" onclick="prevStep()">
-                    <i class="fas fa-arrow-left"></i> Back
+                    <i class="fas fa-arrow-left"></i> Πίσω
                 </button>
                 <button class="btn btn-primary" onclick="nextStep()">
-                    Next <i class="fas fa-arrow-right"></i>
+                    Επόμενο <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
         </div>
@@ -837,30 +837,30 @@
         <!-- Step 4: Contact Details -->
         <div id="step4" class="step hidden">
             <div class="card">
-                <h2 class="card-title">Your Details</h2>
+                <h2 class="card-title">Τα Στοιχεία σας</h2>
                 <div class="input-group">
-                    <label class="input-label">Full Name *</label>
-                    <input type="text" class="input-field" id="customerName" placeholder="John Doe" required>
+                    <label class="input-label">Ονοματεπώνυμο *</label>
+                    <input type="text" class="input-field" id="customerName" placeholder="Γιάννης Παπαδόπουλος" required>
                 </div>
                 <div class="input-group">
-                    <label class="input-label">Phone Number *</label>
+                    <label class="input-label">Τηλέφωνο *</label>
                     <input type="tel" class="input-field" id="customerPhone" placeholder="+357 99 123456" required>
                 </div>
                 <div class="input-group">
-                    <label class="input-label">Email (Optional)</label>
-                    <input type="email" class="input-field" id="customerEmail" placeholder="john@example.com">
+                    <label class="input-label">Email (Προαιρετικό)</label>
+                    <input type="email" class="input-field" id="customerEmail" placeholder="email@example.com">
                 </div>
                 <div class="input-group">
-                    <label class="input-label">Special Requests (Optional)</label>
-                    <textarea class="input-field" id="customerNotes" placeholder="Any special requests or notes..."></textarea>
+                    <label class="input-label">Ειδικές Απαιτήσεις (Προαιρετικό)</label>
+                    <textarea class="input-field" id="customerNotes" placeholder="Οποιεσδήποτε ειδικές απαιτήσεις ή σημειώσεις..."></textarea>
                 </div>
             </div>
             <div class="btn-group">
                 <button class="btn btn-secondary" onclick="prevStep()">
-                    <i class="fas fa-arrow-left"></i> Back
+                    <i class="fas fa-arrow-left"></i> Πίσω
                 </button>
                 <button class="btn btn-primary" onclick="submitBooking()">
-                    <i class="fas fa-check"></i> Confirm Booking
+                    <i class="fas fa-check"></i> Επιβεβαίωση Ραντεβού
                 </button>
             </div>
         </div>
@@ -871,14 +871,14 @@
                 <div class="success-icon">
                     <i class="fas fa-check"></i>
                 </div>
-                <h2 class="success-title">Booking Confirmed!</h2>
-                <p class="success-desc">Your appointment has been successfully booked. We'll see you soon!</p>
+                <h2 class="success-title">Το Ραντεβού Επιβεβαιώθηκε!</h2>
+                <p class="success-desc">Το ραντεβού σας έχει κλειστεί με επιτυχία. Σας περιμένουμε!</p>
 
                 <div class="booking-summary" id="bookingSummary"></div>
 
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="location.reload()">
-                        Book Another Appointment
+                        Κλείστε Άλλο Ραντεβού
                     </button>
                 </div>
             </div>
@@ -889,8 +889,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="js/firebase-config.js?v=20"></script>
-    <script src="js/booking-system.js?v=20"></script>
+    <script src="js/firebase-config.js?v=21"></script>
+    <script src="js/booking-system.js?v=21"></script>
 
     <script>
         let currentStep = 1;
@@ -901,13 +901,173 @@
         let currentMonth = new Date();
         let availability = {};
         let slotsCache = {}; // Cache for time slots
+        let currentLang = 'el'; // Greek as default
 
-        // Language (simplified for now)
+        // Translations
+        const translations = {
+            el: {
+                pageTitle: 'Κλείστε το Ραντεβού σας',
+                pageSubtitle: 'Επιλέξτε κομμωτή, υπηρεσία και προτιμώμενη ώρα',
+                selectBarber: 'Επιλέξτε Κομμωτή',
+                selectService: 'Επιλέξτε Υπηρεσία',
+                selectDateTime: 'Επιλέξτε Ημερομηνία',
+                yourDetails: 'Τα Στοιχεία σας',
+                bookingConfirmed: 'Το Ραντεβού Επιβεβαιώθηκε!',
+                fullName: 'Ονοματεπώνυμο',
+                phoneNumber: 'Τηλέφωνο',
+                email: 'Email (Προαιρετικό)',
+                specialRequests: 'Ειδικές Απαιτήσεις (Προαιρετικό)',
+                next: 'Επόμενο',
+                back: 'Πίσω',
+                confirmBooking: 'Επιβεβαίωση Ραντεβού',
+                bookAnother: 'Κλείστε Άλλο Ραντεβού',
+                bookingAvailable30Days: 'Διαθέσιμα ραντεβού για τις επόμενες 30 ημέρες',
+                selectTime: 'Επιλέξτε Ώρα',
+                available: 'Διαθέσιμο',
+                busy: 'Πολυάσχολο',
+                full: 'Πλήρες',
+                closed: 'Κλειστά',
+                barber: 'Κομμωτής',
+                service: 'Υπηρεσία',
+                dateTime: 'Ημερομηνία & Ώρα',
+                price: 'Τιμή',
+                successMessage: 'Το ραντεβού σας έχει κλειστεί με επιτυχία. Σας περιμένουμε!',
+                pleaseSelectBarber: 'Παρακαλώ επιλέξτε κομμωτή',
+                pleaseSelectService: 'Παρακαλώ επιλέξτε υπηρεσία',
+                pleaseSelectDateTime: 'Παρακαλώ επιλέξτε ημερομηνία και ώρα',
+                pleaseFillRequired: 'Παρακαλώ συμπληρώστε τα υποχρεωτικά πεδία',
+                bookingFailed: 'Η κράτηση απέτυχε',
+                noSlotsAvailable: 'Δεν υπάρχουν διαθέσιμες ώρες για αυτή την ημερομηνία',
+                errorLoadingSlots: 'Σφάλμα φόρτωσης ωρών. Παρακαλώ προσπαθήστε ξανά.',
+                loadingAvailability: 'Φόρτωση διαθεσιμότητας...',
+                loadingSlots: 'Φόρτωση ωρών...',
+                back: 'Πίσω',
+                masterBarber: 'Μαστρο Κομμωτής',
+                seniorBarber: 'Έμπειρος Κομμωτής',
+                barberStylist: 'Κομμωτής Στυλίστας',
+                slots20min: '20λ διαστήματα',
+                slots30min: '30λ διαστήματα',
+                months: ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'],
+                weekdays: ['Κ', 'Δ', 'Τ', 'Τ', 'Π', 'Π', 'Σ'],
+                weekdaysFull: ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο']
+            },
+            en: {
+                pageTitle: 'Book Your Appointment',
+                pageSubtitle: 'Select your barber, service, and preferred time',
+                selectBarber: 'Select Your Barber',
+                selectService: 'Select Service',
+                selectDateTime: 'Select Date',
+                yourDetails: 'Your Details',
+                bookingConfirmed: 'Booking Confirmed!',
+                fullName: 'Full Name',
+                phoneNumber: 'Phone Number',
+                email: 'Email (Optional)',
+                specialRequests: 'Special Requests (Optional)',
+                next: 'Next',
+                back: 'Back',
+                confirmBooking: 'Confirm Booking',
+                bookAnother: 'Book Another Appointment',
+                bookingAvailable30Days: 'Bookings available for the next 30 days',
+                selectTime: 'Select Time',
+                available: 'Available',
+                busy: 'Busy',
+                full: 'Full',
+                closed: 'Closed',
+                barber: 'Barber',
+                service: 'Service',
+                dateTime: 'Date & Time',
+                price: 'Price',
+                successMessage: 'Your appointment has been successfully booked. We\'ll see you soon!',
+                pleaseSelectBarber: 'Please select a barber',
+                pleaseSelectService: 'Please select a service',
+                pleaseSelectDateTime: 'Please select date and time',
+                pleaseFillRequired: 'Please fill in required fields',
+                bookingFailed: 'Booking failed',
+                noSlotsAvailable: 'No time slots available for this date',
+                errorLoadingSlots: 'Error loading time slots. Please try again.',
+                loadingAvailability: 'Loading availability...',
+                loadingSlots: 'Loading time slots...',
+                masterBarber: 'Master Barber',
+                seniorBarber: 'Senior Barber',
+                barberStylist: 'Barber Stylist',
+                slots20min: '20min slots',
+                slots30min: '30min slots',
+                months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                weekdays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+                weekdaysFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            }
+        };
+
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
+
+        // Language switch
         function switchLang(lang) {
+            currentLang = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
+                if (btn.textContent === (lang === 'el' ? 'ΕΛ' : 'EN')) {
+                    btn.classList.add('active');
+                }
             });
-            event.target.classList.add('active');
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            // Update page title
+            document.querySelector('.page-title h1').textContent = t('pageTitle');
+            document.querySelector('.page-title p').textContent = t('pageSubtitle');
+
+            // Update step titles
+            document.querySelectorAll('.card-title')[0].textContent = t('selectBarber');
+            document.querySelectorAll('.card-title')[1].textContent = t('selectService');
+            document.querySelectorAll('.card-title')[2].textContent = t('selectDateTime');
+            document.querySelectorAll('.card-title')[3].textContent = t('yourDetails');
+
+            // Update buttons
+            document.querySelectorAll('.btn-primary').forEach(btn => {
+                if (btn.textContent.includes('Next') || btn.textContent.includes('Επόμενο')) {
+                    btn.innerHTML = `${t('next')} <i class="fas fa-arrow-right"></i>`;
+                } else if (btn.textContent.includes('Confirm') || btn.textContent.includes('Επιβεβαίωση')) {
+                    btn.innerHTML = `<i class="fas fa-check"></i> ${t('confirmBooking')}`;
+                } else if (btn.textContent.includes('Another') || btn.textContent.includes('Άλλο')) {
+                    btn.textContent = t('bookAnother');
+                }
+            });
+
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+                btn.innerHTML = `<i class="fas fa-arrow-left"></i> ${t('back')}`;
+            });
+
+            // Update alert
+            document.querySelector('.alert-info span').textContent = t('bookingAvailable30Days');
+
+            // Update input labels
+            document.querySelectorAll('.input-label')[0].textContent = t('fullName') + ' *';
+            document.querySelectorAll('.input-label')[1].textContent = t('phoneNumber') + ' *';
+            document.querySelectorAll('.input-label')[2].textContent = t('email');
+            document.querySelectorAll('.input-label')[3].textContent = t('specialRequests');
+
+            // Update legend
+            document.querySelectorAll('.legend-item span')[0].textContent = t('available');
+            document.querySelectorAll('.legend-item span')[1].textContent = t('busy');
+            document.querySelectorAll('.legend-item span')[2].textContent = t('full');
+
+            // Update success screen
+            document.querySelector('.success-title').textContent = t('bookingConfirmed');
+            document.querySelector('.success-desc').textContent = t('successMessage');
+
+            // Update weekdays
+            const weekdayElements = document.querySelectorAll('.weekday');
+            t('weekdays').forEach((day, i) => {
+                if (weekdayElements[i]) weekdayElements[i].textContent = day;
+            });
+
+            // Re-render calendar if visible
+            if (!document.getElementById('step3').classList.contains('hidden')) {
+                renderCalendar();
+            }
         }
 
         // Select Barber
@@ -931,15 +1091,15 @@
         // Navigation
         function nextStep() {
             if (currentStep === 1 && !selectedBarber) {
-                alert('Please select a barber');
+                alert(t('pleaseSelectBarber'));
                 return;
             }
             if (currentStep === 2 && !selectedService) {
-                alert('Please select a service');
+                alert(t('pleaseSelectService'));
                 return;
             }
             if (currentStep === 3 && (!selectedDate || !selectedTime)) {
-                alert('Please select date and time');
+                alert(t('pleaseSelectDateTime'));
                 return;
             }
 
@@ -975,8 +1135,7 @@
             const month = currentMonth.getMonth();
 
             // Update header
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            document.getElementById('calendarMonth').textContent = `${months[month]} ${year}`;
+            document.getElementById('calendarMonth').textContent = `${t('months')[month]} ${year}`;
 
             // Date limits
             const today = new Date();
@@ -991,6 +1150,8 @@
             document.getElementById('nextMonth').disabled = isBeyond;
 
             // Load availability
+            const loadingText = document.getElementById('loadingCalendar').querySelector('div:last-child');
+            if (loadingText) loadingText.textContent = t('loadingAvailability');
             document.getElementById('loadingCalendar').classList.remove('hidden');
             await loadMonthAvailability(year, month);
             document.getElementById('loadingCalendar').classList.add('hidden');
@@ -1135,7 +1296,7 @@
                 const container = document.getElementById('timeSlots');
 
                 if (slots.length === 0) {
-                    container.innerHTML = '<div style="text-align:center;color:var(--text-gray);padding:20px;">No time slots available for this date</div>';
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-gray);padding:20px;">${t('noSlotsAvailable')}</div>`;
                 } else {
                     slots.forEach(slot => {
                         const div = document.createElement('div');
@@ -1154,7 +1315,7 @@
             } catch (error) {
                 console.error('Error loading time slots:', error);
                 document.getElementById('loadingSlots').classList.add('hidden');
-                document.getElementById('timeSlots').innerHTML = '<div style="text-align:center;color:var(--danger);padding:20px;">Error loading time slots. Please try again.</div>';
+                document.getElementById('timeSlots').innerHTML = `<div style="text-align:center;color:var(--danger);padding:20px;">${t('errorLoadingSlots')}</div>`;
             }
         }
 
@@ -1165,9 +1326,18 @@
             const notes = document.getElementById('customerNotes').value.trim();
 
             if (!name || !phone) {
-                alert('Please fill in required fields');
+                alert(t('pleaseFillRequired'));
                 return;
             }
+
+            console.log('Submitting booking with data:', {
+                barberId: selectedBarber,
+                service: selectedService,
+                date: selectedDate,
+                timeSlot: selectedTime,
+                customerName: name,
+                customerPhone: phone
+            });
 
             const booking = {
                 barberId: selectedBarber,
@@ -1180,12 +1350,18 @@
                 notes: notes
             };
 
-            const result = await bookingSystem.createBooking(booking);
+            try {
+                const result = await bookingSystem.createBooking(booking);
+                console.log('Booking result:', result);
 
-            if (result.success) {
-                showSuccess();
-            } else {
-                alert(result.message || 'Booking failed');
+                if (result.success) {
+                    showSuccess();
+                } else {
+                    alert(result.message || t('bookingFailed'));
+                }
+            } catch (error) {
+                console.error('Error submitting booking:', error);
+                alert(t('bookingFailed') + ': ' + (error.message || 'Unknown error'));
             }
         }
 
@@ -1195,30 +1371,43 @@
             document.getElementById('step5').classList.remove('hidden');
             updateProgress();
 
-            const date = new Date(selectedDate);
-            const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const date = new Date(selectedDate + 'T00:00:00');
+            const locale = currentLang === 'el' ? 'el-GR' : 'en-US';
+            const dateStr = date.toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
             document.getElementById('bookingSummary').innerHTML = `
                 <div class="summary-row">
-                    <div class="summary-label">Barber</div>
+                    <div class="summary-label">${t('barber')}</div>
                     <div class="summary-value">${BARBERS[selectedBarber].name}</div>
                 </div>
                 <div class="summary-row">
-                    <div class="summary-label">Service</div>
+                    <div class="summary-label">${t('service')}</div>
                     <div class="summary-value">${selectedService}</div>
                 </div>
                 <div class="summary-row">
-                    <div class="summary-label">Date & Time</div>
-                    <div class="summary-value">${dateStr} at ${selectedTime}</div>
+                    <div class="summary-label">${t('dateTime')}</div>
+                    <div class="summary-value">${dateStr} ${currentLang === 'el' ? 'στις' : 'at'} ${selectedTime}</div>
                 </div>
                 <div class="summary-row">
-                    <div class="summary-label">Price</div>
+                    <div class="summary-label">${t('price')}</div>
                     <div class="summary-value">€${SERVICES[selectedService].price}</div>
                 </div>
             `;
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set Greek as default active
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === 'ΕΛ') {
+                    btn.classList.add('active');
+                }
+            });
+            updateLanguage();
+        });
     </script>
 </body>
 </html>
