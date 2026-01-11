@@ -67,8 +67,11 @@ class BookingSystem {
         });
       };
 
+      // Get barber-specific time slots (20 min for Mondi, 30 min for others)
+      const timeSlots = getTimeSlotsForBarber(barberId);
+
       // Filter out booked slots and check against time ranges
-      const availableSlots = TIME_SLOTS.filter(slot => {
+      const availableSlots = timeSlots.filter(slot => {
         return isSlotInWorkingHours(slot, daySchedule.ranges) && !bookedSlots.includes(slot);
       });
 

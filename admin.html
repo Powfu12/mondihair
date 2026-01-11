@@ -2177,31 +2177,28 @@
                 b.date === dateStr && b.status !== 'cancelled'
             );
 
-            // Create time slots from 9:00 to 21:00
+            // Get barber-specific time slots (20 min for Mondi, 30 min for others)
+            const timeSlots = getTimeSlotsForBarber(currentBarberId);
+
+            // Create time slots using barber-specific intervals
             let html = '';
-            for (let hour = 9; hour <= 21; hour++) {
-                for (let minute = 0; minute < 60; minute += 30) {
-                    // Skip 21:30 since we end at 21:00
-                    if (hour === 21 && minute === 30) break;
+            timeSlots.forEach(timeSlot => {
+                const bookingsAtTime = dayBookings.filter(b => b.timeSlot === timeSlot);
 
-                    const timeSlot = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                    const bookingsAtTime = dayBookings.filter(b => b.timeSlot === timeSlot);
-
-                    html += `
-                        <div class="time-slot-row">
-                            <div class="time-label">${timeSlot}</div>
-                            <div class="time-slot-content">
-                                ${bookingsAtTime.map(booking => `
-                                    <div class="calendar-booking-item status-${booking.status}">
-                                        <div class="calendar-booking-name">${booking.customerName}</div>
-                                        <div class="calendar-booking-service">${booking.service}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
+                html += `
+                    <div class="time-slot-row">
+                        <div class="time-label">${timeSlot}</div>
+                        <div class="time-slot-content">
+                            ${bookingsAtTime.map(booking => `
+                                <div class="calendar-booking-item status-${booking.status}">
+                                    <div class="calendar-booking-name">${booking.customerName}</div>
+                                    <div class="calendar-booking-service">${booking.service}</div>
+                                </div>
+                            `).join('')}
                         </div>
-                    `;
-                }
-            }
+                    </div>
+                `;
+            });
 
             container.innerHTML = html;
         }

@@ -22,12 +22,14 @@ const auth = firebase.auth();
 
 // Barbers configuration
 // Working hours now support multiple time ranges per day (for breaks)
+// Mondi uses 20-minute intervals, others use 30-minute intervals
 const BARBERS = {
   mondi: {
     id: 'mondi',
     name: 'Mondi',
     email: 'mondi@mondihair.com',
-    services: ['Haircut', 'Beard Trim', 'Haircut + Beard', 'Hair Color', 'Kids Haircut'],
+    slotInterval: 20, // 20-minute intervals
+    services: ['Haircut', 'Haircut + Beard', 'Beard Trim & Shape', 'Haircut + Beard + Wash + Styling'],
     workingHours: {
       monday: {
         ranges: [
@@ -70,7 +72,8 @@ const BARBERS = {
     id: 'ervin',
     name: 'Ervin',
     email: 'ervin@mondihair.com',
-    services: ['Haircut', 'Beard Trim', 'Haircut + Beard', 'Hair Color', 'Kids Haircut'],
+    slotInterval: 30, // 30-minute intervals
+    services: ['Haircut', 'Haircut + Beard', 'Beard Trim & Shape', 'Haircut + Beard + Wash + Styling'],
     workingHours: {
       monday: {
         ranges: [
@@ -113,7 +116,8 @@ const BARBERS = {
     id: 'marios',
     name: 'Marios',
     email: 'marios@mondihair.com',
-    services: ['Haircut', 'Beard Trim', 'Haircut + Beard', 'Hair Color', 'Kids Haircut'],
+    slotInterval: 30, // 30-minute intervals
+    services: ['Haircut', 'Haircut + Beard', 'Beard Trim & Shape', 'Haircut + Beard + Wash + Styling'],
     workingHours: {
       monday: {
         ranges: [
@@ -154,24 +158,39 @@ const BARBERS = {
   }
 };
 
-// Time slots (30-minute intervals) - Extended to 21:00
-const TIME_SLOTS = [
+// Time slots for 30-minute intervals (Ervin, Marios)
+const TIME_SLOTS_30 = [
   '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
   '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
   '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
   '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'
 ];
 
-// Service prices
+// Time slots for 20-minute intervals (Mondi)
+const TIME_SLOTS_20 = [
+  '09:00', '09:20', '09:40', '10:00', '10:20', '10:40',
+  '11:00', '11:20', '11:40', '12:00', '12:20', '12:40',
+  '13:00', '13:20', '13:40', '14:00', '14:20', '14:40',
+  '15:00', '15:20', '15:40', '16:00', '16:20', '16:40',
+  '17:00', '17:20', '17:40', '18:00', '18:20', '18:40',
+  '19:00', '19:20', '19:40', '20:00', '20:20', '20:40', '21:00'
+];
+
+// Helper function to get time slots for a specific barber
+function getTimeSlotsForBarber(barberId) {
+  const barber = BARBERS[barberId];
+  return barber.slotInterval === 20 ? TIME_SLOTS_20 : TIME_SLOTS_30;
+}
+
+// Service prices (in euros)
 const SERVICES = {
-  'Haircut': { price: 15, duration: 30 },
-  'Beard Trim': { price: 10, duration: 20 },
-  'Haircut + Beard': { price: 20, duration: 45 },
-  'Hair Color': { price: 40, duration: 60 },
-  'Kids Haircut': { price: 12, duration: 25 }
+  'Haircut': { price: 13, duration: 30, description: 'Traditional barbering techniques with modern precision.' },
+  'Haircut + Beard': { price: 15, duration: 45, description: 'Complete haircut and beard grooming service.' },
+  'Beard Trim & Shape': { price: 10, duration: 20, description: 'Professional beard grooming with class.' },
+  'Haircut + Beard + Wash + Styling': { price: 20, duration: 60, description: 'Complete grooming package. Our most popular service.' }
 };
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { db, auth, BARBERS, TIME_SLOTS, SERVICES };
+  module.exports = { db, auth, BARBERS, TIME_SLOTS_20, TIME_SLOTS_30, getTimeSlotsForBarber, SERVICES };
 }
