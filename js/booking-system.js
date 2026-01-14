@@ -1,5 +1,14 @@
 // Booking System Logic
 
+// Twilio Configuration
+// IMPORTANT: Replace these with your actual Twilio credentials
+const TWILIO_CONFIG = {
+  accountSid: 'YOUR_TWILIO_ACCOUNT_SID',     // Replace with your Account SID from Twilio Console
+  authToken: 'YOUR_TWILIO_AUTH_TOKEN',        // Replace with your Auth Token from Twilio Console
+  alphaSender: 'MondiHair',                   // Your alphanumeric sender name
+  businessPhone: '+306974628335'              // Your business phone for customers to call
+};
+
 class BookingSystem {
   constructor() {
     this.selectedBarber = null;
@@ -11,7 +20,12 @@ class BookingSystem {
   // Get available time slots for a specific barber and date
   async getAvailableTimeSlots(barberId, date) {
     try {
-      const dateStr = date.toISOString().split('T')[0];
+      // CRITICAL FIX: Format date in local timezone, not UTC
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+
       // Fix timezone issue: use getDay() instead of toLocaleDateString
       const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
       const dayName = dayNames[date.getDay()];
@@ -33,6 +47,22 @@ class BookingSystem {
 
       if (daySchedule.closed) {
         console.log('Barber is closed on', dayName);
+        return [];
+      }
+
+      // Check for custom closures (full day or time range)
+      const closuresSnapshot = await db.collection('customClosures')
+        .where('barberId', '==', barberId)
+        .where('date', '==', dateStr)
+        .get();
+
+      const customClosures = closuresSnapshot.docs.map(doc => doc.data());
+      console.log('Custom closures for this date:', customClosures);
+
+      // If there's a full day closure, return empty
+      const hasFullDayClosure = customClosures.some(c => c.type === 'fullDay');
+      if (hasFullDayClosure) {
+        console.log('Barber has full day closure on', dateStr);
         return [];
       }
 
@@ -71,13 +101,38 @@ class BookingSystem {
 
       // Get barber-specific time slots (20 min for Mondi, 30 min for others)
       const timeSlots = getTimeSlotsForBarber(barberId);
+      console.log('Total time slots for barber:', timeSlots.length);
+      console.log('Barber slot interval:', barber.slotInterval);
+      console.log('Day schedule ranges:', JSON.stringify(daySchedule.ranges));
+
+      // Check if slot is within a custom closure time range
+      const isSlotInClosureRange = (slot) => {
+        const timeRangeClosures = customClosures.filter(c => c.type === 'timeRange');
+        return timeRangeClosures.some(closure => {
+          const slotTime = slot.split(':');
+          const slotHour = parseInt(slotTime[0]);
+          const slotMinute = parseInt(slotTime[1]);
+          const slotMinutes = slotHour * 60 + slotMinute;
+
+          const startTime = closure.startTime.split(':');
+          const endTime = closure.endTime.split(':');
+          const startMinutes = parseInt(startTime[0]) * 60 + parseInt(startTime[1]);
+          const endMinutes = parseInt(endTime[0]) * 60 + parseInt(endTime[1]);
+
+          return slotMinutes >= startMinutes && slotMinutes < endMinutes;
+        });
+      };
 
       // Filter out booked slots and check against time ranges
       const availableSlots = timeSlots.filter(slot => {
-        return isSlotInWorkingHours(slot, daySchedule.ranges) && !bookedSlots.includes(slot);
+        const inWorkingHours = isSlotInWorkingHours(slot, daySchedule.ranges);
+        const isBooked = bookedSlots.includes(slot);
+        const inClosureRange = isSlotInClosureRange(slot);
+        return inWorkingHours && !isBooked && !inClosureRange;
       });
 
       console.log('Available slots:', availableSlots);
+      console.log('Total available:', availableSlots.length);
       return availableSlots;
     } catch (error) {
       console.error('Error getting available slots:', error);
@@ -98,19 +153,38 @@ class BookingSystem {
       const [year, month, day] = bookingData.date.split('-').map(Number);
       const bookingDate = new Date(year, month - 1, day);
 
-      console.log('Validating booking for:', bookingData.barberId, bookingData.date, bookingData.timeSlot);
+      console.log('=== BOOKING VALIDATION DEBUG ===');
+      console.log('Barber ID:', bookingData.barberId);
+      console.log('Date string:', bookingData.date);
+      console.log('Date object:', bookingDate);
+      console.log('Day of week:', bookingDate.getDay());
+      console.log('Time slot:', bookingData.timeSlot);
+      console.log('Time slot type:', typeof bookingData.timeSlot);
 
       const availableSlots = await this.getAvailableTimeSlots(
         bookingData.barberId,
         bookingDate
       );
 
-      console.log('Available slots for validation:', availableSlots);
-      console.log('Requested time slot:', bookingData.timeSlot);
+      console.log('Available slots:', availableSlots);
+      console.log('Available slots length:', availableSlots.length);
+      console.log('First few available slots:', availableSlots.slice(0, 5));
+      console.log('Checking if slot exists...');
+      console.log('Exact match test:', availableSlots.includes(bookingData.timeSlot));
+
+      // Check if any slot matches (in case of spacing or format issues)
+      const matchingSlots = availableSlots.filter(slot => slot.trim() === bookingData.timeSlot.trim());
+      console.log('Matching slots after trim:', matchingSlots);
 
       if (!availableSlots.includes(bookingData.timeSlot)) {
+        console.error('VALIDATION FAILED: Time slot not found in available slots');
+        console.error('Requested:', JSON.stringify(bookingData.timeSlot));
+        console.error('Available:', JSON.stringify(availableSlots));
         throw new Error('This time slot is no longer available');
       }
+
+      console.log('Validation passed, creating booking...');
+      console.log('=== END DEBUG ===');
 
       // Create booking document (automatically confirmed)
       const booking = {
@@ -129,6 +203,21 @@ class BookingSystem {
       };
 
       const docRef = await db.collection('bookings').add(booking);
+
+      console.log('Booking created, sending confirmation SMS...');
+
+      // Send confirmation SMS
+      const smsResult = await this.sendBookingConfirmation({
+        ...booking,
+        barberName: booking.barberName
+      });
+
+      if (smsResult.success) {
+        console.log('Confirmation SMS sent successfully');
+      } else {
+        console.warn('Failed to send confirmation SMS:', smsResult.error);
+        // Don't fail the booking if SMS fails
+      }
 
       return {
         success: true,
@@ -228,6 +317,194 @@ class BookingSystem {
       }, error => {
         console.error('Error listening to bookings:', error);
       });
+  }
+
+  // Format Greek phone number to E.164 format (+30XXXXXXXXXX)
+  formatGreekPhone(phone) {
+    if (!phone) return null;
+
+    // Remove all non-digit characters
+    let cleaned = phone.replace(/\D/g, '');
+
+    // Handle different formats
+    if (cleaned.startsWith('00300')) {
+      cleaned = cleaned.substring(4); // Remove 0030
+    } else if (cleaned.startsWith('0030')) {
+      cleaned = cleaned.substring(4); // Remove 0030
+    } else if (cleaned.startsWith('300')) {
+      cleaned = cleaned.substring(2); // Remove 30
+    } else if (cleaned.startsWith('30')) {
+      cleaned = cleaned.substring(2); // Remove 30
+    } else if (cleaned.startsWith('0')) {
+      cleaned = cleaned.substring(1); // Remove leading 0
+    }
+
+    // Should be 10 digits now (Greek number without country code)
+    if (cleaned.length === 10) {
+      return '+30' + cleaned;
+    }
+
+    // If it's already 12 digits (30 + 10 digits), add +
+    if (cleaned.length === 12 && cleaned.startsWith('30')) {
+      return '+' + cleaned;
+    }
+
+    console.error('Invalid Greek phone number format:', phone);
+    return null;
+  }
+
+  // Send SMS via Twilio
+  async sendSMS(to, message) {
+    try {
+      const formattedPhone = this.formatGreekPhone(to);
+      if (!formattedPhone) {
+        throw new Error('Invalid phone number format');
+      }
+
+      console.log('Sending SMS to:', formattedPhone);
+
+      const auth = btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`);
+
+      const response = await fetch(
+        `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Messages.json`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+            From: TWILIO_CONFIG.alphaSender,
+            To: formattedPhone,
+            Body: message
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('SMS sent successfully:', data.sid);
+        return { success: true, sid: data.sid };
+      } else {
+        console.error('Twilio error:', data);
+        return { success: false, error: data.message };
+      }
+    } catch (error) {
+      console.error('Error sending SMS:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Send booking confirmation SMS
+  async sendBookingConfirmation(booking) {
+    const date = new Date(booking.date + 'T00:00:00');
+    const dateStr = date.toLocaleDateString('el-GR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    const message = `✅ Επιβεβαίωση Ραντεβού
+
+Γεια σας ${booking.customerName}!
+
+Το ραντεβού σας επιβεβαιώθηκε:
+
+📅 ${dateStr}
+🕐 ${booking.timeSlot}
+💇 Κομμωτής: ${booking.barberName}
+✂️ Υπηρεσία: ${booking.service}
+
+Για ακύρωση: ${TWILIO_CONFIG.businessPhone}
+
+Mondi Hairstyle`;
+
+    return await this.sendSMS(booking.customerPhone, message);
+  }
+
+  // Send 2-hour reminder SMS
+  async send2HourReminder(booking) {
+    const date = new Date(booking.date + 'T00:00:00');
+    const dateStr = date.toLocaleDateString('el-GR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    });
+
+    const message = `🔔 Υπενθύμιση Ραντεβού
+
+Έχετε ραντεβού σε 2 ώρες:
+
+📅 ${dateStr}
+🕐 ${booking.timeSlot} με ${booking.barberName}
+
+⏰ Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.
+
+Για ακύρωση: ${TWILIO_CONFIG.businessPhone}
+
+Mondi Hairstyle`;
+
+    return await this.sendSMS(booking.customerPhone, message);
+  }
+
+  // Get bookings needing reminder (2 hours before)
+  async getBookingsNeedingReminder() {
+    try {
+      const now = new Date();
+      const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
+      // Format as YYYY-MM-DD
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+      // Get target hour for comparison (2 hours from now)
+      const targetHour = String(twoHoursLater.getHours()).padStart(2, '0');
+      const targetMinute = String(twoHoursLater.getMinutes()).padStart(2, '0');
+      const targetTime = `${targetHour}:${targetMinute}`;
+
+      console.log('Looking for bookings at:', todayStr, targetTime);
+
+      const snapshot = await db.collection('bookings')
+        .where('date', '==', todayStr)
+        .where('status', 'in', ['confirmed', 'pending'])
+        .get();
+
+      const bookingsNeedingReminder = [];
+
+      snapshot.docs.forEach(doc => {
+        const booking = { id: doc.id, ...doc.data() };
+
+        // Check if booking time is approximately 2 hours from now (within 5 min window)
+        const bookingTime = booking.timeSlot;
+        const [bookingHour, bookingMinute] = bookingTime.split(':').map(Number);
+        const [targetH, targetM] = [parseInt(targetHour), parseInt(targetMinute)];
+
+        // Within 5 minute window
+        const timeDiff = Math.abs((bookingHour * 60 + bookingMinute) - (targetH * 60 + targetM));
+
+        if (timeDiff <= 5 && !booking.reminderSent) {
+          bookingsNeedingReminder.push(booking);
+        }
+      });
+
+      return bookingsNeedingReminder;
+    } catch (error) {
+      console.error('Error getting bookings for reminder:', error);
+      return [];
+    }
+  }
+
+  // Mark reminder as sent
+  async markReminderSent(bookingId) {
+    try {
+      await db.collection('bookings').doc(bookingId).update({
+        reminderSent: true,
+        reminderSentAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error marking reminder sent:', error);
+    }
   }
 }
 
