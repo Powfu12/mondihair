@@ -1,5 +1,14 @@
 // Booking System Logic
 
+// Twilio Configuration
+// IMPORTANT: Replace these with your actual Twilio credentials
+const TWILIO_CONFIG = {
+  accountSid: 'YOUR_TWILIO_ACCOUNT_SID',     // Replace with your Account SID from Twilio Console
+  authToken: 'YOUR_TWILIO_AUTH_TOKEN',        // Replace with your Auth Token from Twilio Console
+  alphaSender: 'MondiHair',                   // Your alphanumeric sender name
+  businessPhone: '+306974628335'              // Your business phone for customers to call
+};
+
 class BookingSystem {
   constructor() {
     this.selectedBarber = null;
@@ -195,6 +204,21 @@ class BookingSystem {
 
       const docRef = await db.collection('bookings').add(booking);
 
+      console.log('Booking created, sending confirmation SMS...');
+
+      // Send confirmation SMS
+      const smsResult = await this.sendBookingConfirmation({
+        ...booking,
+        barberName: booking.barberName
+      });
+
+      if (smsResult.success) {
+        console.log('Confirmation SMS sent successfully');
+      } else {
+        console.warn('Failed to send confirmation SMS:', smsResult.error);
+        // Don't fail the booking if SMS fails
+      }
+
       return {
         success: true,
         bookingId: docRef.id,
@@ -293,6 +317,194 @@ class BookingSystem {
       }, error => {
         console.error('Error listening to bookings:', error);
       });
+  }
+
+  // Format Greek phone number to E.164 format (+30XXXXXXXXXX)
+  formatGreekPhone(phone) {
+    if (!phone) return null;
+
+    // Remove all non-digit characters
+    let cleaned = phone.replace(/\D/g, '');
+
+    // Handle different formats
+    if (cleaned.startsWith('00300')) {
+      cleaned = cleaned.substring(4); // Remove 0030
+    } else if (cleaned.startsWith('0030')) {
+      cleaned = cleaned.substring(4); // Remove 0030
+    } else if (cleaned.startsWith('300')) {
+      cleaned = cleaned.substring(2); // Remove 30
+    } else if (cleaned.startsWith('30')) {
+      cleaned = cleaned.substring(2); // Remove 30
+    } else if (cleaned.startsWith('0')) {
+      cleaned = cleaned.substring(1); // Remove leading 0
+    }
+
+    // Should be 10 digits now (Greek number without country code)
+    if (cleaned.length === 10) {
+      return '+30' + cleaned;
+    }
+
+    // If it's already 12 digits (30 + 10 digits), add +
+    if (cleaned.length === 12 && cleaned.startsWith('30')) {
+      return '+' + cleaned;
+    }
+
+    console.error('Invalid Greek phone number format:', phone);
+    return null;
+  }
+
+  // Send SMS via Twilio
+  async sendSMS(to, message) {
+    try {
+      const formattedPhone = this.formatGreekPhone(to);
+      if (!formattedPhone) {
+        throw new Error('Invalid phone number format');
+      }
+
+      console.log('Sending SMS to:', formattedPhone);
+
+      const auth = btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`);
+
+      const response = await fetch(
+        `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Messages.json`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+            From: TWILIO_CONFIG.alphaSender,
+            To: formattedPhone,
+            Body: message
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('SMS sent successfully:', data.sid);
+        return { success: true, sid: data.sid };
+      } else {
+        console.error('Twilio error:', data);
+        return { success: false, error: data.message };
+      }
+    } catch (error) {
+      console.error('Error sending SMS:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Send booking confirmation SMS
+  async sendBookingConfirmation(booking) {
+    const date = new Date(booking.date + 'T00:00:00');
+    const dateStr = date.toLocaleDateString('el-GR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    const message = `✅ Επιβεβαίωση Ραντεβού
+
+Γεια σας ${booking.customerName}!
+
+Το ραντεβού σας επιβεβαιώθηκε:
+
+📅 ${dateStr}
+🕐 ${booking.timeSlot}
+💇 Κομμωτής: ${booking.barberName}
+✂️ Υπηρεσία: ${booking.service}
+
+Για ακύρωση: ${TWILIO_CONFIG.businessPhone}
+
+Mondi Hairstyle`;
+
+    return await this.sendSMS(booking.customerPhone, message);
+  }
+
+  // Send 2-hour reminder SMS
+  async send2HourReminder(booking) {
+    const date = new Date(booking.date + 'T00:00:00');
+    const dateStr = date.toLocaleDateString('el-GR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    });
+
+    const message = `🔔 Υπενθύμιση Ραντεβού
+
+Έχετε ραντεβού σε 2 ώρες:
+
+📅 ${dateStr}
+🕐 ${booking.timeSlot} με ${booking.barberName}
+
+⏰ Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.
+
+Για ακύρωση: ${TWILIO_CONFIG.businessPhone}
+
+Mondi Hairstyle`;
+
+    return await this.sendSMS(booking.customerPhone, message);
+  }
+
+  // Get bookings needing reminder (2 hours before)
+  async getBookingsNeedingReminder() {
+    try {
+      const now = new Date();
+      const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
+      // Format as YYYY-MM-DD
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+      // Get target hour for comparison (2 hours from now)
+      const targetHour = String(twoHoursLater.getHours()).padStart(2, '0');
+      const targetMinute = String(twoHoursLater.getMinutes()).padStart(2, '0');
+      const targetTime = `${targetHour}:${targetMinute}`;
+
+      console.log('Looking for bookings at:', todayStr, targetTime);
+
+      const snapshot = await db.collection('bookings')
+        .where('date', '==', todayStr)
+        .where('status', 'in', ['confirmed', 'pending'])
+        .get();
+
+      const bookingsNeedingReminder = [];
+
+      snapshot.docs.forEach(doc => {
+        const booking = { id: doc.id, ...doc.data() };
+
+        // Check if booking time is approximately 2 hours from now (within 5 min window)
+        const bookingTime = booking.timeSlot;
+        const [bookingHour, bookingMinute] = bookingTime.split(':').map(Number);
+        const [targetH, targetM] = [parseInt(targetHour), parseInt(targetMinute)];
+
+        // Within 5 minute window
+        const timeDiff = Math.abs((bookingHour * 60 + bookingMinute) - (targetH * 60 + targetM));
+
+        if (timeDiff <= 5 && !booking.reminderSent) {
+          bookingsNeedingReminder.push(booking);
+        }
+      });
+
+      return bookingsNeedingReminder;
+    } catch (error) {
+      console.error('Error getting bookings for reminder:', error);
+      return [];
+    }
+  }
+
+  // Mark reminder as sent
+  async markReminderSent(bookingId) {
+    try {
+      await db.collection('bookings').doc(bookingId).update({
+        reminderSent: true,
+        reminderSentAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error marking reminder sent:', error);
+    }
   }
 }
 

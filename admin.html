@@ -1991,8 +1991,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=28"></script>
-    <script src="js/booking-system.js?v=28"></script>
+    <script src="js/firebase-config.js?v=30"></script>
+    <script src="js/booking-system.js?v=30"></script>
 
     <script>
         let currentUser = null;
@@ -2097,6 +2097,9 @@
             document.getElementById('userEmail').textContent = currentUser.email;
 
             loadBookings();
+
+            // Start automatic 2-hour reminder scheduler
+            startReminderScheduler();
         }
 
         // Load Bookings
@@ -2757,6 +2760,68 @@
 
             container.innerHTML = html;
         }
+
+        // =========================
+        // SMS REMINDER SCHEDULER
+        // =========================
+
+        // Send 2-hour reminders to upcoming bookings
+        async function sendUpcomingReminders() {
+            console.log('Checking for bookings needing 2-hour reminders...');
+
+            const bookingsNeedingReminder = await bookingSystem.getBookingsNeedingReminder();
+
+            console.log(`Found ${bookingsNeedingReminder.length} bookings needing reminders`);
+
+            for (const booking of bookingsNeedingReminder) {
+                console.log(`Sending reminder for booking ${booking.id}...`);
+
+                const result = await bookingSystem.send2HourReminder(booking);
+
+                if (result.success) {
+                    console.log(`Reminder sent to ${booking.customerPhone}`);
+                    await bookingSystem.markReminderSent(booking.id);
+                } else {
+                    console.error(`Failed to send reminder: ${result.error}`);
+                }
+            }
+
+            if (bookingsNeedingReminder.length > 0) {
+                alert(`✅ Sent ${bookingsNeedingReminder.length} reminders!`);
+            }
+        }
+
+        // Auto-check for reminders every 5 minutes when admin is logged in
+        let reminderInterval = null;
+
+        function startReminderScheduler() {
+            if (reminderInterval) return; // Already running
+
+            console.log('Starting automatic reminder scheduler...');
+
+            // Check immediately
+            sendUpcomingReminders();
+
+            // Then check every 5 minutes
+            reminderInterval = setInterval(() => {
+                sendUpcomingReminders();
+            }, 5 * 60 * 1000); // 5 minutes
+        }
+
+        function stopReminderScheduler() {
+            if (reminderInterval) {
+                clearInterval(reminderInterval);
+                reminderInterval = null;
+                console.log('Reminder scheduler stopped');
+            }
+        }
+
+        // Override logout to stop scheduler
+        const _originalLogout = logout;
+        logout = function() {
+            stopReminderScheduler();
+            _originalLogout();
+        };
     </script>
 </body>
 </html>
