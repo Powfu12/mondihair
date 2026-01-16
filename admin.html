@@ -902,8 +902,8 @@
     <!-- Login Screen -->
     <div id="loginScreen" class="login-container">
         <div class="login-card">
-            <h1>Admin Dashboard</h1>
-            <p class="subtitle">Mondi Hairstyle</p>
+            <h1 id="authTitle">Σύνδεση</h1>
+            <p class="subtitle">Mondi Hairstyle Admin</p>
 
             <form id="loginForm">
                 <div class="form-group">
@@ -926,10 +926,15 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn-login">
+                <button type="submit" class="btn-login" id="authBtn">
                     <i class="fas fa-sign-in-alt"></i>
-                    Σύνδεση
+                    <span id="authBtnText">Σύνδεση</span>
                 </button>
+
+                <p style="text-align: center; margin-top: 20px; color: var(--text-gray); font-size: 14px;">
+                    <span id="switchText">Δεν έχετε λογαριασμό;</span>
+                    <a href="#" onclick="toggleAuthMode(event)" style="color: var(--lime); text-decoration: none; font-weight: 600; margin-left: 5px;" id="switchLink">Εγγραφή</a>
+                </p>
             </form>
         </div>
     </div>
@@ -1212,6 +1217,7 @@
         let customClosures = [];
         let currentClosureType = 'fullDay';
         let workingHours = {};
+        let isRegisterMode = false;
 
         // Initialize Firebase
         window.addEventListener('DOMContentLoaded', () => {
@@ -1241,7 +1247,29 @@
             });
         });
 
-        // Login
+        // Toggle between login and register mode
+        function toggleAuthMode(event) {
+            event.preventDefault();
+            isRegisterMode = !isRegisterMode;
+
+            if (isRegisterMode) {
+                // Switch to Register mode
+                document.getElementById('authTitle').textContent = 'Εγγραφή';
+                document.getElementById('authBtnText').textContent = 'Δημιουργία Λογαριασμού';
+                document.getElementById('authBtn').querySelector('i').className = 'fas fa-user-plus';
+                document.getElementById('switchText').textContent = 'Έχετε ήδη λογαριασμό;';
+                document.getElementById('switchLink').textContent = 'Σύνδεση';
+            } else {
+                // Switch to Login mode
+                document.getElementById('authTitle').textContent = 'Σύνδεση';
+                document.getElementById('authBtnText').textContent = 'Σύνδεση';
+                document.getElementById('authBtn').querySelector('i').className = 'fas fa-sign-in-alt';
+                document.getElementById('switchText').textContent = 'Δεν έχετε λογαριασμό;';
+                document.getElementById('switchLink').textContent = 'Εγγραφή';
+            }
+        }
+
+        // Login or Register
         async function login(event) {
             event.preventDefault();
 
@@ -1254,37 +1282,52 @@
                 return;
             }
 
+            if (password.length < 6) {
+                alert('Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες');
+                return;
+            }
+
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalBtnContent = submitBtn.innerHTML;
 
             try {
                 // Disable button and show loading
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Σύνδεση...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Παρακαλώ περιμένετε...';
 
-                // Try to sign in
-                try {
-                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                    currentUser = userCredential.user;
-                    console.log('Login successful:', email);
-                } catch (error) {
-                    console.log('Login failed, trying to create account:', error.code);
-                    // If account doesn't exist, create it
-                    if (error.code === 'auth/user-not-found' ||
-                        error.code === 'auth/wrong-password' ||
-                        error.code === 'auth/invalid-login-credentials' ||
-                        error.code === 'auth/invalid-credential') {
-                        try {
-                            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                            currentUser = userCredential.user;
-                            console.log('Account created successfully:', email);
-                        } catch (createError) {
-                            if (createError.code === 'auth/email-already-in-use') {
-                                throw new Error('Ο λογαριασμός υπάρχει. Παρακαλώ εισάγετε τον σωστό κωδικό.');
-                            }
-                            throw createError;
+                if (isRegisterMode) {
+                    // Register new account
+                    try {
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                        currentUser = userCredential.user;
+                        console.log('Account created successfully:', email);
+                        alert('Ο λογαριασμός δημιουργήθηκε επιτυχώς! Συνδέεστε...');
+                    } catch (error) {
+                        if (error.code === 'auth/email-already-in-use') {
+                            throw new Error('Αυτή η διεύθυνση email χρησιμοποιείται ήδη. Παρακαλώ συνδεθείτε ή χρησιμοποιήστε άλλη διεύθυνση.');
+                        } else if (error.code === 'auth/invalid-email') {
+                            throw new Error('Μη έγκυρη διεύθυνση email');
+                        } else if (error.code === 'auth/weak-password') {
+                            throw new Error('Ο κωδικός είναι πολύ αδύναμος. Χρησιμοποιήστε τουλάχιστον 6 χαρακτήρες.');
                         }
-                    } else {
+                        throw error;
+                    }
+                } else {
+                    // Login to existing account
+                    try {
+                        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                        currentUser = userCredential.user;
+                        console.log('Login successful:', email);
+                    } catch (error) {
+                        if (error.code === 'auth/user-not-found') {
+                            throw new Error('Δεν βρέθηκε λογαριασμός με αυτό το email. Παρακαλώ κάντε εγγραφή πρώτα.');
+                        } else if (error.code === 'auth/wrong-password' ||
+                                   error.code === 'auth/invalid-credential' ||
+                                   error.code === 'auth/invalid-login-credentials') {
+                            throw new Error('Λάθος κωδικός. Παρακαλώ δοκιμάστε ξανά.');
+                        } else if (error.code === 'auth/invalid-email') {
+                            throw new Error('Μη έγκυρη διεύθυνση email');
+                        }
                         throw error;
                     }
                 }
@@ -1304,8 +1347,8 @@
 
                 await loadDashboard();
             } catch (error) {
-                console.error('Login error:', error);
-                alert('Αποτυχία σύνδεσης: ' + error.message);
+                console.error('Authentication error:', error);
+                alert(error.message || 'Σφάλμα: ' + error.code);
 
                 // Re-enable button
                 submitBtn.disabled = false;
