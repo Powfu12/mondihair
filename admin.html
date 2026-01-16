@@ -1202,6 +1202,8 @@
     <script>
         // Global variables
         let db;
+        let auth;
+        let currentUser = null;
         let currentBarberId = null;
         let currentMonth = new Date();
         let currentYear = new Date().getFullYear();
@@ -1212,10 +1214,28 @@
         let workingHours = {};
 
         // Initialize Firebase
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                db = firebase.firestore();
-            }
+        window.addEventListener('DOMContentLoaded', () => {
+            db = firebase.firestore();
+            auth = firebase.auth();
+
+            // Check for persistent login
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    const savedBarberId = localStorage.getItem('currentBarberId');
+                    if (savedBarberId) {
+                        currentBarberId = savedBarberId;
+                        document.getElementById('loginScreen').classList.add('hidden');
+                        document.getElementById('dashboard').classList.add('active');
+                        document.getElementById('userEmail').textContent = user.email;
+
+                        const barberNames = { mondi: 'Mondi', ervin: 'Ervin', marios: 'Marios' };
+                        document.getElementById('dashboardTitle').textContent = `Πίνακας Διαχείρισης - ${barberNames[savedBarberId]}`;
+
+                        loadDashboard();
+                    }
+                }
+            });
         });
 
         // Login
@@ -1226,9 +1246,40 @@
             const password = document.getElementById('loginPassword').value;
             const barberId = document.getElementById('loginBarber').value;
 
+            if (!barberId) {
+                alert('Παρακαλώ επιλέξτε κομμωτή');
+                return;
+            }
+
             try {
-                await firebase.auth().signInWithEmailAndPassword(email, password);
+                // Try to sign in
+                try {
+                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    currentUser = userCredential.user;
+                } catch (error) {
+                    // If account doesn't exist, create it
+                    if (error.code === 'auth/user-not-found' ||
+                        error.code === 'auth/wrong-password' ||
+                        error.code === 'auth/invalid-login-credentials') {
+                        try {
+                            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                            currentUser = userCredential.user;
+                        } catch (createError) {
+                            if (createError.code === 'auth/email-already-in-use') {
+                                throw new Error('Ο λογαριασμός υπάρχει. Παρακαλώ εισάγετε τον σωστό κωδικό.');
+                            }
+                            throw createError;
+                        }
+                    } else {
+                        throw error;
+                    }
+                }
+
                 currentBarberId = barberId;
+
+                // Save to localStorage for persistent login
+                localStorage.setItem('currentBarberId', barberId);
+                localStorage.setItem('currentEmail', email);
 
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('dashboard').classList.add('active');
@@ -1239,16 +1290,20 @@
 
                 await loadDashboard();
             } catch (error) {
-                alert('Σφάλμα σύνδεσης: ' + error.message);
+                console.error('Login error:', error);
+                alert('Αποτυχία σύνδεσης: ' + error.message);
             }
         }
 
         // Logout
         function logout() {
-            firebase.auth().signOut();
+            auth.signOut();
+            localStorage.removeItem('currentBarberId');
+            localStorage.removeItem('currentEmail');
             document.getElementById('dashboard').classList.remove('active');
             document.getElementById('loginScreen').classList.remove('hidden');
             currentBarberId = null;
+            currentUser = null;
         }
 
         // Load Dashboard Data
