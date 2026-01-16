@@ -1047,10 +1047,11 @@
 
         .service-header {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            gap: 15px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
         }
 
         .service-name {
@@ -1433,15 +1434,17 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 15, 15, 0.98);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 12px 10px calc(env(safe-area-inset-bottom) + 8px);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            padding: 10px 8px calc(env(safe-area-inset-bottom) + 6px);
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid rgba(195, 227, 33, 0.2);
+            align-items: center;
+            border-top: 1px solid rgba(195, 227, 33, 0.15);
             z-index: 999;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @media (min-width: 768px) {
@@ -1454,51 +1457,62 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: rgba(255, 255, 255, 0.6);
+            justify-content: center;
+            gap: 3px;
+            color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
-            font-size: 0.7rem;
-            transition: var(--transition);
-            padding: 8px 12px;
-            border-radius: 12px;
-            min-width: 65px;
+            font-size: 0.65rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 8px;
+            border-radius: 14px;
+            min-width: 60px;
             font-weight: 600;
+            letter-spacing: 0.2px;
             position: relative;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .nav-item::before {
             content: '';
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 3px;
-            background: var(--lime);
-            border-radius: 0 0 3px 3px;
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, var(--lime), var(--lime-dark));
+            border-radius: 0 0 4px 4px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(195, 227, 33, 0.4);
         }
 
         .nav-item i {
-            font-size: 1.4rem;
-            transition: var(--transition);
+            font-size: 1.35rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .nav-item.active::before {
-            width: 60%;
+            width: 55%;
         }
 
         .nav-item:active {
-            transform: scale(0.9);
-            background: rgba(195, 227, 33, 0.1);
+            transform: scale(0.92);
+            background: rgba(195, 227, 33, 0.08);
         }
 
         .nav-item.active {
             color: var(--lime);
+            background: rgba(195, 227, 33, 0.05);
         }
 
         .nav-item.active i {
-            transform: scale(1.1);
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 8px rgba(195, 227, 33, 0.4));
+        }
+
+        .nav-item:not(.active):hover {
+            color: rgba(255, 255, 255, 0.8);
         }
 
         /* Scroll to Top Button */
@@ -1554,6 +1568,15 @@
                 -moz-osx-font-smoothing: grayscale;
             }
 
+            html {
+                scroll-behavior: smooth;
+                scroll-padding-top: 20px;
+            }
+
+            body {
+                padding-bottom: 80px;
+            }
+
             .hero,
             .services-section,
             .gallery-section,
@@ -1561,6 +1584,12 @@
             .info-section,
             .products-section {
                 padding-bottom: 0px;
+            }
+
+            /* Smooth transitions for all interactive elements */
+            button, a, .nav-item {
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
             }
         }
 
@@ -1708,7 +1737,7 @@
                         <p data-en="Zakynthos, 29100" data-gr="Ζάκυνθος, 29100">Ζάκυνθος, 29100</p>
                         <p data-en="Greece" data-gr="Ελλάδα">Ελλάδα</p>
                     </div>
-                    <a href="https://maps.google.com/?q=Zakynthos+Greece" target="_blank" rel="noopener noreferrer" class="map-button" aria-label="Get directions on Google Maps">
+                    <a href="https://maps.app.goo.gl/a9qBn8tzW3D41oED7" target="_blank" rel="noopener noreferrer" class="map-button" aria-label="Get directions on Google Maps">
                         <i class="fas fa-directions" aria-hidden="true"></i>
                         <span data-en="Get Directions" data-gr="Οδηγίες">Οδηγίες</span>
                     </a>
@@ -1872,27 +1901,18 @@
                         <h3 class="service-name" data-en="Classic Haircut" data-gr="Κούρεμα">Κούρεμα</h3>
                         <span class="service-price">€13</span>
                     </div>
-                    <p class="service-description" data-en="Traditional barbering techniques with modern precision." data-gr="Παραδοσιακές τεχνικές κουρέματος με σύγχρονη ακρίβεια.">
-                        Παραδοσιακές τεχνικές κουρέματος με σύγχρονη ακρίβεια.
-                    </p>
                 </article>
- <article class="service-card">
+                <article class="service-card">
                     <div class="service-header">
                         <h3 class="service-name" data-en="Haircut + Beard" data-gr="Κούρεμα + Μούσι">Κούρεμα + Μούσι</h3>
                         <span class="service-price">€15</span>
                     </div>
-                    <p class="service-description" data-en="Traditional barbering techniques with modern precision." data-gr="Παραδοσιακές τεχνικές κουρέματος με σύγχρονη ακρίβεια.">
-                        Παραδοσιακές τεχνικές κουρέματος με σύγχρονη ακρίβεια.
-                    </p>
                 </article>
                 <article class="service-card">
                     <div class="service-header">
                         <h3 class="service-name" data-en="Beard Trim & Shape" data-gr="Τριμάρισμα Γενιών">Τριμάρισμα Γενιών</h3>
                         <span class="service-price">€10</span>
                     </div>
-                    <p class="service-description" data-en="Professional beard grooming with class." data-gr="Επαγγελματική περιποίηση γενιών με κλάση.">
-                        Επαγγελματική περιποίηση γενιών με κλάση.
-                    </p>
                 </article>
 
                 <article class="service-card">
@@ -1900,9 +1920,6 @@
                         <h3 class="service-name" data-en="Haircut + Beard + Wash + Styling" data-gr="Κούρεμα, Μούσι, Λούσιμο & Styling">Κούρεμα, Μούσι, Λούσιμο & Styling</h3>
                         <span class="service-price">€20</span>
                     </div>
-                    <p class="service-description" data-en="Complete grooming package. Our most popular service." data-gr="Πλήρες πακέτο περιποίησης. Η πιο δημοφιλής υπηρεσία μας.">
-                        Πλήρες πακέτο περιποίησης. Η πιο δημοφιλής υπηρεσία μας.
-                    </p>
                 </article>
             </div>
         </section>
@@ -2133,13 +2150,16 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
             });
         }
 
-        // Mobile Navigation Active State
+        // Mobile Navigation Active State with Auto-hide
         const navItems = document.querySelectorAll('.nav-item');
         const sections = document.querySelectorAll('section[id]');
+        const mobileNav = document.querySelector('.mobile-nav');
+        let lastScrollTop = 0;
+        let scrollTimeout;
 
         function setActiveNav() {
             let current = '';
-            
+
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.clientHeight;
@@ -2156,7 +2176,35 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
             });
         }
 
-        window.addEventListener('scroll', setActiveNav);
+        // Auto-hide mobile nav on scroll down, show on scroll up
+        function handleMobileNavScroll() {
+            if (window.innerWidth >= 768) return; // Only on mobile
+
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Clear the timeout
+            clearTimeout(scrollTimeout);
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down & past 100px
+                mobileNav.style.transform = 'translateY(100%)';
+            } else {
+                // Scrolling up or at top
+                mobileNav.style.transform = 'translateY(0)';
+            }
+
+            // Show nav after user stops scrolling
+            scrollTimeout = setTimeout(() => {
+                mobileNav.style.transform = 'translateY(0)';
+            }, 1500);
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }
+
+        window.addEventListener('scroll', () => {
+            setActiveNav();
+            handleMobileNavScroll();
+        });
 
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
