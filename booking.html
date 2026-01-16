@@ -401,7 +401,7 @@
             grid-template-columns: repeat(7, 1fr);
             gap: 4px;
             margin-bottom: 8px;
-            padding: 0 2px;
+            padding: 0;
         }
 
         .weekday {
@@ -416,24 +416,24 @@
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            padding: 0 2px;
+            gap: 4px;
+            padding: 0;
         }
 
         .calendar-day {
             aspect-ratio: 1;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: clamp(14px, 3.5vw, 16px);
+            font-size: clamp(13px, 3.2vw, 16px);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             background: rgba(255, 255, 255, 0.03);
             border: 2px solid transparent;
-            min-height: 52px;
+            min-height: 48px;
             position: relative;
         }
 
@@ -802,8 +802,18 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
+            .calendar-days {
+                gap: 3px;
+            }
+
             .calendar-day {
-                min-height: 48px;
+                min-height: 44px;
+                border-radius: 8px;
+                font-size: clamp(12px, 3vw, 14px);
+            }
+
+            .day-status {
+                font-size: clamp(7px, 1.8vw, 9px);
             }
         }
 
@@ -858,32 +868,26 @@
                 <div class="barber-grid">
                     <div class="barber-item" onclick="selectBarber('mondi')">
                         <div class="barber-photo">
-                            <img src="barber-mondi.jpg" alt="Mondi" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
+                            <img src="mondi.jpg" alt="Mondi" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
                         </div>
                         <div class="barber-info">
                             <h3>Mondi</h3>
-                            <p>Μαστρο Κομμωτής</p>
-                            <span class="barber-badge">20 λεπτά ανά ραντεβού</span>
                         </div>
                     </div>
                     <div class="barber-item" onclick="selectBarber('ervin')">
                         <div class="barber-photo">
-                            <img src="barber-ervin.jpg" alt="Ervin" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
+                            <img src="erving.jpg" alt="Ervin" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
                         </div>
                         <div class="barber-info">
                             <h3>Ervin</h3>
-                            <p>Έμπειρος Κομμωτής</p>
-                            <span class="barber-badge">30 λεπτά ανά ραντεβού</span>
                         </div>
                     </div>
                     <div class="barber-item" onclick="selectBarber('marios')">
                         <div class="barber-photo">
-                            <img src="barber-marios.jpg" alt="Marios" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
+                            <img src="mario.jpg" alt="Marios" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
                         </div>
                         <div class="barber-info">
                             <h3>Marios</h3>
-                            <p>Κομμωτής Στυλίστας</p>
-                            <span class="barber-badge">30 λεπτά ανά ραντεβού</span>
                         </div>
                     </div>
                 </div>
@@ -907,28 +911,24 @@
                             <div class="service-name">Κούρεμα</div>
                             <div class="service-price">€13</div>
                         </div>
-                        <div class="service-desc">Παραδοσιακό κούρεμα με σύγχρονη ακρίβεια</div>
                     </div>
                     <div class="service-item" onclick="selectService('Haircut + Beard')">
                         <div class="service-header">
                             <div class="service-name">Κούρεμα + Γένια</div>
                             <div class="service-price">€15</div>
                         </div>
-                        <div class="service-desc">Πλήρης υπηρεσία κουρέματος και περιποίησης γενιών</div>
                     </div>
                     <div class="service-item" onclick="selectService('Beard Trim & Shape')">
                         <div class="service-header">
                             <div class="service-name">Περιποίηση Γενιών</div>
                             <div class="service-price">€10</div>
                         </div>
-                        <div class="service-desc">Επαγγελματική περιποίηση γενιών με στυλ</div>
                     </div>
                     <div class="service-item" onclick="selectService('Haircut + Beard + Wash + Styling')">
                         <div class="service-header">
                             <div class="service-name">Πλήρες Πακέτο</div>
                             <div class="service-price">€20</div>
                         </div>
-                        <div class="service-desc">Πλήρες πακέτο περιποίησης - Το πιο δημοφιλές!</div>
                     </div>
                 </div>
             </div>
