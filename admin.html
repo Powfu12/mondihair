@@ -905,7 +905,7 @@
             <h1>Admin Dashboard</h1>
             <p class="subtitle">Mondi Hairstyle</p>
 
-            <form id="loginForm" onsubmit="login(event)">
+            <form id="loginForm">
                 <div class="form-group">
                     <label>Email</label>
                     <input type="email" id="loginEmail" required placeholder="admin@mondihair.com">
@@ -1218,6 +1218,9 @@
             db = firebase.firestore();
             auth = firebase.auth();
 
+            // Add form submit listener
+            document.getElementById('loginForm').addEventListener('submit', login);
+
             // Check for persistent login
             auth.onAuthStateChanged((user) => {
                 if (user) {
@@ -1242,7 +1245,7 @@
         async function login(event) {
             event.preventDefault();
 
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             const barberId = document.getElementById('loginBarber').value;
 
@@ -1251,19 +1254,30 @@
                 return;
             }
 
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalBtnContent = submitBtn.innerHTML;
+
             try {
+                // Disable button and show loading
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Σύνδεση...';
+
                 // Try to sign in
                 try {
                     const userCredential = await auth.signInWithEmailAndPassword(email, password);
                     currentUser = userCredential.user;
+                    console.log('Login successful:', email);
                 } catch (error) {
+                    console.log('Login failed, trying to create account:', error.code);
                     // If account doesn't exist, create it
                     if (error.code === 'auth/user-not-found' ||
                         error.code === 'auth/wrong-password' ||
-                        error.code === 'auth/invalid-login-credentials') {
+                        error.code === 'auth/invalid-login-credentials' ||
+                        error.code === 'auth/invalid-credential') {
                         try {
                             const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                             currentUser = userCredential.user;
+                            console.log('Account created successfully:', email);
                         } catch (createError) {
                             if (createError.code === 'auth/email-already-in-use') {
                                 throw new Error('Ο λογαριασμός υπάρχει. Παρακαλώ εισάγετε τον σωστό κωδικό.');
@@ -1292,6 +1306,10 @@
             } catch (error) {
                 console.error('Login error:', error);
                 alert('Αποτυχία σύνδεσης: ' + error.message);
+
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnContent;
             }
         }
 
