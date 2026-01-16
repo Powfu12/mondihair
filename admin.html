@@ -1221,17 +1221,54 @@
 
         // Initialize Firebase
         window.addEventListener('DOMContentLoaded', () => {
-            db = firebase.firestore();
-            auth = firebase.auth();
+            console.log('DOMContentLoaded fired');
+
+            // Check if Firebase is available
+            if (typeof firebase === 'undefined') {
+                console.error('Firebase not loaded!');
+                alert('Σφάλμα: Το Firebase δεν έχει φορτωθεί. Παρακαλώ ανανεώστε τη σελίδα.');
+                return;
+            }
+
+            console.log('Firebase available, initializing...');
+
+            try {
+                db = firebase.firestore();
+                auth = firebase.auth();
+                console.log('Firebase initialized successfully');
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                alert('Σφάλμα αρχικοποίησης Firebase: ' + error.message);
+                return;
+            }
 
             // Add form submit listener
-            document.getElementById('loginForm').addEventListener('submit', login);
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    console.log('Form submit triggered');
+                    login(e);
+                });
+                console.log('Form submit listener attached');
+            } else {
+                console.error('Login form not found!');
+            }
 
             // Add toggle auth mode listener
-            document.getElementById('switchAuthLink').addEventListener('click', toggleAuthMode);
+            const switchLink = document.getElementById('switchAuthLink');
+            if (switchLink) {
+                switchLink.addEventListener('click', (e) => {
+                    console.log('Switch auth link clicked');
+                    toggleAuthMode(e);
+                });
+                console.log('Toggle auth listener attached');
+            } else {
+                console.error('Switch auth link not found!');
+            }
 
             // Check for persistent login
             auth.onAuthStateChanged((user) => {
+                console.log('Auth state changed:', user ? user.email : 'no user');
                 if (user) {
                     currentUser = user;
                     const savedBarberId = localStorage.getItem('currentBarberId');
@@ -1274,11 +1311,14 @@
 
         // Login or Register
         async function login(event) {
+            console.log('Login function called');
             event.preventDefault();
 
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             const barberId = document.getElementById('loginBarber').value;
+
+            console.log('Form values:', { email, password: '***', barberId, isRegisterMode });
 
             if (!barberId) {
                 alert('Παρακαλώ επιλέξτε κομμωτή');
@@ -1293,6 +1333,8 @@
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalBtnContent = submitBtn.innerHTML;
 
+            console.log('Starting authentication process...');
+
             try {
                 // Disable button and show loading
                 submitBtn.disabled = true;
@@ -1300,12 +1342,14 @@
 
                 if (isRegisterMode) {
                     // Register new account
+                    console.log('Attempting to register new account...');
                     try {
                         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                         currentUser = userCredential.user;
                         console.log('Account created successfully:', email);
                         alert('Ο λογαριασμός δημιουργήθηκε επιτυχώς! Συνδέεστε...');
                     } catch (error) {
+                        console.error('Registration error:', error.code, error.message);
                         if (error.code === 'auth/email-already-in-use') {
                             throw new Error('Αυτή η διεύθυνση email χρησιμοποιείται ήδη. Παρακαλώ συνδεθείτε ή χρησιμοποιήστε άλλη διεύθυνση.');
                         } else if (error.code === 'auth/invalid-email') {
@@ -1317,11 +1361,13 @@
                     }
                 } else {
                     // Login to existing account
+                    console.log('Attempting to login to existing account...');
                     try {
                         const userCredential = await auth.signInWithEmailAndPassword(email, password);
                         currentUser = userCredential.user;
                         console.log('Login successful:', email);
                     } catch (error) {
+                        console.error('Login error:', error.code, error.message);
                         if (error.code === 'auth/user-not-found') {
                             throw new Error('Δεν βρέθηκε λογαριασμός με αυτό το email. Παρακαλώ κάντε εγγραφή πρώτα.');
                         } else if (error.code === 'auth/wrong-password' ||
@@ -1340,6 +1386,7 @@
                 // Save to localStorage for persistent login
                 localStorage.setItem('currentBarberId', barberId);
                 localStorage.setItem('currentEmail', email);
+                console.log('Saved to localStorage:', barberId);
 
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('dashboard').classList.add('active');
@@ -1348,7 +1395,9 @@
                 const barberNames = { mondi: 'Mondi', ervin: 'Ervin', marios: 'Marios' };
                 document.getElementById('dashboardTitle').textContent = `Πίνακας Διαχείρισης - ${barberNames[barberId]}`;
 
+                console.log('Loading dashboard...');
                 await loadDashboard();
+                console.log('Dashboard loaded successfully');
             } catch (error) {
                 console.error('Authentication error:', error);
                 alert(error.message || 'Σφάλμα: ' + error.code);
