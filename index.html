@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    
+
     <!-- SEO Meta Tags -->
     <title>Mondi Hairstyle | Premium Barbershop in Zakynthos | Expert Haircuts & Beard Grooming</title>
     <meta name="description" content="Premium barbershop in Zakynthos, Greece. Expert haircuts, beard grooming, and styling services. Book your appointment with our master barbers. Walk-ins welcome!">
@@ -11,40 +11,40 @@
     <meta name="author" content="Mondi Hairstyle">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.mondihairstyle.com">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.mondihairstyle.com">
     <meta property="og:title" content="Mondi Hairstyle | Premium Barbershop in Zakynthos">
     <meta property="og:description" content="Expert haircuts, beard grooming, and styling services in Zakynthos, Greece. Book your appointment today!">
     <meta property="og:image" content="https://www.mondihairstyle.com/mondic.png">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://www.mondihairstyle.com">
     <meta property="twitter:title" content="Mondi Hairstyle | Premium Barbershop in Zakynthos">
     <meta property="twitter:description" content="Expert haircuts, beard grooming, and styling services in Zakynthos, Greece.">
     <meta property="twitter:image" content="https://www.mondihairstyle.com/mondic.png">
-    
+
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#c3e321">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    
+
     <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Structured Data / Schema.org -->
     <script type="application/ld+json">
     {
@@ -99,7 +99,7 @@
       ]
     }
     </script>
-    
+
     <style>
         * {
             margin: 0;
@@ -283,7 +283,7 @@
             position: relative;
             overflow: hidden;
             background-color: var(--darker);
-            background-image: 
+            background-image:
                 linear-gradient(rgba(15, 15, 15, 0.88), rgba(26, 26, 26, 0.78)),
                 url('hero.jpg');
             background-size: cover;
@@ -1047,10 +1047,11 @@
 
         .service-header {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            gap: 15px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
         }
 
         .service-name {
@@ -1433,15 +1434,17 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 15, 15, 0.98);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 12px 10px calc(env(safe-area-inset-bottom) + 8px);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            padding: 10px 8px calc(env(safe-area-inset-bottom) + 6px);
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid rgba(195, 227, 33, 0.2);
+            align-items: center;
+            border-top: 1px solid rgba(195, 227, 33, 0.15);
             z-index: 999;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @media (min-width: 768px) {
@@ -1454,51 +1457,62 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: rgba(255, 255, 255, 0.6);
+            justify-content: center;
+            gap: 3px;
+            color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
-            font-size: 0.7rem;
-            transition: var(--transition);
-            padding: 8px 12px;
-            border-radius: 12px;
-            min-width: 65px;
+            font-size: 0.65rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 8px;
+            border-radius: 14px;
+            min-width: 60px;
             font-weight: 600;
+            letter-spacing: 0.2px;
             position: relative;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .nav-item::before {
             content: '';
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 3px;
-            background: var(--lime);
-            border-radius: 0 0 3px 3px;
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, var(--lime), var(--lime-dark));
+            border-radius: 0 0 4px 4px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(195, 227, 33, 0.4);
         }
 
         .nav-item i {
-            font-size: 1.4rem;
-            transition: var(--transition);
+            font-size: 1.35rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .nav-item.active::before {
-            width: 60%;
+            width: 55%;
         }
 
         .nav-item:active {
-            transform: scale(0.9);
-            background: rgba(195, 227, 33, 0.1);
+            transform: scale(0.92);
+            background: rgba(195, 227, 33, 0.08);
         }
 
         .nav-item.active {
             color: var(--lime);
+            background: rgba(195, 227, 33, 0.05);
         }
 
         .nav-item.active i {
-            transform: scale(1.1);
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 8px rgba(195, 227, 33, 0.4));
+        }
+
+        .nav-item:not(.active):hover {
+            color: rgba(255, 255, 255, 0.8);
         }
 
         /* Scroll to Top Button */
@@ -1554,6 +1568,15 @@
                 -moz-osx-font-smoothing: grayscale;
             }
 
+            html {
+                scroll-behavior: smooth;
+                scroll-padding-top: 20px;
+            }
+
+            body {
+                padding-bottom: 80px;
+            }
+
             .hero,
             .services-section,
             .gallery-section,
@@ -1561,6 +1584,12 @@
             .info-section,
             .products-section {
                 padding-bottom: 0px;
+            }
+
+            /* Smooth transitions for all interactive elements */
+            button, a, .nav-item {
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
             }
         }
 
@@ -1662,10 +1691,10 @@
     <header class="header" role="banner">
         <div class="header-content">
             <img src="mondic.png" alt="Mondi Hairstyle Logo" class="header-logo">
-            
+
             <nav class="language-switcher" role="navigation" aria-label="Language Selection">
-                <button class="lang-btn active" onclick="switchLanguage('en')" id="lang-en" aria-label="Switch to English">EN</button>
-                <button class="lang-btn" onclick="switchLanguage('gr')" id="lang-gr" aria-label="Αλλαγή σε Ελληνικά">ΕΛ</button>
+                <button class="lang-btn" onclick="switchLanguage('en')" id="lang-en" aria-label="Switch to English">EN</button>
+                <button class="lang-btn active" onclick="switchLanguage('gr')" id="lang-gr" aria-label="Αλλαγή σε Ελληνικά">ΕΛ</button>
             </nav>
         </div>
     </header>
@@ -1679,14 +1708,14 @@
             </div>
             <div class="location">
                 <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                <span data-en="Zakynthos, Greece" data-gr="Ζάκυνθος, Ελλάδα">Zakynthos, Greece</span>
+                <span data-en="Zakynthos, Greece" data-gr="Ζάκυνθος, Ελλάδα">Ζάκυνθος, Ελλάδα</span>
             </div>
             <p class="tagline" data-en="Where tradition meets modern style. Expert cuts, fresh fades, and timeless grooming for the modern gentleman." data-gr="Όπου η παράδοση συναντά το μοντέρνο στυλ. Επαγγελματικά κουρέματα, φρέσκα fades και διαχρονική περιποίηση.">
-                Where tradition meets modern style. Expert cuts, fresh fades, and timeless grooming for the modern gentleman.
+                Όπου η παράδοση συναντά το μοντέρνο στυλ. Επαγγελματικά κουρέματα, φρέσκα fades και διαχρονική περιποίηση.
             </p>
             <a href="booking.html" class="cta-button" aria-label="Book appointment with our barbers">
                 <i class="fas fa-calendar-check" aria-hidden="true"></i>
-                <span data-en="Book Now" data-gr="Κλείστε Τώρα">Book Now</span>
+                <span data-en="Book Now" data-gr="Κλείστε Τώρα">Κλείστε Τώρα</span>
             </a>
             <div class="scroll-indicator" aria-hidden="true">
                 <i class="fas fa-chevron-down"></i>
@@ -1702,23 +1731,23 @@
                     <div class="info-icon" aria-hidden="true">
                         <i class="fas fa-map-marker-alt"></i>
                     </div>
-                    <h3 class="info-title" data-en="Our Location" data-gr="Η Τοποθεσία μας">Our Location</h3>
+                    <h3 class="info-title" data-en="Our Location" data-gr="Η Τοποθεσία μας">Η Τοποθεσία μας</h3>
                     <div class="info-details">
-                        <p data-en="Kalliteros Street" data-gr="Καλλιτερος">Kalliteros</p>
-                        <p data-en="Zakynthos, 29100" data-gr="Ζάκυνθος, 29100">Zakynthos, 29100</p>
-                        <p data-en="Greece" data-gr="Ελλάδα">Greece</p>
+                        <p data-en="Kalliteros Street" data-gr="Καλλιτερος">Καλλιτερος</p>
+                        <p data-en="Zakynthos, 29100" data-gr="Ζάκυνθος, 29100">Ζάκυνθος, 29100</p>
+                        <p data-en="Greece" data-gr="Ελλάδα">Ελλάδα</p>
                     </div>
-                    <a href="https://maps.google.com/?q=Zakynthos+Greece" target="_blank" rel="noopener noreferrer" class="map-button" aria-label="Get directions on Google Maps">
+                    <a href="https://maps.app.goo.gl/a9qBn8tzW3D41oED7" target="_blank" rel="noopener noreferrer" class="map-button" aria-label="Get directions on Google Maps">
                         <i class="fas fa-directions" aria-hidden="true"></i>
-                        <span data-en="Get Directions" data-gr="Οδηγίες">Get Directions</span>
+                        <span data-en="Get Directions" data-gr="Οδηγίες">Οδηγίες</span>
                     </a>
                     <div class="map-container">
-                        <iframe 
+                        <iframe
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d197.14407617938312!2d20.900006522638854!3d37.75944091282028!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1367477e6e527f51%3A0x569c0faf28878d90!2sMondi%20Hairstryle!5e0!3m2!1sen!2sgr!4v1762277652644!5m2!1sen!2sgr"
-                            width="100%" 
-                            height="250"  
-                            allowfullscreen="" 
-                            loading="lazy" 
+                            width="100%"
+                            height="250"
+                            allowfullscreen=""
+                            loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
                             title="Mondi Hairstyle Location Map">
                         </iframe>
@@ -1730,28 +1759,28 @@
                     <div class="info-icon" aria-hidden="true">
                         <i class="fas fa-clock"></i>
                     </div>
-                    <h3 class="info-title" data-en="Opening Hours" data-gr="Ωράριο Λειτουργίας">Opening Hours</h3>
+                    <h3 class="info-title" data-en="Opening Hours" data-gr="Ωράριο Λειτουργίας">Ωράριο Λειτουργίας</h3>
                     <div class="info-details">
-                        <p><strong data-en="Monday" data-gr="Δευτέρα">Monday</strong></p>
+                        <p><strong data-en="Monday" data-gr="Δευτέρα">Δευτέρα</strong></p>
                         <p>9:00-14:00 & 17:00-21:00</p>
-                        
-                        <p><strong data-en="Tuesday" data-gr="Τρίτη">Tuesday</strong></p>
+
+                        <p><strong data-en="Tuesday" data-gr="Τρίτη">Τρίτη</strong></p>
                         <p>9:00-14:00 & 17:00-21:00</p>
-                        
-                        <p><strong data-en="Wednesday" data-gr="Τετάρτη">Wednesday</strong></p>
+
+                        <p><strong data-en="Wednesday" data-gr="Τετάρτη">Τετάρτη</strong></p>
                         <p>9:00-17:00</p>
-                        
-                        <p><strong data-en="Thursday" data-gr="Πέμπτη">Thursday</strong></p>
+
+                        <p><strong data-en="Thursday" data-gr="Πέμπτη">Πέμπτη</strong></p>
                         <p>9:00-14:00 & 17:00-21:00</p>
-                        
-                        <p><strong data-en="Friday" data-gr="Παρασκευή">Friday</strong></p>
+
+                        <p><strong data-en="Friday" data-gr="Παρασκευή">Παρασκευή</strong></p>
                         <p>9:00-14:00 & 17:00-21:00</p>
-                        
-                        <p><strong data-en="Saturday" data-gr="Σάββατο">Saturday</strong></p>
+
+                        <p><strong data-en="Saturday" data-gr="Σάββατο">Σάββατο</strong></p>
                         <p>9:00-21:00</p>
-                        
-                        <p><strong data-en="Sunday" data-gr="Κυριακή">Sunday</strong></p>
-                        <p data-en="Closed" data-gr="Κλειστά">Closed</p>
+
+                        <p><strong data-en="Sunday" data-gr="Κυριακή">Κυριακή</strong></p>
+                        <p data-en="Closed" data-gr="Κλειστά">Κλειστά</p>
                     </div>
                 </article>
             </div>
@@ -1759,11 +1788,11 @@
 
         <!-- Products Carousel Section - REPLACES BRANDS SECTION -->
         <section class="products-section" id="products" aria-labelledby="products-heading">
-            <h2 id="products-heading" class="products-title" data-en="Our Products" data-gr="Τα Προϊόντα μας">Our Products</h2>
+            <h2 id="products-heading" class="products-title" data-en="Our Products" data-gr="Τα Προϊόντα μας">Τα Προϊόντα μας</h2>
             <p class="products-subtitle" data-en="Premium grooming products available at our shop" data-gr="Premium προϊόντα περιποίησης διαθέσιμα στο κατάστημά μας">
-                Premium grooming products available at our shop
+                Premium προϊόντα περιποίησης διαθέσιμα στο κατάστημά μας
             </p>
-            
+
             <div class="products-carousel-container">
                 <div class="products-carousel" id="productsCarousel" role="list">
                     <!-- Product Card 1 -->
@@ -1773,7 +1802,7 @@
                             <!-- Replace with: <img src="product1.jpg" alt="Product 1" class="product-image" loading="lazy" -->
                         </div>
                         <div class="product-info">
-                            <h3 class="product-name" data-en="Mentor Molding Cream" data-gr="Κρέμα μαλλιών">Mentor Molding Cream</h3>
+                            <h3 class="product-name" data-en="Mentor Molding Cream" data-gr="Κρέμα μαλλιών">Κρέμα μαλλιών</h3>
                             <div class="product-price">€15</div>
                         </div>
                     </article>
@@ -1785,7 +1814,7 @@
                             <!-- Replace with: <img src="product2.jpg" alt="Product 2" class="product-image" loading="lazy"> -->
                         </div>
                         <div class="product-info">
-                            <h3 class="product-name" data-en="Uppercut Styling Powder" data-gr="Πούδρα μαλλιών">Uppercut Styling Powder</h3>
+                            <h3 class="product-name" data-en="Uppercut Styling Powder" data-gr="Πούδρα μαλλιών">Πούδρα μαλλιών</h3>
                             <div class="product-price">€15</div>
                         </div>
                     </article>
@@ -1797,7 +1826,7 @@
                             <!-- Replace with: <img src="product3.jpg" alt="Product 3" class="product-image" loading="lazy"> -->
                         </div>
                         <div class="product-info">
-                            <h3 class="product-name" data-en="L3VEL3 Spider Wax" data-gr="Κερί μαλλιών">L3VEL3 Spider Wax</h3>
+                            <h3 class="product-name" data-en="L3VEL3 Spider Wax" data-gr="Κερί μαλλιών">Κερί μαλλιών</h3>
                             <div class="product-price">€15</div>
                         </div>
                     </article>
@@ -1809,7 +1838,7 @@
                             <!-- Replace with: <img src="product4.jpg" alt="Product 4" class="product-image" loading="lazy"> -->
                         </div>
                         <div class="product-info">
-                            <h3 class="product-name" data-en="Mentor Magic Dust" data-gr="Πούδρα όγκου">Mentor Magic Dust</h3>
+                            <h3 class="product-name" data-en="Mentor Magic Dust" data-gr="Πούδρα όγκου">Πούδρα όγκου</h3>
                             <div class="product-price">€15</div>
                         </div>
                     </article>
@@ -1820,7 +1849,7 @@
                             <img src="p5.PNG" alt="Product 5" class="product-image" loading="lazy">                            <!-- Replace with: <img src="product5.jpg" alt="Product 5" class="product-image" loading="lazy"> -->
                         </div>
                         <div class="product-info">
-                            <h3 class="product-name" data-en="Matte pomade" data-gr="Ματ πομάδα">Big Pink Matte Pomade</h3>
+                            <h3 class="product-name" data-en="Matte pomade" data-gr="Ματ πομάδα">Ματ πομάδα</h3>
                             <div class="product-price">€15</div>
                         </div>
                     </article>
@@ -1832,7 +1861,7 @@
                             <!-- Replace with: <img src="product6.jpg" alt="Product 6" class="product-image" loading="lazy"> -->
                         </div>
                         <div class="product-info">
-                            <h3 class="product-name" data-en="L3VEL3 Paste" data-gr="Πάστα μαλλιών">L3VEL3 Paste</h3>
+                            <h3 class="product-name" data-en="L3VEL3 Paste" data-gr="Πάστα μαλλιών">Πάστα μαλλιών</h3>
                             <div class="product-price">€15</div>
                         </div>
                     </article>
@@ -1843,12 +1872,12 @@
                             <!-- Replace with: <img src="product6.jpg" alt="Product 6" class="product-image" loading="lazy"> -->
                         </div>
                         <div class="product-info">
-                            <h3 class="product-name" data-en="Hair pomade" data-gr="Πομάδα μαλλιών">V-Kings Pomade</h3>
+                            <h3 class="product-name" data-en="Hair pomade" data-gr="Πομάδα μαλλιών">Πομάδα μαλλιών</h3>
                             <div class="product-price">€15</div>
                         </div>
                     </article>
                 </div>
-                
+
                 <!-- Carousel Navigation -->
                 <button class="carousel-nav-btn prev" onclick="scrollProducts(-1)" aria-label="Previous products">
                     <i class="fas fa-chevron-left"></i>
@@ -1861,62 +1890,50 @@
 
         <!-- Services Section -->
         <section class="services-section" id="services" aria-labelledby="services-heading">
-            <h2 id="services-heading" class="section-title" data-en="Our Services" data-gr="Οι Υπηρεσίες μας">Our Services</h2>
+            <h2 id="services-heading" class="section-title" data-en="Our Services" data-gr="Οι Υπηρεσίες μας">Οι Υπηρεσίες μας</h2>
             <p class="section-subtitle" data-en="Premium grooming services tailored to your style" data-gr="Υπηρεσίες premium περιποίησης προσαρμοσμένες στο στυλ σας">
-                Premium grooming services tailored to your style
+                Υπηρεσίες premium περιποίησης προσαρμοσμένες στο στυλ σας
             </p>
-            
+
             <div class="services-grid">
                 <article class="service-card">
                     <div class="service-header">
-                        <h3 class="service-name" data-en="Classic Haircut" data-gr="Κούρεμα">Haircut</h3>
+                        <h3 class="service-name" data-en="Classic Haircut" data-gr="Κούρεμα">Κούρεμα</h3>
                         <span class="service-price">€13</span>
                     </div>
-                    <p class="service-description" data-en="Traditional barbering techniques with modern precision." data-gr="Παραδοσιακές τεχνικές κουρέματος με σύγχρονη ακρίβεια.">
-                        Traditional barbering techniques with modern precision.
-                    </p>
-                </article>
- <article class="service-card">
-                    <div class="service-header">
-                        <h3 class="service-name" data-en="Haircut + Beard" data-gr="Κούρεμα + Μούσι">Haircut + Beard</h3>
-                        <span class="service-price">€15</span>
-                    </div>
-                    <p class="service-description" data-en="Traditional barbering techniques with modern precision." data-gr="Παραδοσιακές τεχνικές κουρέματος με σύγχρονη ακρίβεια.">
-                        Traditional barbering techniques with modern precision.
-                    </p>
                 </article>
                 <article class="service-card">
                     <div class="service-header">
-                        <h3 class="service-name" data-en="Beard Trim & Shape" data-gr="Τριμάρισμα Γενιών">Beard Trim & Shape</h3>
+                        <h3 class="service-name" data-en="Haircut + Beard" data-gr="Κούρεμα + Μούσι">Κούρεμα + Μούσι</h3>
+                        <span class="service-price">€15</span>
+                    </div>
+                </article>
+                <article class="service-card">
+                    <div class="service-header">
+                        <h3 class="service-name" data-en="Beard Trim & Shape" data-gr="Τριμάρισμα Γενιών">Τριμάρισμα Γενιών</h3>
                         <span class="service-price">€10</span>
                     </div>
-                    <p class="service-description" data-en="Professional beard grooming with class." data-gr="Επαγγελματική περιποίηση γενιών με κλάση.">
-                        Professional beard grooming with class.
-                    </p>
                 </article>
 
                 <article class="service-card">
                     <div class="service-header">
-                        <h3 class="service-name" data-en="Haircut + Beard + Wash + Styling" data-gr="Κούρεμα, Μούσι, Λούσιμο & Styling">Haircut + Beard + Wash + Styling</h3>
+                        <h3 class="service-name" data-en="Haircut + Beard + Wash + Styling" data-gr="Κούρεμα, Μούσι, Λούσιμο & Styling">Κούρεμα, Μούσι, Λούσιμο & Styling</h3>
                         <span class="service-price">€20</span>
                     </div>
-                    <p class="service-description" data-en="Complete grooming package. Our most popular service." data-gr="Πλήρες πακέτο περιποίησης. Η πιο δημοφιλής υπηρεσία μας.">
-                        Complete grooming package. Our most popular service.
-                    </p>
                 </article>
             </div>
         </section>
 
         <!-- Gallery Section - Organized by Barber -->
 <section class="gallery-section" id="gallery" aria-labelledby="gallery-heading">
-    <h2 id="gallery-heading" class="section-title" data-en="Our Work" data-gr="Η Δουλειά μας">Our Work</h2>
+    <h2 id="gallery-heading" class="section-title" data-en="Our Work" data-gr="Η Δουλειά μας">Η Δουλειά μας</h2>
     <p class="section-subtitle" data-en="Check out our barbers' latest cuts and styles" data-gr="Δείτε τα τελευταία κουρέματα των κουρέων μας">
-        Check out our barbers' latest cuts and styles
+        Δείτε τα τελευταία κουρέματα των κουρέων μας
     </p>
-    
+
     <!-- Mondi's Work -->
     <div class="barber-gallery-section">
-        <h3 class="barber-gallery-title" data-en="Mondi's Work" data-gr="Δουλειές του Mondi">Mondi's Work</h3>
+        <h3 class="barber-gallery-title" data-en="Mondi's Work" data-gr="Δουλειές του Mondi">Δουλειές του Mondi</h3>
         <div class="gallery-grid" role="list">
             <div class="gallery-item" role="listitem">
                 <img src="mondi1.jpg" alt="Mondi's haircut work 1" loading="lazy" width="400" height="400">
@@ -1939,10 +1956,10 @@
 
     <!-- Ervin's Work -->
     <div class="barber-gallery-section">
-        <h3 class="barber-gallery-title" data-en="Ervin's Work" data-gr="Δουλειές του Ervin">Ervin's Work</h3>
+        <h3 class="barber-gallery-title" data-en="Ervin's Work" data-gr="Δουλειές του Ervin">Δουλειές του Ervin</h3>
         <div class="gallery-grid" role="list">
             <div class="gallery-item" role="listitem">
-                <img src="ervin1.jpg" alt="Ervin's haircut work 1" loading="lazy" w>idth="400" height="400">
+                <img src="ervin1.jpg" alt="Ervin's haircut work 1" loading="lazy" width="400" height="400">
                 <div class="gallery-overlay" aria-hidden="true"></div>
             </div>
             <div class="gallery-item" role="listitem">
@@ -1962,7 +1979,7 @@
 
     <!-- Marios's Work -->
     <div class="barber-gallery-section">
-        <h3 class="barber-gallery-title" data-en="Marios's Work" data-gr="Δουλειές του Mario">Marios's Work</h3>
+        <h3 class="barber-gallery-title" data-en="Marios's Work" data-gr="Δουλειές του Mario">Δουλειές του Mario</h3>
         <div class="gallery-grid" role="list">
             <div class="gallery-item" role="listitem">
                 <img src="marios1.jpg" alt="Marios's haircut work 1" loading="lazy" width="400" height="400">
@@ -1985,63 +2002,7 @@
 </section>
 
 
-        <!-- Barbers Section -->
-        <section class="barbers-section" id="barbers" aria-labelledby="barbers-heading">
-            <h2 id="barbers-heading" class="section-title" data-en="Meet Our Barbers" data-gr="Οι Κουρείς μας">Meet Our Barbers</h2>
-            <p class="section-subtitle" data-en="Book online or directly with your preferred barber via Instagram" data-gr="Κλείστε online ή απευθείας με τον προτιμώμενο κουρέα σας μέσω Instagram">
-                Book online or directly with your preferred barber via Instagram
-            </p>
-            
-            <div class="barbers-grid">
-                    <!-- Barber 1 -->
-                <article class="barber-card">
-                      <img src="mondi.jpg" alt="Mondi - Master Barber" class="barber-image" loading="lazy" width="400" height="280">
-                    <div class="barber-content">
-                        <h3 class="barber-name" data-en="Mondi" data-gr="Mondi">Mondi</h3>
-                        <p class="barber-title" data-en="Master Barber" data-gr="Επικεφαλής Κουρέας">Master Barber</p>
-                        <p class="barber-description" data-en="Skilled barber focused on clean fades, sharp lines and relaxed, friendly service." data-gr="Έμπειρος barber με έμφαση στα καθαρά fades, τις κοφτερές γραμμές και μια χαλαρή, φιλική εξυπηρέτηση.">
-                            Skilled barber focused on clean fades, sharp lines and relaxed, friendly service.
-                        </p>
-                        <a href="https://ig.me/m/___.etmond.___" class="ig-button" target="_blank" rel="noopener noreferrer" aria-label="Book appointment with Mondi on Instagram">
-                            <i class="fab fa-instagram" aria-hidden="true"></i>
-                            <span data-en="Book Now" data-gr="Κλείστε Τώρα">Book Now</span>
-                        </a>
-                    </div>
-                </article>
 
-                <!-- Barber 2 -->
-                <article class="barber-card">
-                  <img src="ervin.jpg" alt="Mondi - Master Barber" class="barber-image" loading="lazy" width="400" height="280">
-
-                    <div class="barber-content">
-                        <h3 class="barber-name" data-en="Ervin" data-gr="Ervin">Ervin</h3>
-                        <p class="barber-title" data-en="Senior Barber" data-gr="Έμπειρος Κουρέας">Senior Barber</p>
-                        <p class="barber-description" data-en="Skilled barber focused on clean fades, sharp lines and relaxed, friendly service." data-gr="Έμπειρος barber με έμφαση στα καθαρά fades, τις κοφτερές γραμμές και μια χαλαρή, φιλική εξυπηρέτηση.">
-Skilled barber focused on clean fades, sharp lines and relaxed, friendly service.                        </p>
-                        <a href="https://ig.me/m/vini.cutz07" class="ig-button" target="_blank" rel="noopener noreferrer" aria-label="Book appointment with Ervin on Instagram">
-                            <i class="fab fa-instagram" aria-hidden="true"></i>
-                            <span data-en="Book Now" data-gr="Κλείστε Τώρα">Book Now</span>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Barber 3 -->
-                <article class="barber-card">
-                    <img src="mario.jpg" alt="Mondi - Master Barber" class="barber-image" loading="lazy" width="400" height="280">
-                    <div class="barber-content">
-                        <h3 class="barber-name" data-en="Marios" data-gr="Marios">Marios</h3>
-                        <p class="barber-title" data-en="Barber Stylist" data-gr="Κουρέας Στυλίστας">Barber Stylist</p>
-                        <p class="barber-description" data-en="Skilled barber focused on clean fades, sharp lines and relaxed, friendly service." data-gr="Έμπειρος barber με έμφαση στα καθαρά fades, τις κοφτερές γραμμές και μια χαλαρή, φιλική εξυπηρέτηση.">
-Skilled barber focused on clean fades, sharp lines and relaxed, friendly service.                        </p>
-                        <a href="https://ig.me/m/marios_mtn" class="ig-button" target="_blank" rel="noopener noreferrer" aria-label="Book appointment with Marios on Instagram">
-                            <i class="fab fa-instagram" aria-hidden="true"></i>
-                            <span data-en="Book Now" data-gr="Κλείστε Τώρα">Book Now</span>
-                        </a>
-                    </div>
-                </article>
-            </div>
-        </section>
-    </main>
 
 
     <!-- Footer -->
@@ -2049,21 +2010,21 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
         <div class="footer-content">
             <div class="footer-logo">MONDI HAIRSTYLE</div>
             <div class="footer-info">
-                <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i><span data-en="Kalliteros Street, Zakynthos 29100, Greece" data-gr="Καλλιτερος, Ζάκυνθος 29100, Ελλάδα">Kalliteros Street, Zakynthos 29100, Greece</span></p>
+                <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i><span data-en="Kalliteros Street, Zakynthos 29100, Greece" data-gr="Καλλιτερος, Ζάκυνθος 29100, Ελλάδα">Καλλιτερος, Ζάκυνθος 29100, Ελλάδα</span></p>
                 <p><i class="fas fa-phone" aria-hidden="true"></i>+306974628335</p>
                 <p><i class="fas fa-envelope" aria-hidden="true"></i>info@mondihairstyle.gr</p>
             </div>
             <nav class="footer-social" aria-label="Social Media Links">
-                
+
                 <a href="https://www.instagram.com/mondi_hairstyle/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Follow us on Instagram">
                     <i class="fab fa-instagram" aria-hidden="true"></i>
                 </a>
-                
+
             </nav>
             <div class="footer-bottom">
-                <p>© <span id="currentYear"></span> <span data-en="Mondi Hairstyle. All rights reserved." data-gr="Mondi Hairstyle. Με επιφύλαξη παντός δικαιώματος.">Mondi Hairstyle. All rights reserved.</span></p>
+                <p>© <span id="currentYear"></span> <span data-en="Mondi Hairstyle. All rights reserved." data-gr="Mondi Hairstyle. Με επιφύλαξη παντός δικαιώματος.">Mondi Hairstyle. Με επιφύλαξη παντός δικαιώματος.</span></p>
                 <p style="margin-top: 8px; font-size: 0.8rem;">
-                   <!-- // <span data-en="Designed & Developed by" data-gr="Σχεδιασμός & Ανάπτυξη από">Designed & Developed by</span> 
+                   <!-- // <span data-en="Designed & Developed by" data-gr="Σχεδιασμός & Ανάπτυξη από">Designed & Developed by</span>
                     <a href="https://ninjatech.ai" target="_blank" rel="noopener noreferrer" style="color: var(--lime); text-decoration: none; font-weight: 700;">NinjaTech AI</a> // -->
                 </p>
             </div>
@@ -2074,23 +2035,23 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
     <nav class="mobile-nav" role="navigation" aria-label="Mobile Navigation">
         <a href="#home" class="nav-item active" data-section="home" aria-label="Go to home section">
             <i class="fas fa-home" aria-hidden="true"></i>
-            <span data-en="Home" data-gr="Αρχική">Home</span>
+            <span data-en="Home" data-gr="Αρχική">Αρχική</span>
         </a>
         <a href="#services" class="nav-item" data-section="services" aria-label="Go to services section">
             <i class="fas fa-cut" aria-hidden="true"></i>
-            <span data-en="Services" data-gr="Υπηρεσίες">Services</span>
+            <span data-en="Services" data-gr="Υπηρεσίες">Υπηρεσίες</span>
         </a>
         <a href="#gallery" class="nav-item" data-section="gallery" aria-label="Go to gallery section">
             <i class="fas fa-images" aria-hidden="true"></i>
-            <span data-en="Gallery" data-gr="Γκαλερί">Gallery</span>
+            <span data-en="Gallery" data-gr="Γκαλερί">Γκαλερί</span>
         </a>
         <a href="#barbers" class="nav-item" data-section="barbers" aria-label="Go to barbers section">
             <i class="fas fa-users" aria-hidden="true"></i>
-            <span data-en="Barbers" data-gr="Κουρείς">Barbers</span>
+            <span data-en="Barbers" data-gr="Κουρείς">Κουρείς</span>
         </a>
         <a href="#info" class="nav-item" data-section="info" aria-label="Go to contact information">
             <i class="fas fa-info-circle" aria-hidden="true"></i>
-            <span data-en="Info" data-gr="Πληροφορίες">Info</span>
+            <span data-en="Info" data-gr="Πληροφορίες">Πληροφορίες</span>
         </a>
     </nav>
 
@@ -2117,7 +2078,7 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
 
         // Scroll to Top functionality
         const scrollTopBtn = document.getElementById('scrollTop');
-        
+
         window.addEventListener('scroll', function() {
             if (window.pageYOffset > 500) {
                 scrollTopBtn.classList.add('visible');
@@ -2133,13 +2094,16 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
             });
         }
 
-        // Mobile Navigation Active State
+        // Mobile Navigation Active State with Auto-hide
         const navItems = document.querySelectorAll('.nav-item');
         const sections = document.querySelectorAll('section[id]');
+        const mobileNav = document.querySelector('.mobile-nav');
+        let lastScrollTop = 0;
+        let scrollTimeout;
 
         function setActiveNav() {
             let current = '';
-            
+
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.clientHeight;
@@ -2156,7 +2120,35 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
             });
         }
 
-        window.addEventListener('scroll', setActiveNav);
+        // Auto-hide mobile nav on scroll down, show on scroll up
+        function handleMobileNavScroll() {
+            if (window.innerWidth >= 768) return; // Only on mobile
+
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Clear the timeout
+            clearTimeout(scrollTimeout);
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down & past 100px
+                mobileNav.style.transform = 'translateY(100%)';
+            } else {
+                // Scrolling up or at top
+                mobileNav.style.transform = 'translateY(0)';
+            }
+
+            // Show nav after user stops scrolling
+            scrollTimeout = setTimeout(() => {
+                mobileNav.style.transform = 'translateY(0)';
+            }, 1500);
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }
+
+        window.addEventListener('scroll', () => {
+            setActiveNav();
+            handleMobileNavScroll();
+        });
 
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2175,30 +2167,33 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
         });
 
         // Language Switcher
-        let currentLang = 'en';
+        let currentLang = 'gr';
 
         function switchLanguage(lang) {
             currentLang = lang;
-            
+
             // Update button states
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.getElementById(`lang-${lang}`).classList.add('active');
-            
+
             // Update all translatable elements
             document.querySelectorAll('[data-en][data-gr]').forEach(element => {
                 element.textContent = element.getAttribute(`data-${lang}`);
             });
-            
+
             // Store language preference
             localStorage.setItem('preferredLanguage', lang);
         }
 
-        // Load saved language preference
+        // Load saved language preference or default to Greek
         const savedLang = localStorage.getItem('preferredLanguage');
         if (savedLang) {
             switchLanguage(savedLang);
+        } else {
+            // Default to Greek if no preference is saved
+            switchLanguage('gr');
         }
 
         // Products Carousel Functionality
@@ -2209,12 +2204,12 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
             const cardWidth = productsCarousel.querySelector('.product-card').offsetWidth;
             const gap = 20;
             const scrollDistance = cardWidth + gap;
-            
+
             productsScrollAmount += direction * scrollDistance;
-            
+
             const maxScroll = productsCarousel.scrollWidth - productsCarousel.clientWidth;
             productsScrollAmount = Math.max(0, Math.min(productsScrollAmount, maxScroll));
-            
+
             productsCarousel.scrollTo({
                 left: productsScrollAmount,
                 behavior: 'smooth'
@@ -2238,7 +2233,7 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
 
         productsCarousel.addEventListener('touchend', () => {
             if (!productsIsDragging) return;
-            
+
             const diff = productsStartX - productsCurrentX;
             if (Math.abs(diff) > 50) {
                 if (diff > 0) {
@@ -2247,7 +2242,7 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
                     scrollProducts(-1);
                 }
             }
-            
+
             productsIsDragging = false;
         });
 
@@ -2285,7 +2280,7 @@ Skilled barber focused on clean fades, sharp lines and relaxed, friendly service
         });
 
         // Console message
-       
+
     </script>
 </body>
 </html>
