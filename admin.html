@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Πίνακας Διαχείρισης - Mondi Hairstyle</title>
-    <meta name="description" content="Πίνακας διαχείρισης για το Mondi Hairstyle">
+    <title>Admin Dashboard - Mondi Hairstyle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --lime: #c3e321;
+            --lime-dark: #a8c41c;
             --dark: #1a1a1a;
             --darker: #0f0f0f;
             --text-light: #ffffff;
-            --text-gray: #b0b0b0;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --danger: #f44336;
-            --blue: #2196F3;
+            --text-gray: #9ca3af;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --blue: #3b82f6;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -34,39 +37,27 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background */
+        /* Modern gradient background */
         body::before {
             content: '';
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, var(--darker) 100%);
-            z-index: -2;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(195, 227, 33, 0.02) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: backgroundMove 60s linear infinite;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(195, 227, 33, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(195, 227, 33, 0.05) 0%, transparent 50%);
             z-index: -1;
         }
 
-        @keyframes backgroundMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+        .hidden {
+            display: none !important;
         }
 
-        /* =========================
+        /* ========================================
            LOGIN SCREEN
-        ========================= */
+        ======================================== */
         .login-container {
             display: flex;
             justify-content: center;
@@ -76,68 +67,55 @@
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 24px;
-            padding: 50px;
+            padding: 48px;
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
             max-width: 450px;
             width: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--lime), transparent);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
         .login-card h1 {
             text-align: center;
-            margin-bottom: 15px;
-            font-size: 2rem;
+            margin-bottom: 8px;
+            font-size: 28px;
             background: linear-gradient(135deg, var(--lime), #fff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .login-card .subtitle {
             text-align: center;
             color: var(--text-gray);
-            margin-bottom: 35px;
-            font-size: 0.95rem;
+            margin-bottom: 32px;
+            font-size: 14px;
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
             color: var(--text-light);
-            font-size: 0.95rem;
+            font-size: 14px;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 16px;
+            border: 2px solid var(--border);
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-light);
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 15px;
+            transition: all 0.3s;
         }
 
         .form-group input:focus,
@@ -145,46 +123,34 @@
             outline: none;
             border-color: var(--lime);
             background: rgba(195, 227, 33, 0.05);
-            transform: translateY(-2px);
         }
 
-        .form-group select {
-            cursor: pointer;
-        }
-
-        .btn {
+        .btn-login {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: var(--lime);
             color: var(--darker);
             border: none;
-            border-radius: 50px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 1.05rem;
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
+            margin-top: 24px;
         }
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(195, 227, 33, 0.4);
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(195, 227, 33, 0.4);
         }
 
-        .login-note {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-gray);
-            font-size: 0.85rem;
-        }
-
-        /* =========================
-           DASHBOARD
-        ========================= */
+        /* ========================================
+           DASHBOARD LAYOUT
+        ======================================== */
         .dashboard {
             display: none;
             min-height: 100vh;
@@ -194,16 +160,15 @@
             display: block;
         }
 
-        /* Top Header */
+        /* Header */
         .dashboard-header {
             position: sticky;
             top: 0;
+            z-index: 100;
             background: rgba(15, 15, 15, 0.95);
             backdrop-filter: blur(20px);
-            padding: 20px 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
         }
 
         .header-content {
@@ -212,68 +177,38 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .header-left h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, var(--lime), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-subtitle {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
             gap: 20px;
         }
 
-        .language-toggle {
-            display: flex;
-            gap: 8px;
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--lime);
+            margin-bottom: 4px;
         }
 
-        .language-toggle button {
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .header-subtitle {
+            font-size: 13px;
             color: var(--text-gray);
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .language-toggle button.active {
-            background: var(--lime);
-            color: var(--darker);
-            border-color: var(--lime);
         }
 
         .logout-btn {
-            padding: 10px 24px;
-            background: rgba(244, 67, 54, 0.1);
-            border: 1px solid rgba(244, 67, 54, 0.3);
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
             color: var(--danger);
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
+            padding: 10px 20px;
+            border-radius: 10px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 14px;
         }
 
         .logout-btn:hover {
-            background: rgba(244, 67, 54, 0.2);
+            background: rgba(239, 68, 68, 0.2);
             transform: translateY(-2px);
         }
 
@@ -281,30 +216,25 @@
         .dashboard-content {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 30px;
+            padding: 32px 24px;
         }
 
-        /* Statistics Cards */
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            padding: 24px;
             position: relative;
             overflow: hidden;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
         }
 
         .stat-card::before {
@@ -314,1003 +244,406 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: var(--lime);
+            background: linear-gradient(90deg, var(--lime), transparent);
         }
 
-        .stat-card.confirmed::before {
-            background: var(--success);
-        }
-
-        .stat-card.pending::before {
-            background: var(--warning);
-        }
-
-        .stat-card.total::before {
-            background: var(--blue);
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
         }
 
         .stat-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 16px;
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            background: rgba(195, 227, 33, 0.1);
-            color: var(--lime);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .stat-card.today .stat-icon {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--blue);
         }
 
         .stat-card.confirmed .stat-icon {
-            background: rgba(76, 175, 80, 0.1);
+            background: rgba(16, 185, 129, 0.15);
             color: var(--success);
         }
 
         .stat-card.pending .stat-icon {
-            background: rgba(255, 152, 0, 0.1);
+            background: rgba(245, 158, 11, 0.15);
             color: var(--warning);
         }
 
         .stat-card.total .stat-icon {
-            background: rgba(33, 150, 243, 0.1);
-            color: var(--blue);
+            background: rgba(195, 227, 33, 0.15);
+            color: var(--lime);
         }
 
         .stat-info h3 {
-            font-size: 0.85rem;
+            font-size: 14px;
             color: var(--text-gray);
-            font-weight: 500;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
         .stat-number {
-            font-size: 2.2rem;
+            font-size: 32px;
             font-weight: 800;
             color: var(--text-light);
         }
 
-        /* Section Headers */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .section-title i {
-            color: var(--lime);
-        }
-
-        /* Filters */
-        .filters {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn.active {
-            background: var(--lime);
-            color: var(--darker);
-            border-color: var(--lime);
-        }
-
-        .filter-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Date Section Headers */
-        .date-section {
-            margin-bottom: 30px;
-        }
-
-        .date-section-header {
-            background: rgba(195, 227, 33, 0.05);
-            border-left: 4px solid var(--lime);
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .date-section-header.today {
-            border-left-color: var(--lime);
-            background: rgba(195, 227, 33, 0.08);
-        }
-
-        .date-section-header.tomorrow {
-            border-left-color: var(--blue);
-            background: rgba(33, 150, 243, 0.05);
-        }
-
-        .date-section-header.upcoming {
-            border-left-color: var(--text-gray);
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .date-section-header i {
-            font-size: 1.3rem;
-            color: var(--lime);
-        }
-
-        .date-section-header.tomorrow i {
-            color: var(--blue);
-        }
-
-        .date-section-header.upcoming i {
-            color: var(--text-gray);
-        }
-
-        .date-section-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .date-section-count {
-            margin-left: auto;
-            padding: 6px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        /* Booking Cards */
-        .bookings-list {
+        /* Action Buttons */
+        .action-buttons {
             display: grid;
-            gap: 15px;
-        }
-
-        .booking-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .booking-card:hover {
-            transform: translateX(5px);
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .booking-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--lime);
-        }
-
-        .booking-card.status-confirmed::before {
-            background: var(--success);
-        }
-
-        .booking-card.status-pending::before {
-            background: var(--warning);
-        }
-
-        .booking-card.status-completed::before {
-            background: var(--text-gray);
-        }
-
-        .booking-card.status-cancelled::before {
-            background: var(--danger);
-        }
-
-        .booking-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 20px;
-        }
-
-        .booking-customer {
-            flex: 1;
-        }
-
-        .customer-name {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: var(--text-light);
-        }
-
-        .booking-time {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--lime);
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .booking-status {
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .booking-status.status-confirmed {
-            background: rgba(76, 175, 80, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(76, 175, 80, 0.3);
-        }
-
-        .booking-status.status-pending {
-            background: rgba(255, 152, 0, 0.15);
-            color: var(--warning);
-            border: 1px solid rgba(255, 152, 0, 0.3);
-        }
-
-        .booking-status.status-completed {
-            background: rgba(176, 176, 176, 0.15);
-            color: #9e9e9e;
-            border: 1px solid rgba(176, 176, 176, 0.3);
-        }
-
-        .booking-status.status-cancelled {
-            background: rgba(244, 67, 54, 0.15);
-            color: var(--danger);
-            border: 1px solid rgba(244, 67, 54, 0.3);
-        }
-
-        .booking-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-        }
-
-        .detail-item i {
-            color: var(--lime);
-            font-size: 1.1rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .detail-content {
-            flex: 1;
-        }
-
-        .detail-label {
-            font-size: 0.75rem;
-            color: var(--text-gray);
-            margin-bottom: 2px;
-        }
-
-        .detail-value {
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .booking-notes {
-            padding: 12px;
-            background: rgba(195, 227, 33, 0.05);
-            border-left: 3px solid var(--lime);
-            border-radius: 8px;
-            margin-bottom: 15px;
-            color: var(--text-gray);
-            font-style: italic;
-        }
-
-        .booking-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
         .action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 50px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-confirm {
-            background: rgba(76, 175, 80, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(76, 175, 80, 0.3);
-        }
-
-        .btn-confirm:hover {
-            background: rgba(76, 175, 80, 0.25);
-        }
-
-        .btn-complete {
-            background: rgba(33, 150, 243, 0.15);
-            color: var(--blue);
-            border: 1px solid rgba(33, 150, 243, 0.3);
-        }
-
-        .btn-complete:hover {
-            background: rgba(33, 150, 243, 0.25);
-        }
-
-        .btn-cancel {
-            background: rgba(244, 67, 54, 0.15);
-            color: var(--danger);
-            border: 1px solid rgba(244, 67, 54, 0.3);
-        }
-
-        .btn-cancel:hover {
-            background: rgba(244, 67, 54, 0.25);
-        }
-
-        /* Loading & Empty States */
-        .loading-container {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--lime);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--text-gray);
-        }
-
-        .empty-state i {
-            font-size: 5rem;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        /* =========================
-           VIEW TOGGLE & CALENDAR
-        ========================= */
-        .view-toggle {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .view-toggle-btn {
-            padding: 12px 30px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
+            border: 2px solid var(--border);
             color: var(--text-light);
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
+            padding: 18px 24px;
+            border-radius: 14px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
         }
 
-        .view-toggle-btn.active {
-            background: var(--lime);
-            color: var(--darker);
+        .action-btn:hover {
             border-color: var(--lime);
-        }
-
-        .view-toggle-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(195, 227, 33, 0.08);
             transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(195, 227, 33, 0.2);
         }
 
-        /* Calendar Container */
-        .calendar-view {
-            display: none;
+        .action-btn i {
+            font-size: 18px;
         }
 
-        .calendar-view.active {
-            display: block;
+        /* Calendar Section */
+        .calendar-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
         }
 
-        .list-view {
-            display: block;
-        }
-
-        .list-view.hidden {
-            display: none;
-        }
-
-        /* Calendar Header */
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .calendar-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--lime);
         }
 
         .calendar-nav {
             display: flex;
-            gap: 15px;
-            align-items: center;
+            gap: 12px;
         }
 
         .calendar-nav-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .calendar-nav-btn:hover {
+            background: rgba(195, 227, 33, 0.1);
+            border-color: var(--lime);
+        }
+
+        /* Calendar Grid */
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-gray);
+            padding: 12px 0;
+            text-transform: uppercase;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            min-height: 70px;
+        }
+
+        .calendar-day.empty {
+            cursor: default;
+            background: transparent;
+        }
+
+        .calendar-day.has-bookings {
+            border-color: var(--lime);
+            background: rgba(195, 227, 33, 0.08);
+        }
+
+        .calendar-day:not(.empty):hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(195, 227, 33, 0.2);
+        }
+
+        .calendar-day .day-number {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .calendar-day .booking-count {
+            font-size: 11px;
+            color: var(--lime);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* Appointments List */
+        .appointments-list {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .appointments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .appointments-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--lime);
+        }
+
+        .appointment-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s;
+        }
+
+        .appointment-item:hover {
+            border-color: var(--lime);
+            background: rgba(195, 227, 33, 0.05);
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .appointment-time {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--lime);
+            margin-bottom: 4px;
+        }
+
+        .appointment-customer {
+            font-size: 15px;
+            color: var(--text-light);
+            margin-bottom: 2px;
+        }
+
+        .appointment-service {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
+            border-radius: 10px;
+            border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            font-size: 16px;
         }
 
-        .calendar-nav-btn:hover {
-            background: var(--lime);
-            color: var(--darker);
-            border-color: var(--lime);
+        .btn-confirm {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
         }
 
-        .calendar-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-light);
-            min-width: 250px;
+        .btn-confirm:hover {
+            background: rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .empty-appointments {
             text-align: center;
-        }
-
-        .calendar-view-tabs {
-            display: flex;
-            gap: 10px;
-        }
-
-        .calendar-view-tab {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .calendar-view-tab.active {
-            background: var(--lime);
-            color: var(--darker);
-            border-color: var(--lime);
-        }
-
-        .calendar-view-tab:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Day View */
-        .day-view-container {
-            display: none;
-        }
-
-        .day-view-container.active {
-            display: block;
-        }
-
-        .time-grid {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .time-slot-row {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .time-slot-row:last-child {
-            border-bottom: none;
-        }
-
-        .time-label {
-            color: var(--text-gray);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .time-slot-content {
-            min-height: 60px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .calendar-booking-item {
-            background: rgba(195, 227, 33, 0.1);
-            border-left: 4px solid var(--lime);
-            padding: 12px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .calendar-booking-item:hover {
-            background: rgba(195, 227, 33, 0.15);
-            transform: translateX(5px);
-        }
-
-        .calendar-booking-item.status-confirmed {
-            background: rgba(76, 175, 80, 0.1);
-            border-left-color: var(--success);
-        }
-
-        .calendar-booking-item.status-pending {
-            background: rgba(255, 152, 0, 0.1);
-            border-left-color: var(--warning);
-        }
-
-        .calendar-booking-item.status-completed {
-            background: rgba(176, 176, 176, 0.1);
-            border-left-color: #9e9e9e;
-        }
-
-        .calendar-booking-name {
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: var(--text-light);
-        }
-
-        .calendar-booking-service {
-            font-size: 0.85rem;
+            padding: 60px 20px;
             color: var(--text-gray);
         }
 
-        /* Week View */
-        .week-view-container {
-            display: none;
-        }
-
-        .week-view-container.active {
-            display: block;
-        }
-
-        .week-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-        }
-
-        .week-day-col {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-height: 500px;
-        }
-
-        .week-day-header {
-            text-align: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px;
-        }
-
-        .week-day-name {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--text-gray);
-            margin-bottom: 5px;
-        }
-
-        .week-day-date {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-light);
-        }
-
-        .week-day-col.today .week-day-date {
-            color: var(--lime);
-        }
-
-        .week-day-bookings {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .week-booking-item {
-            background: rgba(195, 227, 33, 0.1);
-            border-left: 3px solid var(--lime);
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .week-booking-item:hover {
-            background: rgba(195, 227, 33, 0.15);
-        }
-
-        .week-booking-item.status-confirmed {
-            background: rgba(76, 175, 80, 0.1);
-            border-left-color: var(--success);
-        }
-
-        .week-booking-item.status-pending {
-            background: rgba(255, 152, 0, 0.1);
-            border-left-color: var(--warning);
-        }
-
-        .week-booking-item.status-completed {
-            background: rgba(176, 176, 176, 0.1);
-            border-left-color: #9e9e9e;
-        }
-
-        .week-booking-time {
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .week-booking-name {
-            font-size: 0.8rem;
-            color: var(--text-gray);
-        }
-
-        /* Month View */
-        .month-view-container {
-            display: none;
-        }
-
-        .month-view-container.active {
-            display: block;
-        }
-
-        .month-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .month-day-header {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            text-align: center;
-            font-weight: 700;
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-
-        .month-day-cell {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 15px 10px;
-            min-height: 120px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .month-day-cell:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .month-day-cell.other-month {
+        .empty-appointments i {
+            font-size: 64px;
+            margin-bottom: 16px;
             opacity: 0.3;
         }
 
-        .month-day-cell.today {
-            background: rgba(195, 227, 33, 0.1);
-            border: 2px solid var(--lime);
-        }
-
-        .month-day-number {
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-light);
-        }
-
-        .month-day-cell.today .month-day-number {
-            color: var(--lime);
-        }
-
-        .month-bookings-count {
-            display: inline-block;
-            padding: 4px 10px;
-            background: var(--lime);
-            color: var(--darker);
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-top: 5px;
-        }
-
-        .month-booking-dots {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-top: 8px;
-        }
-
-        .month-booking-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--lime);
-        }
-
-        .month-booking-dot.confirmed {
-            background: var(--success);
-        }
-
-        .month-booking-dot.pending {
-            background: var(--warning);
-        }
-
-        .month-booking-dot.completed {
-            background: var(--text-gray);
-        }
-
-        /* =========================
-           ACTION BUTTONS
-        ========================= */
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .add-booking-btn,
-        .edit-schedule-btn,
-        .manage-availability-btn {
-            padding: 12px 30px;
-            background: var(--lime);
-            color: var(--darker);
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .add-booking-btn:hover,
-        .edit-schedule-btn:hover,
-        .manage-availability-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(195, 227, 33, 0.4);
-        }
-
-        .edit-schedule-btn {
-            background: var(--blue);
-            color: white;
-        }
-
-        .edit-schedule-btn:hover {
-            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.4);
-        }
-
-        .manage-availability-btn {
-            background: var(--warning);
-            color: white;
-        }
-
-        .manage-availability-btn:hover {
-            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.4);
-        }
-
-        /* =========================
-           MODAL
-        ========================= */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             z-index: 1000;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
+            overflow-y: auto;
         }
 
         .modal.active {
             display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
             background: var(--dark);
+            border: 1px solid var(--border);
             border-radius: 24px;
-            padding: 40px;
+            padding: 32px;
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            position: relative;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 24px;
         }
 
-        .modal-title {
-            font-size: 1.8rem;
+        .modal-header h2 {
+            font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--lime), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--lime);
         }
 
-        .modal-close {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .close-modal {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
+            border: none;
+            color: var(--text-gray);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
+            font-size: 20px;
+            transition: all 0.3s;
         }
 
-        .modal-close:hover {
-            background: var(--danger);
-            border-color: var(--danger);
-            transform: rotate(90deg);
+        .close-modal:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
         }
 
         .modal-body {
-            margin-bottom: 30px;
-        }
-
-        .modal-form .form-group {
-            margin-bottom: 20px;
-        }
-
-        .modal-form .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .modal-form .form-group input,
-        .modal-form .form-group select,
-        .modal-form .form-group textarea {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-light);
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .modal-form .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .modal-form .form-group input:focus,
-        .modal-form .form-group select:focus,
-        .modal-form .form-group textarea:focus {
-            outline: none;
-            border-color: var(--lime);
-            background: rgba(195, 227, 33, 0.05);
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
+            margin-bottom: 24px;
         }
 
         .modal-btn {
-            padding: 14px 30px;
+            width: 100%;
+            padding: 14px;
             border: none;
-            border-radius: 50px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .modal-btn-primary {
@@ -1320,48 +653,39 @@
 
         .modal-btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(195, 227, 33, 0.4);
+            box-shadow: 0 8px 20px rgba(195, 227, 33, 0.4);
         }
 
         .modal-btn-secondary {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-light);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--border);
         }
 
         .modal-btn-secondary:hover {
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Schedule Editor Specific */
-        .schedule-editor {
-            display: grid;
-            gap: 15px;
-        }
-
+        /* Schedule Editor */
         .schedule-day {
             background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            margin-bottom: 12px;
         }
 
         .schedule-day-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .schedule-day-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .schedule-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-light);
         }
 
         .toggle-switch {
@@ -1384,120 +708,92 @@
             right: 0;
             bottom: 0;
             background-color: rgba(255, 255, 255, 0.1);
-            transition: 0.3s;
             border-radius: 34px;
+            transition: 0.3s;
         }
 
         .toggle-slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
             background-color: white;
-            transition: 0.3s;
             border-radius: 50%;
+            transition: 0.3s;
         }
 
-        .toggle-switch input:checked + .toggle-slider {
+        input:checked + .toggle-slider {
             background-color: var(--lime);
         }
 
-        .toggle-switch input:checked + .toggle-slider:before {
+        input:checked + .toggle-slider:before {
             transform: translateX(24px);
         }
 
         .schedule-times {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
 
-        .schedule-times.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-        }
-
-        /* Custom Closures Management */
-        .closures-section {
-            margin-bottom: 25px;
-        }
-
-        .section-subtitle {
-            font-size: 0.95rem;
-            color: var(--text-gray);
-            margin-bottom: 15px;
-        }
-
-        .closure-form {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .closure-form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 15px;
-            align-items: end;
-        }
-
-        .closure-type-select {
+        .time-input-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            flex-direction: column;
+        }
+
+        .time-input-group label {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+        }
+
+        .time-input-group input {
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+
+        /* Closures Section */
+        .closure-type-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .closure-type-btn {
             flex: 1;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-gray);
-            border-radius: 8px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-light);
+            font-weight: 600;
             cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .closure-type-btn.active {
-            background: var(--warning);
-            border-color: var(--warning);
-            color: white;
-        }
-
-        .time-range-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .time-range-inputs.hidden {
-            display: none;
-        }
-
-        .closure-list {
-            display: grid;
-            gap: 10px;
+            border-color: var(--lime);
+            background: rgba(195, 227, 33, 0.15);
+            color: var(--lime);
         }
 
         .closure-item {
             background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .closure-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+            gap: 12px;
         }
 
         .closure-info {
@@ -1505,203 +801,140 @@
         }
 
         .closure-date {
+            font-size: 15px;
             font-weight: 600;
-            font-size: 1.05rem;
-            margin-bottom: 5px;
+            color: var(--text-light);
+            margin-bottom: 4px;
         }
 
         .closure-time {
+            font-size: 13px;
             color: var(--text-gray);
-            font-size: 0.9rem;
         }
 
         .closure-label {
-            color: var(--text-gray);
-            font-size: 0.85rem;
-            font-style: italic;
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .delete-closure-btn {
             padding: 8px 16px;
-            background: rgba(244, 67, 54, 0.1);
-            border: 1px solid rgba(244, 67, 54, 0.3);
-            color: var(--danger);
+            background: rgba(239, 68, 68, 0.15);
+            border: none;
             border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
+            color: var(--danger);
             font-weight: 600;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
         }
 
         .delete-closure-btn:hover {
-            background: rgba(244, 67, 54, 0.2);
+            background: rgba(239, 68, 68, 0.25);
         }
 
         .empty-closures {
             text-align: center;
-            padding: 30px;
+            padding: 40px 20px;
             color: var(--text-gray);
-            font-style: italic;
+        }
+
+        .empty-closures i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.3;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .dashboard-header {
-                padding: 15px 20px;
+                padding: 16px;
             }
 
             .header-content {
                 flex-direction: column;
-                gap: 15px;
                 align-items: flex-start;
             }
 
-            .header-right {
-                width: 100%;
-                justify-content: space-between;
-            }
-
             .dashboard-content {
-                padding: 20px 15px;
+                padding: 24px 16px;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
             }
 
-            .booking-header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .booking-details {
-                grid-template-columns: 1fr;
-            }
-
-            .filters {
-                width: 100%;
-            }
-
-            .filter-btn {
-                flex: 1;
-                text-align: center;
-            }
-
-            .login-card {
-                padding: 30px 25px;
-            }
-
-            .calendar-header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .calendar-view-tabs {
-                width: 100%;
-            }
-
-            .calendar-view-tab {
-                flex: 1;
-                text-align: center;
-            }
-
-            .week-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .time-grid {
-                padding: 15px;
-            }
-
-            .time-slot-row {
-                grid-template-columns: 60px 1fr;
-            }
-
-            .closure-form-row {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .closure-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .delete-closure-btn {
-                width: 100%;
-            }
-
             .action-buttons {
                 grid-template-columns: 1fr;
             }
 
-            .add-booking-btn,
-            .edit-schedule-btn,
-            .manage-availability-btn {
+            .calendar-section,
+            .appointments-list {
+                padding: 20px;
+            }
+
+            .appointment-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .appointment-actions {
                 width: 100%;
-                justify-content: center;
+                justify-content: flex-end;
             }
 
             .modal-content {
-                max-width: 95%;
-                margin: 20px auto;
-                max-height: 90vh;
-                overflow-y: auto;
+                padding: 24px;
             }
 
             .schedule-times {
                 grid-template-columns: 1fr;
             }
         }
-
     </style>
 </head>
 <body>
-    <!-- =========================
-         LOGIN SCREEN
-    ========================= -->
+    <!-- Login Screen -->
     <div id="loginScreen" class="login-container">
         <div class="login-card">
-            <h1><i class="fas fa-user-shield"></i> Σύνδεση Διαχειριστή</h1>
-            <p class="subtitle">Πρόσβαση στον πίνακα διαχείρισης</p>
+            <h1>Admin Dashboard</h1>
+            <p class="subtitle">Mondi Hairstyle</p>
 
-            <form id="loginForm">
+            <form id="loginForm" onsubmit="login(event)">
                 <div class="form-group">
-                    <label>Επιλέξτε Προφίλ Κομμωτή</label>
-                    <select id="barberSelect" required>
-                        <option value="">Επιλέξτε το προφίλ σας...</option>
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required placeholder="admin@mondihair.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Κωδικός</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+
+                <div class="form-group">
+                    <label>Κομμωτής</label>
+                    <select id="loginBarber" required>
+                        <option value="">Επιλέξτε κομμωτή</option>
                         <option value="mondi">Mondi</option>
                         <option value="ervin">Ervin</option>
                         <option value="marios">Marios</option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="emailInput" placeholder="το@email.σας" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Κωδικός</label>
-                    <input type="password" id="passwordInput" placeholder="Εισάγετε τον κωδικό σας" required>
-                </div>
-
-                <button type="submit" class="btn">
+                <button type="submit" class="btn-login">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>Σύνδεση</span>
+                    Σύνδεση
                 </button>
-
-                <p class="login-note">
-                    Πρώτη φορά; Δημιουργήστε λογαριασμό συνδεόμενοι με οποιοδήποτε email και κωδικό
-                </p>
             </form>
         </div>
     </div>
 
-    <!-- =========================
-         DASHBOARD
-    ========================= -->
+    <!-- Dashboard -->
     <div id="dashboard" class="dashboard">
         <!-- Header -->
         <div class="dashboard-header">
@@ -1713,13 +946,13 @@
                 <div class="header-right">
                     <button class="logout-btn" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i>
-                        <span>Αποσύνδεση</span>
+                        Αποσύνδεση
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Content -->
+        <!-- Main Content -->
         <div class="dashboard-content">
             <!-- Statistics -->
             <div class="stats-grid">
@@ -1774,611 +1007,637 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="add-booking-btn" onclick="openAddBookingModal()">
+                <button class="action-btn" onclick="openAddBookingModal()">
                     <i class="fas fa-plus-circle"></i>
-                    <span>Προσθήκη Ραντεβού</span>
+                    Προσθήκη Ραντεβού
                 </button>
-                <button class="edit-schedule-btn" onclick="openEditScheduleModal()">
+                <button class="action-btn" onclick="openEditScheduleModal()">
                     <i class="fas fa-calendar-edit"></i>
-                    <span>Επεξεργασία Ωραρίου</span>
+                    Επεξεργασία Ωραρίου
                 </button>
-                <button class="manage-availability-btn" onclick="openManageAvailabilityModal()">
+                <button class="action-btn" onclick="openManageAvailabilityModal()">
                     <i class="fas fa-calendar-times"></i>
-                    <span>Διαχείριση Διαθεσιμότητας</span>
+                    Διαχείριση Διαθεσιμότητας
                 </button>
             </div>
 
-            <!-- CALENDAR VIEW -->
-            <div class="calendar-view active" id="calendarView">
-                <!-- Calendar Header -->
+            <!-- Calendar View -->
+            <div class="calendar-section">
                 <div class="calendar-header">
+                    <h3 class="calendar-title" id="calendarTitle">Ιανουάριος 2026</h3>
                     <div class="calendar-nav">
                         <button class="calendar-nav-btn" onclick="navigateCalendar(-1)">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <h3 class="calendar-title" id="calendarTitle">Ιανουάριος 2026</h3>
                         <button class="calendar-nav-btn" onclick="navigateCalendar(1)">
                             <i class="fas fa-chevron-right"></i>
                         </button>
-                        <button class="calendar-nav-btn" onclick="goToToday()">
-                            <i class="fas fa-calendar-day"></i>
-                        </button>
-                    </div>
-
-                    <div class="calendar-view-tabs">
-                        <button class="calendar-view-tab" data-view="day" onclick="switchCalendarView('day')">
-                            <span>Ημέρα</span>
-                        </button>
-                        <button class="calendar-view-tab active" data-view="week" onclick="switchCalendarView('week')">
-                            <span>Εβδομάδα</span>
-                        </button>
-                        <button class="calendar-view-tab" data-view="month" onclick="switchCalendarView('month')">
-                            <span>Μήνας</span>
-                        </button>
                     </div>
                 </div>
 
-                <!-- Day View -->
-                <div class="day-view-container" id="dayViewContainer">
-                    <div class="time-grid" id="dayViewGrid"></div>
+                <div class="weekdays">
+                    <div class="weekday">ΚΥΡ</div>
+                    <div class="weekday">ΔΕΥ</div>
+                    <div class="weekday">ΤΡΙ</div>
+                    <div class="weekday">ΤΕΤ</div>
+                    <div class="weekday">ΠΕΜ</div>
+                    <div class="weekday">ΠΑΡ</div>
+                    <div class="weekday">ΣΑΒ</div>
                 </div>
 
-                <!-- Week View -->
-                <div class="week-view-container active" id="weekViewContainer">
-                    <div class="week-grid" id="weekViewGrid"></div>
-                </div>
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
 
-                <!-- Month View -->
-                <div class="month-view-container" id="monthViewContainer">
-                    <div class="month-grid" id="monthViewGrid"></div>
+            <!-- Appointments List -->
+            <div class="appointments-list">
+                <div class="appointments-header">
+                    <h2>Ραντεβού Ημέρας</h2>
+                </div>
+                <div id="appointmentsList">
+                    <div class="empty-appointments">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>Δεν υπάρχουν ραντεβού για σήμερα</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- =========================
-         ADD BOOKING MODAL
-    ========================= -->
+    <!-- Add Booking Modal -->
     <div id="addBookingModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Προσθήκη Νέου Ραντεβού</h2>
-                <button class="modal-close" onclick="closeAddBookingModal()">
+                <h2>Νέο Ραντεβού</h2>
+                <button class="close-modal" onclick="closeAddBookingModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+
             <div class="modal-body">
-                <form id="addBookingForm" class="modal-form">
-                    <div class="form-group">
-                        <label>Όνομα Πελάτη *</label>
-                        <input type="text" id="newCustomerName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Τηλέφωνο *</label>
-                        <input type="tel" id="newCustomerPhone" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="newCustomerEmail">
-                    </div>
-                    <div class="form-group">
-                        <label>Υπηρεσία *</label>
-                        <select id="newService" required>
-                            <option value="">Επιλέξτε υπηρεσία...</option>
-                            <option value="Haircut">Haircut</option>
-                            <option value="Beard Trim">Beard Trim</option>
-                            <option value="Haircut + Beard">Haircut + Beard</option>
-                            <option value="Hair Color">Hair Color</option>
-                            <option value="Kids Haircut">Kids Haircut</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Ημερομηνία *</label>
-                        <input type="date" id="newDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Ώρα *</label>
-                        <select id="newTime" required>
-                            <option value="">Επιλέξτε ώρα...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Σημειώσεις</label>
-                        <textarea id="newNotes" placeholder="Προσθέστε τυχόν σημειώσεις..."></textarea>
-                    </div>
-                </form>
+                <div class="form-group">
+                    <label>Ημερομηνία</label>
+                    <input type="date" id="bookingDate" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Ώρα</label>
+                    <input type="time" id="bookingTime" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Όνομα Πελάτη</label>
+                    <input type="text" id="customerName" class="form-control" placeholder="Γιάννης Παπαδόπουλος">
+                </div>
+
+                <div class="form-group">
+                    <label>Τηλέφωνο</label>
+                    <input type="tel" id="customerPhone" class="form-control" placeholder="+30 69 12345678">
+                </div>
+
+                <div class="form-group">
+                    <label>Υπηρεσία</label>
+                    <select id="serviceSelect" class="form-control">
+                        <option value="Haircut">Κούρεμα - €13</option>
+                        <option value="Haircut + Beard">Κούρεμα + Γένια - €15</option>
+                        <option value="Beard Trim & Shape">Περιποίηση Γενιών - €10</option>
+                        <option value="Haircut + Beard + Wash + Styling">Πλήρες Πακέτο - €20</option>
+                    </select>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" onclick="closeAddBookingModal()">Ακύρωση</button>
-                <button class="modal-btn modal-btn-primary" onclick="submitNewBooking()">Δημιουργία Ραντεβού</button>
-            </div>
+
+            <button class="modal-btn modal-btn-primary" onclick="addBooking()">
+                <i class="fas fa-plus"></i>
+                Προσθήκη Ραντεβού
+            </button>
         </div>
     </div>
 
-    <!-- =========================
-         EDIT SCHEDULE MODAL
-    ========================= -->
+    <!-- Edit Schedule Modal -->
     <div id="editScheduleModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Επεξεργασία Ωραρίου</h2>
-                <button class="modal-close" onclick="closeEditScheduleModal()">
+                <h2>Επεξεργασία Ωραρίου</h2>
+                <button class="close-modal" onclick="closeEditScheduleModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="schedule-editor" id="scheduleEditor">
-                    <!-- Schedule days will be generated by JavaScript -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" onclick="closeEditScheduleModal()">Ακύρωση</button>
-                <button class="modal-btn modal-btn-primary" onclick="saveSchedule()">Αποθήκευση</button>
-            </div>
+
+            <div class="modal-body" id="scheduleEditor"></div>
+
+            <button class="modal-btn modal-btn-primary" onclick="saveSchedule()">
+                <i class="fas fa-save"></i>
+                Αποθήκευση Ωραρίου
+            </button>
         </div>
     </div>
 
-    <!-- =========================
-         MANAGE AVAILABILITY MODAL
-    ========================= -->
+    <!-- Manage Availability Modal -->
     <div id="manageAvailabilityModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Διαχείριση Διαθεσιμότητας</h2>
-                <button class="modal-close" onclick="closeManageAvailabilityModal()">
+                <h2>Διαχείριση Διαθεσιμότητας</h2>
+                <button class="close-modal" onclick="closeManageAvailabilityModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+
             <div class="modal-body">
-                <div class="closures-section">
-                    <p class="section-subtitle">Ορίστε ημέρες ή ώρες που δεν θα είστε διαθέσιμοι για ραντεβού</p>
+                <!-- Closure Type Selector -->
+                <div class="closure-type-selector">
+                    <button class="closure-type-btn active" id="fullDayBtn" onclick="selectClosureType('fullDay')">
+                        Ολόκληρη η Ημέρα
+                    </button>
+                    <button class="closure-type-btn" id="timeRangeBtn" onclick="selectClosureType('timeRange')">
+                        Συγκεκριμένες Ώρες
+                    </button>
+                </div>
 
-                    <!-- Add Closure Form -->
-                    <div class="closure-form">
-                        <div class="closure-type-select">
-                            <button type="button" class="closure-type-btn active" id="fullDayBtn" onclick="selectClosureType('fullDay')">
-                                <i class="fas fa-calendar-day"></i> Ολόκληρη Ημέρα
-                            </button>
-                            <button type="button" class="closure-type-btn" id="timeRangeBtn" onclick="selectClosureType('timeRange')">
-                                <i class="fas fa-clock"></i> Συγκεκριμένες Ώρες
-                            </button>
+                <!-- Date Input -->
+                <div class="form-group">
+                    <label>Ημερομηνία</label>
+                    <input type="date" id="closureDate" class="form-control">
+                </div>
+
+                <!-- Time Range Inputs (initially hidden) -->
+                <div id="timeRangeInputs" class="hidden">
+                    <div class="schedule-times">
+                        <div class="time-input-group">
+                            <label>Από</label>
+                            <input type="time" id="closureStartTime" class="form-control">
                         </div>
-
-                        <div class="closure-form-row">
-                            <div class="form-group">
-                                <label>Ημερομηνία *</label>
-                                <input type="date" id="closureDate" required>
-                            </div>
-
-                            <div class="time-range-inputs hidden" id="timeRangeInputs">
-                                <div class="form-group">
-                                    <label>Από *</label>
-                                    <input type="time" id="closureStartTime">
-                                </div>
-                                <div class="form-group">
-                                    <label>Έως *</label>
-                                    <input type="time" id="closureEndTime">
-                                </div>
-                            </div>
-
-                            <button type="button" class="modal-btn modal-btn-primary" onclick="addClosure()" style="height: fit-content; padding: 12px 24px;">
-                                <i class="fas fa-plus"></i> Προσθήκη
-                            </button>
+                        <div class="time-input-group">
+                            <label>Έως</label>
+                            <input type="time" id="closureEndTime" class="form-control">
                         </div>
                     </div>
+                </div>
 
-                    <!-- Closures List -->
-                    <div>
-                        <h3 style="margin-bottom: 15px; font-size: 1.1rem;">Μη Διαθέσιμες Περίοδοι</h3>
-                        <div class="closure-list" id="closuresList">
-                            <div class="empty-closures">
-                                <i class="fas fa-calendar-check" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
-                                <p>Δεν υπάρχουν προγραμματισμένες μη διαθέσιμες περίοδοι</p>
-                            </div>
+                <button class="modal-btn modal-btn-primary" onclick="addClosure()" style="margin-top: 20px;">
+                    <i class="fas fa-plus"></i>
+                    Προσθήκη
+                </button>
+
+                <!-- Closures List -->
+                <div style="margin-top: 32px;">
+                    <h3 style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--lime);">
+                        <i class="fas fa-calendar-times"></i> Μη Διαθέσιμες Περίοδοι
+                    </h3>
+                    <div id="closuresList">
+                        <div class="empty-closures">
+                            <i class="fas fa-calendar-check"></i>
+                            <p>Δεν υπάρχουν προγραμματισμένες μη διαθέσιμες περίοδοι</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" onclick="closeManageAvailabilityModal()">Κλείσιμο</button>
-            </div>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-
-    <!-- Firebase Config -->
-    <script src="js/firebase-config.js?v=30"></script>
-    <script src="js/booking-system.js?v=30"></script>
+    <script src="js/firebase-config.js"></script>
 
     <script>
-        let currentUser = null;
+        // Global variables
+        let db;
         let currentBarberId = null;
+        let currentMonth = new Date();
+        let currentYear = new Date().getFullYear();
+        let currentMonthNum = new Date().getMonth();
         let allBookings = [];
-        let unsubscribeBookings = null;
-        let currentFilter = 'all';
-        let barberSchedule = {};
+        let customClosures = [];
+        let currentClosureType = 'fullDay';
+        let workingHours = {};
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check for saved barber session
-            const savedBarberId = localStorage.getItem('currentBarberId');
-            const savedEmail = localStorage.getItem('currentEmail');
-
-            if (savedBarberId && savedEmail) {
-                // Pre-fill the form
-                document.getElementById('barberSelect').value = savedBarberId;
-                document.getElementById('emailInput').value = savedEmail;
+        // Initialize Firebase
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                db = firebase.firestore();
             }
         });
 
         // Login
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        async function login(event) {
+            event.preventDefault();
 
-            const barber = document.getElementById('barberSelect').value;
-            const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
-
-            if (!barber) {
-                alert('Παρακαλώ επιλέξτε κομμωτή');
-                return;
-            }
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const barberId = document.getElementById('loginBarber').value;
 
             try {
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>';
+                await firebase.auth().signInWithEmailAndPassword(email, password);
+                currentBarberId = barberId;
 
-                try {
-                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                    currentUser = userCredential.user;
-                } catch (error) {
-                    if (error.code === 'auth/user-not-found' ||
-                        error.code === 'auth/wrong-password' ||
-                        error.code === 'auth/invalid-login-credentials') {
-                        try {
-                            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                            currentUser = userCredential.user;
-                        } catch (createError) {
-                            if (createError.code === 'auth/email-already-in-use') {
-                                throw new Error('Ο λογαριασμός υπάρχει. Παρακαλώ εισάγετε τον σωστό κωδικό.');
-                            }
-                            throw createError;
-                        }
-                    } else {
-                        throw error;
-                    }
-                }
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboard').classList.add('active');
+                document.getElementById('userEmail').textContent = email;
 
-                currentBarberId = barber;
+                const barberNames = { mondi: 'Mondi', ervin: 'Ervin', marios: 'Marios' };
+                document.getElementById('dashboardTitle').textContent = `Πίνακας Διαχείρισης - ${barberNames[barberId]}`;
 
-                // Save to localStorage for persistent login
-                localStorage.setItem('currentBarberId', barber);
-                localStorage.setItem('currentEmail', email);
-
-                // Load barber schedule
-                await loadBarberSchedule();
-
-                showDashboard();
+                await loadDashboard();
             } catch (error) {
-                console.error('Login error:', error);
-                alert('Αποτυχία σύνδεσης: ' + error.message);
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Σύνδεση</span>';
-            }
-        });
-
-        // Load Barber Schedule from Firestore
-        async function loadBarberSchedule() {
-            try {
-                const scheduleDoc = await db.collection('schedules').doc(currentBarberId).get();
-                if (scheduleDoc.exists) {
-                    barberSchedule = scheduleDoc.data();
-                } else {
-                    // Use default schedule from BARBERS config
-                    barberSchedule = BARBERS[currentBarberId].workingHours;
-                }
-            } catch (error) {
-                console.error('Error loading schedule:', error);
-                barberSchedule = BARBERS[currentBarberId].workingHours;
-            }
-        }
-
-        // Show Dashboard
-        function showDashboard() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboard').classList.add('active');
-            document.getElementById('dashboardTitle').textContent = 'Πίνακας Διαχείρισης - ' + BARBERS[currentBarberId].name;
-            document.getElementById('userEmail').textContent = currentUser.email;
-
-            loadBookings();
-
-            // Start automatic 2-hour reminder scheduler
-            startReminderScheduler();
-        }
-
-        // Load Bookings
-        function loadBookings() {
-            if (unsubscribeBookings) {
-                unsubscribeBookings();
-            }
-
-            unsubscribeBookings = bookingSystem.listenToBookings(currentBarberId, (bookings) => {
-                allBookings = bookings;
-                updateStats();
-                renderCalendar();
-            });
-        }
-
-        // Update Statistics
-        function updateStats() {
-            const today = new Date().toISOString().split('T')[0];
-            const weekStart = new Date();
-            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-            const weekStartStr = weekStart.toISOString().split('T')[0];
-
-            const todayBookings = allBookings.filter(b => b.date === today && b.status !== 'cancelled');
-            const confirmedBookings = allBookings.filter(b => b.status === 'confirmed');
-            const pendingBookings = allBookings.filter(b => b.status === 'pending');
-            const weekBookings = allBookings.filter(b => b.date >= weekStartStr && b.status !== 'cancelled');
-
-            document.getElementById('todayCount').textContent = todayBookings.length;
-            document.getElementById('confirmedCount').textContent = confirmedBookings.length;
-            document.getElementById('pendingCount').textContent = pendingBookings.length;
-            document.getElementById('weekCount').textContent = weekBookings.length;
-        }
-
-        // =========================
-        // MODAL FUNCTIONS
-        // =========================
-
-        // Open Add Booking Modal
-        function openAddBookingModal() {
-            document.getElementById('addBookingModal').classList.add('active');
-            document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
-        }
-
-        // Close Add Booking Modal
-        function closeAddBookingModal() {
-            document.getElementById('addBookingModal').classList.remove('active');
-            document.getElementById('addBookingForm').reset();
-        }
-
-        // Update time slots when date changes
-        document.addEventListener('DOMContentLoaded', function() {
-            const dateInput = document.getElementById('newDate');
-            if (dateInput) {
-                dateInput.addEventListener('change', async function() {
-                    const selectedDate = new Date(this.value);
-                    const timeSelect = document.getElementById('newTime');
-                    timeSelect.innerHTML = '<option value="">Επιλέξτε ώρα...</option>';
-
-                    // Get available slots
-                    const slots = await bookingSystem.getAvailableTimeSlots(currentBarberId, selectedDate);
-                    slots.forEach(slot => {
-                        const option = document.createElement('option');
-                        option.value = slot;
-                        option.textContent = slot;
-                        timeSelect.appendChild(option);
-                    });
-                });
-            }
-        });
-
-        // Submit New Booking
-        async function submitNewBooking() {
-            const form = document.getElementById('addBookingForm');
-            if (!form.checkValidity()) {
-                alert('Παρακαλώ συμπληρώστε όλα τα υποχρεωτικά πεδία');
-                return;
-            }
-
-            const bookingData = {
-                barberId: currentBarberId,
-                customerName: document.getElementById('newCustomerName').value,
-                customerPhone: document.getElementById('newCustomerPhone').value,
-                customerEmail: document.getElementById('newCustomerEmail').value,
-                service: document.getElementById('newService').value,
-                date: document.getElementById('newDate').value,
-                timeSlot: document.getElementById('newTime').value,
-                notes: document.getElementById('newNotes').value
-            };
-
-            const result = await bookingSystem.createBooking(bookingData);
-            if (result.success) {
-                alert('Το ραντεβού δημιουργήθηκε επιτυχώς!');
-                closeAddBookingModal();
-            } else {
-                alert('Αποτυχία δημιουργίας: ' + result.message);
-            }
-        }
-
-        // Open Edit Schedule Modal
-        function openEditScheduleModal() {
-            document.getElementById('editScheduleModal').classList.add('active');
-            renderScheduleEditor();
-        }
-
-        // Close Edit Schedule Modal
-        function closeEditScheduleModal() {
-            document.getElementById('editScheduleModal').classList.remove('active');
-        }
-
-        // Render Schedule Editor
-        function renderScheduleEditor() {
-            const container = document.getElementById('scheduleEditor');
-            const days = {
-                'monday': 'Δευτέρα',
-                'tuesday': 'Τρίτη',
-                'wednesday': 'Τετάρτη',
-                'thursday': 'Πέμπτη',
-                'friday': 'Παρασκευή',
-                'saturday': 'Σάββατο',
-                'sunday': 'Κυριακή'
-            };
-
-            let html = '<div style="padding: 15px; background: rgba(195, 227, 33, 0.1); border-radius: 12px; margin-bottom: 20px;">';
-            html += '<p style="color: var(--text-light); margin-bottom: 10px;"><strong>Σημείωση:</strong> Τα ωράρια είναι προκαθορισμένα για όλους τους κομμωτές:</p>';
-            html += '<ul style="color: var(--text-gray); margin-left: 20px;">';
-            html += '<li>Δευ-Τρι-Πεμ-Παρ: 9:00-14:00 & 17:00-21:00</li>';
-            html += '<li>Τετάρτη: 9:00-17:00</li>';
-            html += '<li>Σάββατο: 9:00-21:00</li>';
-            html += '<li>Κυριακή: Κλειστά</li>';
-            html += '</ul>';
-            html += '<p style="color: var(--text-gray); margin-top: 10px; font-size: 0.9rem;">Μπορείτε μόνο να ενεργοποιήσετε/απενεργοποιήσετε ημέρες παρακάτω.</p>';
-            html += '</div>';
-
-            Object.keys(days).forEach(day => {
-                const schedule = barberSchedule[day] || BARBERS[currentBarberId].workingHours[day];
-                const isClosed = schedule.closed || false;
-
-                // Format the time ranges for display
-                let timeRangesText = '';
-                if (!isClosed && schedule.ranges) {
-                    timeRangesText = schedule.ranges.map(r => `${r.start}-${r.end}`).join(' & ');
-                }
-
-                html += `
-                    <div class="schedule-day">
-                        <div class="schedule-day-header">
-                            <span class="schedule-day-name">${days[day]}</span>
-                            <div class="schedule-toggle">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="toggle-${day}"
-                                           ${!isClosed ? 'checked' : ''}
-                                           onchange="toggleDay('${day}')">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <span>${!isClosed ? 'Ανοιχτά' : 'Κλειστά'}</span>
-                            </div>
-                        </div>
-                        ${!isClosed && timeRangesText ? `
-                            <div class="schedule-times" id="times-${day}" style="padding: 15px; color: var(--text-gray);">
-                                <i class="fas fa-clock"></i> ${timeRangesText}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        // Toggle Day Open/Closed
-        function toggleDay(day) {
-            const checkbox = document.getElementById(`toggle-${day}`);
-            const isOpen = checkbox.checked;
-            checkbox.nextElementSibling.nextElementSibling.textContent = isOpen ? 'Ανοιχτά' : 'Κλειστά';
-        }
-
-        // Save Schedule
-        async function saveSchedule() {
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-            const newSchedule = {};
-
-            days.forEach(day => {
-                const isOpen = document.getElementById(`toggle-${day}`).checked;
-                if (isOpen) {
-                    // Use default ranges from BARBERS config
-                    newSchedule[day] = BARBERS[currentBarberId].workingHours[day];
-                } else {
-                    newSchedule[day] = { closed: true };
-                }
-            });
-
-            try {
-                await db.collection('schedules').doc(currentBarberId).set(newSchedule);
-                barberSchedule = newSchedule;
-                alert('Το ωράριο αποθηκεύτηκε επιτυχώς!');
-                closeEditScheduleModal();
-            } catch (error) {
-                console.error('Error saving schedule:', error);
-                alert('Αποτυχία αποθήκευσης ωραρίου');
-            }
-        }
-
-        // Delete Booking (Permanent)
-        async function deleteBooking(bookingId) {
-            if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε οριστικά αυτό το ραντεβού;')) {
-                return;
-            }
-
-            try {
-                await db.collection('bookings').doc(bookingId).delete();
-                alert('Το ραντεβού διαγράφηκε επιτυχώς');
-            } catch (error) {
-                console.error('Error deleting booking:', error);
-                alert('Αποτυχία διαγραφής: ' + error.message);
+                alert('Σφάλμα σύνδεσης: ' + error.message);
             }
         }
 
         // Logout
         function logout() {
-            if (unsubscribeBookings) {
-                unsubscribeBookings();
-            }
-
-            // Clear localStorage
-            localStorage.removeItem('currentBarberId');
-            localStorage.removeItem('currentEmail');
-
-            auth.signOut().then(() => {
-                document.getElementById('dashboard').classList.remove('active');
-                document.getElementById('loginScreen').style.display = 'flex';
-                document.getElementById('loginForm').reset();
-                currentUser = null;
-                currentBarberId = null;
-            });
+            firebase.auth().signOut();
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            currentBarberId = null;
         }
 
-        // Auth state with persistent login
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                currentUser = user;
-                const savedBarberId = localStorage.getItem('currentBarberId');
-                if (savedBarberId && !currentBarberId) {
-                    currentBarberId = savedBarberId;
-                    await loadBarberSchedule();
-                    showDashboard();
-                }
+        // Load Dashboard Data
+        async function loadDashboard() {
+            await Promise.all([
+                loadStatistics(),
+                loadWorkingHours(),
+                renderCalendar(),
+                loadTodayAppointments()
+            ]);
+        }
+
+        // Load Statistics
+        async function loadStatistics() {
+            try {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const todayStr = formatDate(today);
+
+                // Get week start and end
+                const weekStart = new Date(today);
+                weekStart.setDate(today.getDate() - today.getDay());
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekStart.getDate() + 6);
+
+                const bookingsSnapshot = await db.collection('bookings')
+                    .where('barberId', '==', currentBarberId)
+                    .where('date', '>=', todayStr)
+                    .where('date', '<=', formatDate(weekEnd))
+                    .get();
+
+                let todayCount = 0;
+                let confirmedCount = 0;
+                let pendingCount = 0;
+                let weekCount = 0;
+
+                bookingsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    weekCount++;
+
+                    if (data.date === todayStr) {
+                        todayCount++;
+                    }
+
+                    if (data.status === 'confirmed') {
+                        confirmedCount++;
+                    } else if (data.status === 'pending') {
+                        pendingCount++;
+                    }
+                });
+
+                document.getElementById('todayCount').textContent = todayCount;
+                document.getElementById('confirmedCount').textContent = confirmedCount;
+                document.getElementById('pendingCount').textContent = pendingCount;
+                document.getElementById('weekCount').textContent = weekCount;
+
+            } catch (error) {
+                console.error('Error loading statistics:', error);
             }
-        });
+        }
 
-        // =========================
-        // AVAILABILITY MANAGEMENT
-        // =========================
-        let customClosures = [];
-        let currentClosureType = 'fullDay';
+        // Render Calendar
+        async function renderCalendar() {
+            const monthNames = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος',
+                              'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
 
-        // Open Manage Availability Modal
+            document.getElementById('calendarTitle').textContent = `${monthNames[currentMonthNum]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonthNum, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonthNum + 1, 0).getDate();
+
+            // Load bookings for this month
+            const monthStart = new Date(currentYear, currentMonthNum, 1);
+            const monthEnd = new Date(currentYear, currentMonthNum + 1, 0);
+
+            const bookingsSnapshot = await db.collection('bookings')
+                .where('barberId', '==', currentBarberId)
+                .where('date', '>=', formatDate(monthStart))
+                .where('date', '<=', formatDate(monthEnd))
+                .get();
+
+            const bookingsByDate = {};
+            bookingsSnapshot.forEach(doc => {
+                const data = doc.data();
+                if (!bookingsByDate[data.date]) {
+                    bookingsByDate[data.date] = 0;
+                }
+                bookingsByDate[data.date]++;
+            });
+
+            const container = document.getElementById('calendarDays');
+            const fragment = document.createDocumentFragment();
+
+            // Add empty cells
+            for (let i = 0; i < firstDay; i++) {
+                const div = document.createElement('div');
+                div.className = 'calendar-day empty';
+                fragment.appendChild(div);
+            }
+
+            // Add days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, currentMonthNum, day);
+                const dateStr = formatDate(date);
+                const count = bookingsByDate[dateStr] || 0;
+
+                const div = document.createElement('div');
+                div.className = 'calendar-day';
+                if (count > 0) {
+                    div.classList.add('has-bookings');
+                }
+
+                div.innerHTML = `
+                    <div class="day-number">${day}</div>
+                    ${count > 0 ? `<div class="booking-count">${count} ραντεβού</div>` : ''}
+                `;
+
+                div.onclick = () => showDayAppointments(dateStr);
+                fragment.appendChild(div);
+            }
+
+            container.innerHTML = '';
+            container.appendChild(fragment);
+        }
+
+        // Navigate Calendar
+        function navigateCalendar(direction) {
+            currentMonthNum += direction;
+            if (currentMonthNum > 11) {
+                currentMonthNum = 0;
+                currentYear++;
+            } else if (currentMonthNum < 0) {
+                currentMonthNum = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        // Load Today's Appointments
+        async function loadTodayAppointments() {
+            const today = formatDate(new Date());
+            await showDayAppointments(today);
+        }
+
+        // Show Day Appointments
+        async function showDayAppointments(dateStr) {
+            try {
+                const bookingsSnapshot = await db.collection('bookings')
+                    .where('barberId', '==', currentBarberId)
+                    .where('date', '==', dateStr)
+                    .orderBy('timeSlot')
+                    .get();
+
+                const container = document.getElementById('appointmentsList');
+
+                if (bookingsSnapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-appointments">
+                            <i class="fas fa-calendar-check"></i>
+                            <p>Δεν υπάρχουν ραντεβού για αυτή την ημερομηνία</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                bookingsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    html += `
+                        <div class="appointment-item">
+                            <div class="appointment-info">
+                                <div class="appointment-time">${data.timeSlot}</div>
+                                <div class="appointment-customer">${data.customerName}</div>
+                                <div class="appointment-service">${data.service} - ${data.customerPhone}</div>
+                            </div>
+                            <div class="appointment-actions">
+                                ${data.status !== 'confirmed' ? `
+                                    <button class="btn-action btn-confirm" onclick="confirmBooking('${doc.id}')" title="Επιβεβαίωση">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                ` : ''}
+                                <button class="btn-action btn-delete" onclick="deleteBooking('${doc.id}')" title="Διαγραφή">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+            }
+        }
+
+        // Confirm Booking
+        async function confirmBooking(bookingId) {
+            try {
+                await db.collection('bookings').doc(bookingId).update({ status: 'confirmed' });
+                await loadTodayAppointments();
+                await loadStatistics();
+            } catch (error) {
+                alert('Σφάλμα επιβεβαίωσης: ' + error.message);
+            }
+        }
+
+        // Delete Booking
+        async function deleteBooking(bookingId) {
+            if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το ραντεβού;')) return;
+
+            try {
+                await db.collection('bookings').doc(bookingId).delete();
+                await loadTodayAppointments();
+                await loadStatistics();
+                await renderCalendar();
+            } catch (error) {
+                alert('Σφάλμα διαγραφής: ' + error.message);
+            }
+        }
+
+        // Add Booking Modal
+        function openAddBookingModal() {
+            document.getElementById('addBookingModal').classList.add('active');
+            document.getElementById('bookingDate').value = formatDate(new Date());
+        }
+
+        function closeAddBookingModal() {
+            document.getElementById('addBookingModal').classList.remove('active');
+        }
+
+        async function addBooking() {
+            const date = document.getElementById('bookingDate').value;
+            const time = document.getElementById('bookingTime').value;
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const service = document.getElementById('serviceSelect').value;
+
+            if (!date || !time || !name || !phone) {
+                alert('Παρακαλώ συμπληρώστε όλα τα πεδία');
+                return;
+            }
+
+            try {
+                await db.collection('bookings').add({
+                    barberId: currentBarberId,
+                    date: date,
+                    timeSlot: time,
+                    customerName: name,
+                    customerPhone: phone,
+                    service: service,
+                    status: 'confirmed',
+                    createdAt: new Date().toISOString()
+                });
+
+                closeAddBookingModal();
+                await loadDashboard();
+                alert('Το ραντεβού προστέθηκε επιτυχώς!');
+            } catch (error) {
+                alert('Σφάλμα: ' + error.message);
+            }
+        }
+
+        // Edit Schedule Modal
+        async function openEditScheduleModal() {
+            document.getElementById('editScheduleModal').classList.add('active');
+            await loadWorkingHours();
+            renderScheduleEditor();
+        }
+
+        function closeEditScheduleModal() {
+            document.getElementById('editScheduleModal').classList.remove('active');
+        }
+
+        async function loadWorkingHours() {
+            try {
+                const barberDoc = await db.collection('barbers').doc(currentBarberId).get();
+                workingHours = barberDoc.exists ? barberDoc.data().workingHours || {} : {};
+
+                // Set defaults if not exists
+                const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                days.forEach(day => {
+                    if (!workingHours[day]) {
+                        workingHours[day] = {
+                            closed: day === 'sunday',
+                            start: '09:00',
+                            end: '18:00'
+                        };
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading working hours:', error);
+            }
+        }
+
+        function renderScheduleEditor() {
+            const dayNames = {
+                sunday: 'Κυριακή',
+                monday: 'Δευτέρα',
+                tuesday: 'Τρίτη',
+                wednesday: 'Τετάρτη',
+                thursday: 'Πέμπτη',
+                friday: 'Παρασκευή',
+                saturday: 'Σάββατο'
+            };
+
+            let html = '';
+            Object.keys(dayNames).forEach(day => {
+                const schedule = workingHours[day];
+                html += `
+                    <div class="schedule-day">
+                        <div class="schedule-day-header">
+                            <span class="schedule-day-name">${dayNames[day]}</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${!schedule.closed ? 'checked' : ''}
+                                       onchange="toggleDay('${day}', this.checked)">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="schedule-times ${schedule.closed ? 'hidden' : ''}" id="times-${day}">
+                            <div class="time-input-group">
+                                <label>Έναρξη</label>
+                                <input type="time" value="${schedule.start || '09:00'}"
+                                       id="start-${day}">
+                            </div>
+                            <div class="time-input-group">
+                                <label>Λήξη</label>
+                                <input type="time" value="${schedule.end || '18:00'}"
+                                       id="end-${day}">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('scheduleEditor').innerHTML = html;
+        }
+
+        function toggleDay(day, isOpen) {
+            const timesDiv = document.getElementById(`times-${day}`);
+            if (isOpen) {
+                timesDiv.classList.remove('hidden');
+            } else {
+                timesDiv.classList.add('hidden');
+            }
+        }
+
+        async function saveSchedule() {
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+            const newSchedule = {};
+            days.forEach(day => {
+                const timesDiv = document.getElementById(`times-${day}`);
+                const isClosed = timesDiv.classList.contains('hidden');
+
+                newSchedule[day] = {
+                    closed: isClosed,
+                    start: document.getElementById(`start-${day}`).value,
+                    end: document.getElementById(`end-${day}`).value
+                };
+            });
+
+            try {
+                await db.collection('barbers').doc(currentBarberId).set({
+                    workingHours: newSchedule
+                }, { merge: true });
+
+                closeEditScheduleModal();
+                alert('Το ωράριο αποθηκεύτηκε επιτυχώς!');
+            } catch (error) {
+                alert('Σφάλμα αποθήκευσης: ' + error.message);
+            }
+        }
+
+        // Manage Availability Modal
         async function openManageAvailabilityModal() {
             document.getElementById('manageAvailabilityModal').classList.add('active');
             await loadCustomClosures();
         }
 
-        // Close Manage Availability Modal
         function closeManageAvailabilityModal() {
             document.getElementById('manageAvailabilityModal').classList.remove('active');
-            // Reset form
-            document.getElementById('closureDate').value = '';
-            document.getElementById('closureStartTime').value = '';
-            document.getElementById('closureEndTime').value = '';
         }
 
-        // Select closure type (fullDay or timeRange)
         function selectClosureType(type) {
             currentClosureType = type;
 
-            // Update button states
             document.getElementById('fullDayBtn').classList.toggle('active', type === 'fullDay');
             document.getElementById('timeRangeBtn').classList.toggle('active', type === 'timeRange');
 
-            // Show/hide time inputs
             const timeInputs = document.getElementById('timeRangeInputs');
             if (type === 'timeRange') {
                 timeInputs.classList.remove('hidden');
@@ -2387,19 +1646,13 @@
             }
         }
 
-        // Load custom closures from Firestore
         async function loadCustomClosures() {
             try {
-                // Get today's date in local timezone
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                const todayStr = `${year}-${month}-${day}`;
+                const today = formatDate(new Date());
 
                 const closuresSnapshot = await db.collection('customClosures')
                     .where('barberId', '==', currentBarberId)
-                    .where('date', '>=', todayStr)
+                    .where('date', '>=', today)
                     .orderBy('date')
                     .get();
 
@@ -2407,20 +1660,6 @@
                     id: doc.id,
                     ...doc.data()
                 }));
-
-                // Sort by date, then by time (if exists)
-                customClosures.sort((a, b) => {
-                    if (a.date !== b.date) {
-                        return a.date.localeCompare(b.date);
-                    }
-                    // If same date, sort by start time (full day closures first)
-                    if (a.type === 'fullDay' && b.type === 'timeRange') return -1;
-                    if (a.type === 'timeRange' && b.type === 'fullDay') return 1;
-                    if (a.startTime && b.startTime) {
-                        return a.startTime.localeCompare(b.startTime);
-                    }
-                    return 0;
-                });
 
                 renderClosuresList();
             } catch (error) {
@@ -2430,14 +1669,13 @@
             }
         }
 
-        // Render closures list
         function renderClosuresList() {
             const container = document.getElementById('closuresList');
 
             if (customClosures.length === 0) {
                 container.innerHTML = `
                     <div class="empty-closures">
-                        <i class="fas fa-calendar-check" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                        <i class="fas fa-calendar-check"></i>
                         <p>Δεν υπάρχουν προγραμματισμένες μη διαθέσιμες περίοδοι</p>
                     </div>
                 `;
@@ -2477,7 +1715,6 @@
             container.innerHTML = html;
         }
 
-        // Add new closure
         async function addClosure() {
             const date = document.getElementById('closureDate').value;
 
@@ -2522,306 +1759,30 @@
                 // Reload closures list
                 await loadCustomClosures();
 
-                // Refresh calendar to show updated availability
-                renderCalendar();
-
                 alert('Η μη διαθέσιμη περίοδος προστέθηκε επιτυχώς!');
             } catch (error) {
-                console.error('Error adding closure:', error);
-                alert('Σφάλμα κατά την προσθήκη. Παρακαλώ δοκιμάστε ξανά.');
+                alert('Σφάλμα: ' + error.message);
             }
         }
 
-        // Delete closure
         async function deleteClosure(closureId) {
-            if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτήν την περίοδο;')) {
-                return;
-            }
+            if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή την περίοδο;')) return;
 
             try {
                 await db.collection('customClosures').doc(closureId).delete();
                 await loadCustomClosures();
-                renderCalendar();
-                alert('Η περίοδος διαγράφηκε επιτυχώς!');
             } catch (error) {
-                console.error('Error deleting closure:', error);
-                alert('Σφάλμα κατά τη διαγραφή. Παρακαλώ δοκιμάστε ξανά.');
+                alert('Σφάλμα διαγραφής: ' + error.message);
             }
         }
 
-        // =========================
-        // CALENDAR VIEW FUNCTIONS
-        // =========================
-        let currentCalendarView = 'week';
-        let currentCalendarDate = new Date();
-
-        // Switch between day/week/month calendar views
-        function switchCalendarView(view) {
-            currentCalendarView = view;
-
-            // Update tab buttons
-            document.querySelectorAll('.calendar-view-tab').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.view === view);
-            });
-
-            // Show/hide containers
-            document.getElementById('dayViewContainer').classList.toggle('active', view === 'day');
-            document.getElementById('weekViewContainer').classList.toggle('active', view === 'week');
-            document.getElementById('monthViewContainer').classList.toggle('active', view === 'month');
-
-            renderCalendar();
+        // Helper function
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
-
-        // Navigate calendar (prev/next)
-        function navigateCalendar(direction) {
-            if (currentCalendarView === 'day') {
-                currentCalendarDate.setDate(currentCalendarDate.getDate() + direction);
-            } else if (currentCalendarView === 'week') {
-                currentCalendarDate.setDate(currentCalendarDate.getDate() + (direction * 7));
-            } else if (currentCalendarView === 'month') {
-                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
-            }
-            renderCalendar();
-        }
-
-        // Go to today
-        function goToToday() {
-            currentCalendarDate = new Date();
-            renderCalendar();
-        }
-
-        // Main render function
-        function renderCalendar() {
-            updateCalendarTitle();
-
-            if (currentCalendarView === 'day') {
-                renderDayView();
-            } else if (currentCalendarView === 'week') {
-                renderWeekView();
-            } else if (currentCalendarView === 'month') {
-                renderMonthView();
-            }
-        }
-
-        // Update calendar title
-        function updateCalendarTitle() {
-            const options = { month: 'long', year: 'numeric' };
-            if (currentCalendarView === 'day') {
-                options.day = 'numeric';
-                options.weekday = 'long';
-            }
-            const title = currentCalendarDate.toLocaleDateString('el-GR', options);
-            document.getElementById('calendarTitle').textContent = title;
-        }
-
-        // Render Day View
-        function renderDayView() {
-            const container = document.getElementById('dayViewGrid');
-            const dateStr = currentCalendarDate.toISOString().split('T')[0];
-
-            // Get bookings for this day
-            const dayBookings = allBookings.filter(b =>
-                b.date === dateStr && b.status !== 'cancelled'
-            );
-
-            // Get barber-specific time slots (20 min for Mondi, 30 min for others)
-            const timeSlots = getTimeSlotsForBarber(currentBarberId);
-
-            // Create time slots using barber-specific intervals
-            let html = '';
-            timeSlots.forEach(timeSlot => {
-                const bookingsAtTime = dayBookings.filter(b => b.timeSlot === timeSlot);
-
-                html += `
-                    <div class="time-slot-row">
-                        <div class="time-label">${timeSlot}</div>
-                        <div class="time-slot-content">
-                            ${bookingsAtTime.map(booking => `
-                                <div class="calendar-booking-item status-${booking.status}">
-                                    <div class="calendar-booking-name">${booking.customerName}</div>
-                                    <div class="calendar-booking-service">${booking.service}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        // Render Week View
-        function renderWeekView() {
-            const container = document.getElementById('weekViewGrid');
-
-            // Get start of week (Sunday)
-            const startOfWeek = new Date(currentCalendarDate);
-            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-
-            const today = new Date().toISOString().split('T')[0];
-            let html = '';
-
-            // Create 7 columns for each day
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(startOfWeek);
-                date.setDate(date.getDate() + i);
-                const dateStr = date.toISOString().split('T')[0];
-                const isToday = dateStr === today;
-
-                // Get bookings for this day
-                const dayBookings = allBookings.filter(b =>
-                    b.date === dateStr && b.status !== 'cancelled'
-                );
-
-                const dayName = date.toLocaleDateString('el-GR', { weekday: 'short' });
-
-                html += `
-                    <div class="week-day-col ${isToday ? 'today' : ''}">
-                        <div class="week-day-header">
-                            <div class="week-day-name">${dayName}</div>
-                            <div class="week-day-date">${date.getDate()}</div>
-                        </div>
-                        <div class="week-day-bookings">
-                            ${dayBookings.map(booking => `
-                                <div class="week-booking-item status-${booking.status}">
-                                    <div class="week-booking-time">${booking.timeSlot}</div>
-                                    <div class="week-booking-name">${booking.customerName}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = html;
-        }
-
-        // Render Month View
-        function renderMonthView() {
-            const container = document.getElementById('monthViewGrid');
-
-            // Get first day of month
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-
-            // Get day of week for first day (0 = Sunday)
-            const startDay = firstDay.getDay();
-
-            const today = new Date().toISOString().split('T')[0];
-
-            let html = '';
-
-            // Day headers (Greek)
-            const dayNames = ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ'];
-
-            dayNames.forEach(day => {
-                html += `<div class="month-day-header">${day}</div>`;
-            });
-
-            // Empty cells before first day
-            for (let i = 0; i < startDay; i++) {
-                html += `<div class="month-day-cell other-month"></div>`;
-            }
-
-            // Days of month
-            for (let day = 1; day <= lastDay.getDate(); day++) {
-                const date = new Date(year, month, day);
-                const dateStr = date.toISOString().split('T')[0];
-                const isToday = dateStr === today;
-
-                // Get bookings for this day
-                const dayBookings = allBookings.filter(b =>
-                    b.date === dateStr && b.status !== 'cancelled'
-                );
-
-                html += `
-                    <div class="month-day-cell ${isToday ? 'today' : ''}">
-                        <div class="month-day-number">${day}</div>
-                        ${dayBookings.length > 0 ? `
-                            <div class="month-bookings-count">${dayBookings.length}</div>
-                            <div class="month-booking-dots">
-                                ${dayBookings.slice(0, 4).map(booking => `
-                                    <div class="month-booking-dot ${booking.status}"></div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }
-
-            // Fill remaining cells
-            const totalCells = startDay + lastDay.getDate();
-            const remainingCells = 35 - totalCells; // 5 rows * 7 days = 35
-            for (let i = 0; i < remainingCells; i++) {
-                html += `<div class="month-day-cell other-month"></div>`;
-            }
-
-            container.innerHTML = html;
-        }
-
-        // =========================
-        // SMS REMINDER SCHEDULER
-        // =========================
-
-        // Send 2-hour reminders to upcoming bookings
-        async function sendUpcomingReminders() {
-            console.log('Checking for bookings needing 2-hour reminders...');
-
-            const bookingsNeedingReminder = await bookingSystem.getBookingsNeedingReminder();
-
-            console.log(`Found ${bookingsNeedingReminder.length} bookings needing reminders`);
-
-            for (const booking of bookingsNeedingReminder) {
-                console.log(`Sending reminder for booking ${booking.id}...`);
-
-                const result = await bookingSystem.send2HourReminder(booking);
-
-                if (result.success) {
-                    console.log(`Reminder sent to ${booking.customerPhone}`);
-                    await bookingSystem.markReminderSent(booking.id);
-                } else {
-                    console.error(`Failed to send reminder: ${result.error}`);
-                }
-            }
-
-            if (bookingsNeedingReminder.length > 0) {
-                alert(`✅ Sent ${bookingsNeedingReminder.length} reminders!`);
-            }
-        }
-
-        // Auto-check for reminders every 5 minutes when admin is logged in
-        let reminderInterval = null;
-
-        function startReminderScheduler() {
-            if (reminderInterval) return; // Already running
-
-            console.log('Starting automatic reminder scheduler...');
-
-            // Check immediately
-            sendUpcomingReminders();
-
-            // Then check every 5 minutes
-            reminderInterval = setInterval(() => {
-                sendUpcomingReminders();
-            }, 5 * 60 * 1000); // 5 minutes
-        }
-
-        function stopReminderScheduler() {
-            if (reminderInterval) {
-                clearInterval(reminderInterval);
-                reminderInterval = null;
-                console.log('Reminder scheduler stopped');
-            }
-        }
-
-        // Override logout to stop scheduler
-        const _originalLogout = logout;
-        logout = function() {
-            stopReminderScheduler();
-            _originalLogout();
-        };
     </script>
 </body>
 </html>
