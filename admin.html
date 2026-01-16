@@ -933,7 +933,7 @@
 
                 <p style="text-align: center; margin-top: 20px; color: var(--text-gray); font-size: 14px;">
                     <span id="switchText">Δεν έχετε λογαριασμό;</span>
-                    <a href="#" onclick="toggleAuthMode(event)" style="color: var(--lime); text-decoration: none; font-weight: 600; margin-left: 5px;" id="switchLink">Εγγραφή</a>
+                    <a href="#" id="switchAuthLink" style="color: var(--lime); text-decoration: none; font-weight: 600; margin-left: 5px;">Εγγραφή</a>
                 </p>
             </form>
         </div>
@@ -1227,6 +1227,9 @@
             // Add form submit listener
             document.getElementById('loginForm').addEventListener('submit', login);
 
+            // Add toggle auth mode listener
+            document.getElementById('switchAuthLink').addEventListener('click', toggleAuthMode);
+
             // Check for persistent login
             auth.onAuthStateChanged((user) => {
                 if (user) {
@@ -1258,14 +1261,14 @@
                 document.getElementById('authBtnText').textContent = 'Δημιουργία Λογαριασμού';
                 document.getElementById('authBtn').querySelector('i').className = 'fas fa-user-plus';
                 document.getElementById('switchText').textContent = 'Έχετε ήδη λογαριασμό;';
-                document.getElementById('switchLink').textContent = 'Σύνδεση';
+                document.getElementById('switchAuthLink').textContent = 'Σύνδεση';
             } else {
                 // Switch to Login mode
                 document.getElementById('authTitle').textContent = 'Σύνδεση';
                 document.getElementById('authBtnText').textContent = 'Σύνδεση';
                 document.getElementById('authBtn').querySelector('i').className = 'fas fa-sign-in-alt';
                 document.getElementById('switchText').textContent = 'Δεν έχετε λογαριασμό;';
-                document.getElementById('switchLink').textContent = 'Εγγραφή';
+                document.getElementById('switchAuthLink').textContent = 'Εγγραφή';
             }
         }
 
