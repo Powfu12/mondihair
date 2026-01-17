@@ -1113,6 +1113,7 @@
         let availability = {};
         let slotsCache = {};
         let currentLang = 'el';
+        let slotsRefreshInterval = null;
 
         function formatDateLocal(date) {
             const year = date.getFullYear();
@@ -1255,6 +1256,12 @@
                 return;
             }
 
+            // Clear refresh interval when leaving step 3
+            if (currentStep === 3 && slotsRefreshInterval) {
+                clearInterval(slotsRefreshInterval);
+                slotsRefreshInterval = null;
+            }
+
             document.getElementById(`step${currentStep}`).classList.add('hidden');
             currentStep++;
             document.getElementById(`step${currentStep}`).classList.remove('hidden');
@@ -1268,8 +1275,28 @@
         }
 
         function prevStep() {
+            // Clear refresh interval when leaving step 3
+            if (currentStep === 3 && slotsRefreshInterval) {
+                clearInterval(slotsRefreshInterval);
+                slotsRefreshInterval = null;
+            }
+
             document.getElementById(`step${currentStep}`).classList.add('hidden');
             currentStep--;
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToStep(stepNumber) {
+            // Clear refresh interval when leaving step 3
+            if (currentStep === 3 && slotsRefreshInterval) {
+                clearInterval(slotsRefreshInterval);
+                slotsRefreshInterval = null;
+            }
+
+            document.getElementById(`step${currentStep}`).classList.add('hidden');
+            currentStep = stepNumber;
             document.getElementById(`step${currentStep}`).classList.remove('hidden');
             updateProgress();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1415,10 +1442,15 @@
             renderCalendar();
         }
 
-        async function selectDate(dateStr) {
+        async function selectDate(dateStr, skipScroll = false) {
             selectedDate = dateStr;
             selectedTime = null;
             renderCalendar();
+
+            // Clear any existing refresh interval
+            if (slotsRefreshInterval) {
+                clearInterval(slotsRefreshInterval);
+            }
 
             document.getElementById('timeSlotsCard').classList.remove('hidden');
             document.getElementById('loadingSlots').classList.remove('hidden');
@@ -1429,12 +1461,9 @@
                 const date = new Date(year, month - 1, day);
 
                 const cacheKey = `${selectedBarber}_${selectedDate}`;
-                let slots = slotsCache[cacheKey];
-
-                if (!slots) {
-                    slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
-                    slotsCache[cacheKey] = slots;
-                }
+                // Always fetch fresh data to ensure availability is current
+                const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
+                slotsCache[cacheKey] = slots;
 
                 document.getElementById('loadingSlots').classList.add('hidden');
 
@@ -1456,9 +1485,34 @@
                     });
                 }
 
-                setTimeout(() => {
-                    document.getElementById('timeSlotsCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 100);
+                // Auto-refresh time slots every 30 seconds to keep them current
+                slotsRefreshInterval = setInterval(async () => {
+                    console.log('Auto-refreshing time slots...');
+                    const currentSelectedTime = selectedTime;
+                    const freshSlots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
+
+                    // Only update if slots have changed
+                    if (JSON.stringify(freshSlots) !== JSON.stringify(slots)) {
+                        slotsCache[cacheKey] = freshSlots;
+                        await selectDate(dateStr, true);
+
+                        // Restore selected time if still available
+                        if (currentSelectedTime && freshSlots.includes(currentSelectedTime)) {
+                            selectedTime = currentSelectedTime;
+                            const selectedSlot = Array.from(document.querySelectorAll('.time-slot'))
+                                .find(s => s.textContent === currentSelectedTime);
+                            if (selectedSlot) {
+                                selectedSlot.classList.add('selected');
+                            }
+                        }
+                    }
+                }, 30000);
+
+                if (!skipScroll) {
+                    setTimeout(() => {
+                        document.getElementById('timeSlotsCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                }
             } catch (error) {
                 console.error('Error loading time slots:', error);
                 document.getElementById('loadingSlots').classList.add('hidden');
@@ -1494,11 +1548,44 @@
                 if (result.success) {
                     showSuccess();
                 } else {
-                    alert(result.message || t('bookingFailed'));
+                    // If the time slot is no longer available, refresh and go back
+                    if (result.message && result.message.includes('no longer available')) {
+                        const errorMsg = currentLang === 'el'
+                            ? 'Λυπούμαστε, αυτή η ώρα μόλις κρατήθηκε από κάποιον άλλον. Παρακαλώ επιλέξτε άλλη ώρα.'
+                            : 'Sorry, this time slot was just booked by someone else. Please select another time.';
+                        alert(errorMsg);
+
+                        // Clear cache and refresh available slots
+                        const cacheKey = `${selectedBarber}_${selectedDate}`;
+                        delete slotsCache[cacheKey];
+
+                        // Go back to time selection
+                        goToStep(3);
+                        await selectDate(selectedDate);
+                    } else {
+                        alert(result.message || t('bookingFailed'));
+                    }
                 }
             } catch (error) {
                 console.error('Error submitting booking:', error);
-                alert(t('bookingFailed') + ': ' + (error.message || 'Unknown error'));
+
+                // Check if it's an availability error
+                if (error.message && error.message.includes('no longer available')) {
+                    const errorMsg = currentLang === 'el'
+                        ? 'Λυπούμαστε, αυτή η ώρα μόλις κρατήθηκε από κάποιον άλλον. Παρακαλώ επιλέξτε άλλη ώρα.'
+                        : 'Sorry, this time slot was just booked by someone else. Please select another time.';
+                    alert(errorMsg);
+
+                    // Clear cache and refresh available slots
+                    const cacheKey = `${selectedBarber}_${selectedDate}`;
+                    delete slotsCache[cacheKey];
+
+                    // Go back to time selection
+                    goToStep(3);
+                    await selectDate(selectedDate);
+                } else {
+                    alert(t('bookingFailed') + ': ' + (error.message || 'Unknown error'));
+                }
             }
         }
 
