@@ -1206,8 +1206,8 @@
 
     <script>
         // Global variables
-        let db;
-        let auth;
+        // Firebase is already initialized in firebase-config.js
+        // We just need to reference the existing db and auth variables
         let currentUser = null;
         let currentBarberId = null;
         let currentMonth = new Date();
@@ -1219,7 +1219,7 @@
         let workingHours = {};
         let isRegisterMode = false;
 
-        // Initialize Firebase
+        // Initialize event listeners when DOM is ready
         window.addEventListener('DOMContentLoaded', () => {
             console.log('DOMContentLoaded fired');
 
@@ -1230,17 +1230,14 @@
                 return;
             }
 
-            console.log('Firebase available, initializing...');
-
-            try {
-                db = firebase.firestore();
-                auth = firebase.auth();
-                console.log('Firebase initialized successfully');
-            } catch (error) {
-                console.error('Firebase initialization error:', error);
-                alert('Σφάλμα αρχικοποίησης Firebase: ' + error.message);
+            // Check if db and auth are available from firebase-config.js
+            if (typeof db === 'undefined' || typeof auth === 'undefined') {
+                console.error('Firebase db or auth not initialized!');
+                alert('Σφάλμα: Η βάση δεδομένων δεν έχει φορτωθεί σωστά.');
                 return;
             }
+
+            console.log('Firebase already initialized, ready to use');
 
             // Add form submit listener
             const loginForm = document.getElementById('loginForm');
