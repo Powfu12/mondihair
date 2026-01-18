@@ -759,6 +759,119 @@
             font-size: 14px;
         }
 
+        /* Day Schedule View for Add Booking */
+        .day-schedule {
+            margin-top: 20px;
+        }
+
+        .schedule-header {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .schedule-header h3 {
+            font-size: 16px;
+            color: var(--lime);
+            margin-bottom: 4px;
+        }
+
+        .schedule-header p {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .time-slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .admin-time-slot {
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid var(--border);
+        }
+
+        .admin-time-slot.available {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .admin-time-slot.available:hover {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success);
+            transform: translateY(-2px);
+        }
+
+        .admin-time-slot.available.selected {
+            background: var(--success);
+            border-color: var(--success);
+            color: var(--darker);
+        }
+
+        .admin-time-slot.booked {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .booked-list {
+            margin-bottom: 20px;
+        }
+
+        .booked-list h4 {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .booked-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .booked-item-time {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--lime);
+        }
+
+        .booked-item-info {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .customer-form {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .customer-form.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Closures Section */
         .closure-type-selector {
             display: flex;
@@ -1304,41 +1417,69 @@
             </div>
 
             <div class="modal-body">
+                <!-- Step 1: Select Date -->
                 <div class="form-group">
-                    <label>Ημερομηνία</label>
-                    <input type="date" id="bookingDate" class="form-control">
+                    <label>Επιλέξτε Ημερομηνία</label>
+                    <input type="date" id="bookingDate" class="form-control" onchange="loadDaySchedule()">
                 </div>
 
-                <div class="form-group">
-                    <label>Ώρα</label>
-                    <input type="time" id="bookingTime" class="form-control">
+                <!-- Step 2: Show Day Schedule & Available Times -->
+                <div id="dayScheduleView" class="day-schedule" style="display: none;">
+                    <div class="schedule-header">
+                        <h3 id="selectedDateDisplay"></h3>
+                        <p id="availabilityCount"></p>
+                    </div>
+
+                    <!-- Existing Bookings -->
+                    <div id="existingBookings" class="booked-list" style="display: none;">
+                        <h4><i class="fas fa-calendar-check"></i> Κρατημένα Ραντεβού</h4>
+                        <div id="bookedSlotsList"></div>
+                    </div>
+
+                    <!-- Available Time Slots -->
+                    <div>
+                        <h4 style="font-size: 14px; color: var(--text-gray); margin-bottom: 12px; font-weight: 600;">
+                            <i class="fas fa-clock"></i> Διαθέσιμες Ώρες (Κάντε κλικ για επιλογή)
+                        </h4>
+                        <div id="availableTimeSlots" class="time-slots-grid"></div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Όνομα Πελάτη</label>
-                    <input type="text" id="customerName" class="form-control" placeholder="Γιάννης Παπαδόπουλος">
-                </div>
+                <!-- Step 3: Customer Details Form -->
+                <div id="customerDetailsForm" class="customer-form">
+                    <div style="background: rgba(195, 227, 33, 0.1); border: 1px solid rgba(195, 227, 33, 0.3); border-radius: 10px; padding: 12px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-check-circle" style="color: var(--lime);"></i>
+                            <span style="color: var(--lime); font-weight: 600;">Επιλεγμένη ώρα: <span id="selectedTimeDisplay"></span></span>
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label>Τηλέφωνο</label>
-                    <input type="tel" id="customerPhone" class="form-control" placeholder="+30 69 12345678">
-                </div>
+                    <div class="form-group">
+                        <label>Όνομα Πελάτη</label>
+                        <input type="text" id="customerName" class="form-control" placeholder="Γιάννης Παπαδόπουλος">
+                    </div>
 
-                <div class="form-group">
-                    <label>Υπηρεσία</label>
-                    <select id="serviceSelect" class="form-control">
-                        <option value="Haircut">Κούρεμα - €13</option>
-                        <option value="Haircut + Beard">Κούρεμα + Γένια - €15</option>
-                        <option value="Beard Trim & Shape">Περιποίηση Γενιών - €10</option>
-                        <option value="Haircut + Beard + Wash + Styling">Πλήρες Πακέτο - €20</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Τηλέφωνο</label>
+                        <input type="tel" id="customerPhone" class="form-control" placeholder="+30 69 12345678">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Υπηρεσία</label>
+                        <select id="serviceSelect" class="form-control">
+                            <option value="Haircut">Κούρεμα - €13</option>
+                            <option value="Haircut + Beard">Κούρεμα + Γένια - €15</option>
+                            <option value="Beard Trim & Shape">Περιποίηση Γενιών - €10</option>
+                            <option value="Haircut + Beard + Wash + Styling">Πλήρες Πακέτο - €20</option>
+                        </select>
+                    </div>
+
+                    <button class="modal-btn modal-btn-primary" onclick="confirmBooking()">
+                        <i class="fas fa-check"></i>
+                        Επιβεβαίωση Ραντεβού
+                    </button>
                 </div>
             </div>
-
-            <button class="modal-btn modal-btn-primary" onclick="addBooking()">
-                <i class="fas fa-plus"></i>
-                Προσθήκη Ραντεβού
-            </button>
         </div>
     </div>
 
@@ -1428,11 +1569,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="js/firebase-config.js"></script>
+    <script src="js/booking-system.js"></script>
 
     <script>
         // Global variables
         // Firebase is already initialized in firebase-config.js
         // We just need to reference the existing db and auth variables
+        const bookingSystem = new BookingSystem();
         let currentUser = null;
         let currentBarberId = null;
         let currentMonth = new Date();
@@ -1859,25 +2002,152 @@
             }
         }
 
-        // Add Booking Modal
+        // Add Booking Modal - New Workflow
+        let selectedBookingTime = null;
+
         function openAddBookingModal() {
             document.getElementById('addBookingModal').classList.add('active');
             document.getElementById('bookingDate').value = formatDate(new Date());
+
+            // Reset modal state
+            document.getElementById('dayScheduleView').style.display = 'none';
+            document.getElementById('customerDetailsForm').classList.remove('active');
+            selectedBookingTime = null;
+
+            // Load schedule for today
+            loadDaySchedule();
         }
 
         function closeAddBookingModal() {
             document.getElementById('addBookingModal').classList.remove('active');
+            selectedBookingTime = null;
         }
 
-        async function addBooking() {
+        async function loadDaySchedule() {
+            const dateInput = document.getElementById('bookingDate').value;
+            if (!dateInput) return;
+
+            const [year, month, day] = dateInput.split('-').map(Number);
+            const selectedDate = new Date(year, month - 1, day);
+
+            // Show loading state
+            document.getElementById('dayScheduleView').style.display = 'block';
+            document.getElementById('selectedDateDisplay').textContent = selectedDate.toLocaleDateString('el-GR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('availabilityCount').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Φόρτωση...';
+            document.getElementById('availableTimeSlots').innerHTML = '';
+            document.getElementById('bookedSlotsList').innerHTML = '';
+
+            try {
+                // Get all time slots for this barber
+                const barber = BARBERS[currentBarberId];
+                const allSlots = getTimeSlotsForBarber(currentBarberId);
+
+                // Get existing bookings for this date
+                const bookingsSnapshot = await db.collection('bookings')
+                    .where('barberId', '==', currentBarberId)
+                    .where('date', '==', dateInput)
+                    .where('status', 'in', ['pending', 'confirmed'])
+                    .get();
+
+                const bookings = [];
+                const bookedSlots = [];
+
+                bookingsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    bookings.push(data);
+                    bookedSlots.push(data.timeSlot);
+                });
+
+                // Get available slots using booking system logic
+                const availableSlots = await bookingSystem.getAvailableTimeSlots(currentBarberId, selectedDate);
+
+                // Display existing bookings
+                if (bookings.length > 0) {
+                    document.getElementById('existingBookings').style.display = 'block';
+                    let bookedHTML = '';
+                    bookings.sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
+                    bookings.forEach(booking => {
+                        bookedHTML += `
+                            <div class="booked-item">
+                                <div>
+                                    <div class="booked-item-time">${booking.timeSlot}</div>
+                                    <div class="booked-item-info">${booking.customerName} - ${booking.service}</div>
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-gray);">${booking.customerPhone}</div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('bookedSlotsList').innerHTML = bookedHTML;
+                } else {
+                    document.getElementById('existingBookings').style.display = 'none';
+                }
+
+                // Display available time slots
+                if (availableSlots.length > 0) {
+                    let slotsHTML = '';
+                    availableSlots.forEach(slot => {
+                        slotsHTML += `
+                            <div class="admin-time-slot available" onclick="selectTimeSlot('${slot}')">
+                                ${slot}
+                            </div>
+                        `;
+                    });
+                    document.getElementById('availableTimeSlots').innerHTML = slotsHTML;
+                    document.getElementById('availabilityCount').innerHTML = `<i class="fas fa-check-circle"></i> ${availableSlots.length} διαθέσιμες ώρες`;
+                } else {
+                    document.getElementById('availableTimeSlots').innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: var(--text-gray); grid-column: 1/-1;">
+                            <i class="fas fa-calendar-times" style="font-size: 32px; margin-bottom: 8px; opacity: 0.5;"></i>
+                            <p>Δεν υπάρχουν διαθέσιμες ώρες για αυτή την ημερομηνία</p>
+                        </div>
+                    `;
+                    document.getElementById('availabilityCount').innerHTML = '<i class="fas fa-times-circle"></i> Καμία διαθέσιμη ώρα';
+                }
+
+            } catch (error) {
+                console.error('Error loading day schedule:', error);
+                document.getElementById('availabilityCount').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Σφάλμα φόρτωσης';
+                alert('Σφάλμα φόρτωσης ωρών: ' + error.message);
+            }
+        }
+
+        function selectTimeSlot(time) {
+            selectedBookingTime = time;
+
+            // Update UI
+            document.querySelectorAll('.admin-time-slot.available').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+
+            // Show customer form
+            document.getElementById('selectedTimeDisplay').textContent = time;
+            document.getElementById('customerDetailsForm').classList.add('active');
+
+            // Scroll to form
+            setTimeout(() => {
+                document.getElementById('customerDetailsForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        async function confirmBooking() {
             const date = document.getElementById('bookingDate').value;
-            const time = document.getElementById('bookingTime').value;
             const name = document.getElementById('customerName').value.trim();
             const phone = document.getElementById('customerPhone').value.trim();
             const service = document.getElementById('serviceSelect').value;
 
-            if (!date || !time || !name || !phone) {
-                alert('Παρακαλώ συμπληρώστε όλα τα πεδία');
+            if (!selectedBookingTime) {
+                alert('Παρακαλώ επιλέξτε ώρα');
+                return;
+            }
+
+            if (!name || !phone) {
+                alert('Παρακαλώ συμπληρώστε όλα τα υποχρεωτικά πεδία');
                 return;
             }
 
@@ -1885,7 +2155,7 @@
                 await db.collection('bookings').add({
                     barberId: currentBarberId,
                     date: date,
-                    timeSlot: time,
+                    timeSlot: selectedBookingTime,
                     customerName: name,
                     customerPhone: phone,
                     service: service,
@@ -1896,6 +2166,11 @@
                 closeAddBookingModal();
                 await loadDashboard();
                 alert('Το ραντεβού προστέθηκε επιτυχώς!');
+
+                // Reset form
+                document.getElementById('customerName').value = '';
+                document.getElementById('customerPhone').value = '';
+                document.getElementById('serviceSelect').selectedIndex = 0;
             } catch (error) {
                 alert('Σφάλμα: ' + error.message);
             }
