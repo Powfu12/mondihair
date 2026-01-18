@@ -95,7 +95,8 @@ class BookingSystem {
           const startMinutes = startHour * 60 + startMinute;
           const endMinutes = endHour * 60 + endMinute;
 
-          return slotMinutes >= startMinutes && slotMinutes < endMinutes;
+          // Include slots at exactly the end time (changed < to <=)
+          return slotMinutes >= startMinutes && slotMinutes <= endMinutes;
         });
       };
 
