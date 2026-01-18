@@ -193,7 +193,7 @@ function getTimeSlotsForBarber(barberId) {
 const SERVICES = {
   'Haircut': { price: 13, duration: 30, description: 'Traditional barbering techniques with modern precision.' },
   'Haircut + Beard': { price: 15, duration: 45, description: 'Complete haircut and beard grooming service.' },
-  'Beard Trim & Shape': { price: 10, duration: 20, description: 'Professional beard grooming with class.' },
+  'Beard Trim & Shape': { price: 7, duration: 20, description: 'Professional beard grooming with class.' },
   'Haircut + Beard + Wash + Styling': { price: 20, duration: 60, description: 'Complete grooming package. Our most popular service.' }
 };
 
