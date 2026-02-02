@@ -1,12 +1,15 @@
 // Booking System Logic
 
-// Vonage (Nexmo) SMS Configuration
-const VONAGE_CONFIG = {
-  apiKey: 'efacae61',                         // Your Vonage API Key
-  apiSecret: 'DtkFOZIjgzSola2s',              // Your Vonage API Secret
-  alphaSender: 'MondiHair',                   // Your alphanumeric sender name
+// SMS Configuration (credentials are now securely stored in Cloud Functions)
+const SMS_CONFIG = {
   businessPhone: '+306974628335'              // Your business phone for customers to call
 };
+
+// Initialize Firebase Functions for SMS
+let sendSMSFunction = null;
+if (typeof firebase !== 'undefined' && firebase.functions) {
+  sendSMSFunction = firebase.functions().httpsCallable('sendSMS');
+}
 
 class BookingSystem {
   constructor() {
@@ -203,20 +206,10 @@ class BookingSystem {
 
       const docRef = await db.collection('bookings').add(booking);
 
-      console.log('Booking created, sending confirmation SMS...');
+      console.log('Booking created successfully. SMS will be sent automatically by Cloud Function.');
 
-      // Send confirmation SMS
-      const smsResult = await this.sendBookingConfirmation({
-        ...booking,
-        barberName: booking.barberName
-      });
-
-      if (smsResult.success) {
-        console.log('Confirmation SMS sent successfully');
-      } else {
-        console.warn('Failed to send confirmation SMS:', smsResult.error);
-        // Don't fail the booking if SMS fails
-      }
+      // Note: SMS is now sent automatically by Firebase Cloud Function (onBookingCreated)
+      // when the booking document is created in Firestore
 
       return {
         success: true,
@@ -352,46 +345,29 @@ class BookingSystem {
     return null;
   }
 
-  // Send SMS via Vonage (Nexmo)
-  async sendSMS(to, message) {
+  // Send SMS via Firebase Cloud Function
+  async sendSMS(to, message, type = 'general') {
     try {
+      if (!sendSMSFunction) {
+        console.warn('SMS function not available - Cloud Functions may not be deployed');
+        return { success: false, error: 'SMS service not configured' };
+      }
+
       const formattedPhone = this.formatGreekPhone(to);
       if (!formattedPhone) {
         throw new Error('Invalid phone number format');
       }
 
-      console.log('Sending SMS to:', formattedPhone);
+      console.log('Sending SMS via Cloud Function to:', formattedPhone);
 
-      const response = await fetch('https://rest.nexmo.com/sms/json', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          api_key: VONAGE_CONFIG.apiKey,
-          api_secret: VONAGE_CONFIG.apiSecret,
-          from: VONAGE_CONFIG.alphaSender,
-          to: formattedPhone.replace('+', ''),  // Vonage expects number without + prefix
-          text: message,
-          type: 'unicode'  // Support Greek characters
-        })
-      });
+      const result = await sendSMSFunction({ to: formattedPhone, message, type });
 
-      const data = await response.json();
-
-      // Vonage returns messages array with status for each message
-      if (data.messages && data.messages[0]) {
-        const msg = data.messages[0];
-        if (msg.status === '0') {
-          console.log('SMS sent successfully:', msg['message-id']);
-          return { success: true, sid: msg['message-id'] };
-        } else {
-          console.error('Vonage error:', msg['error-text']);
-          return { success: false, error: msg['error-text'] };
-        }
+      if (result.data.success) {
+        console.log('SMS sent successfully:', result.data.messageId);
+        return { success: true, sid: result.data.messageId };
       } else {
-        console.error('Vonage error: Invalid response', data);
-        return { success: false, error: 'Invalid response from Vonage' };
+        console.error('SMS error:', result.data.error);
+        return { success: false, error: result.data.error };
       }
     } catch (error) {
       console.error('Error sending SMS:', error);
@@ -420,7 +396,7 @@ class BookingSystem {
 💇 Κομμωτής: ${booking.barberName}
 ✂️ Υπηρεσία: ${booking.service}
 
-Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
+Για ακύρωση: ${SMS_CONFIG.businessPhone}
 
 Mondi Hairstyle`;
 
@@ -445,7 +421,7 @@ Mondi Hairstyle`;
 
 ⏰ Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.
 
-Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
+Για ακύρωση: ${SMS_CONFIG.businessPhone}
 
 Mondi Hairstyle`;
 
