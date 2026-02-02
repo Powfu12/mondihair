@@ -192,20 +192,19 @@ exports.onBookingCreated = euFunctions.firestore
       year: 'numeric'
     });
 
-    const message = `✅ Επιβεβαίωση Ραντεβού
+    const message = `MONDI HAIRSTYLE
+Epivevaiosi Rantevou
 
-Γεια σας ${booking.customerName}!
+Geia sas ${booking.customerName}!
 
-Το ραντεβού σας επιβεβαιώθηκε:
+To rantevou sas epivevaiotike:
 
-📅 ${dateStr}
-🕐 ${booking.timeSlot}
-💇 Κομμωτής: ${booking.barberName}
-✂️ Υπηρεσία: ${booking.service}
+- ${dateStr}
+- Ora: ${booking.timeSlot}
+- Kommotis: ${booking.barberName}
+- Ypiresia: ${booking.service}
 
-Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
-
-Mondi Hairstyle`;
+Gia akyrosi: ${VONAGE_CONFIG.businessPhone}`;
 
     try {
       const result = await sendVonageSMS(formattedPhone, message);
@@ -298,21 +297,20 @@ exports.sendReminders = euFunctions.pubsub
             continue;
           }
 
-          const message = `⏰ Υπενθύμιση Ραντεβού
+          const message = `MONDI HAIRSTYLE
+Ypenthumisi Rantevou
 
-Γεια σας ${booking.customerName}!
+Geia sas ${booking.customerName}!
 
-Το ραντεβού σας είναι σε 2 ώρες:
+To rantevou sas einai se 2 ores:
 
-🕐 ${booking.timeSlot}
-💇 Κομμωτής: ${booking.barberName}
-✂️ Υπηρεσία: ${booking.service}
+- Ora: ${booking.timeSlot}
+- Kommotis: ${booking.barberName}
+- Ypiresia: ${booking.service}
 
-Σας περιμένουμε! 😊
+Sas perimenoume!
 
-Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
-
-Mondi Hairstyle`;
+Gia akyrosi: ${VONAGE_CONFIG.businessPhone}`;
 
           reminderPromises.push(
             sendVonageSMS(formattedPhone, message)
