@@ -1,10 +1,9 @@
 // Booking System Logic
 
-// Twilio Configuration
-// IMPORTANT: Replace these with your actual Twilio credentials
-const TWILIO_CONFIG = {
-  accountSid: 'YOUR_TWILIO_ACCOUNT_SID',     // Replace with your Account SID from Twilio Console
-  authToken: 'YOUR_TWILIO_AUTH_TOKEN',        // Replace with your Auth Token from Twilio Console
+// Vonage (Nexmo) SMS Configuration
+const VONAGE_CONFIG = {
+  apiKey: 'efacae61',                         // Your Vonage API Key
+  apiSecret: 'DtkFOZIjgzSola2s',              // Your Vonage API Secret
   alphaSender: 'MondiHair',                   // Your alphanumeric sender name
   businessPhone: '+306974628335'              // Your business phone for customers to call
 };
@@ -353,7 +352,7 @@ class BookingSystem {
     return null;
   }
 
-  // Send SMS via Twilio
+  // Send SMS via Vonage (Nexmo)
   async sendSMS(to, message) {
     try {
       const formattedPhone = this.formatGreekPhone(to);
@@ -363,32 +362,36 @@ class BookingSystem {
 
       console.log('Sending SMS to:', formattedPhone);
 
-      const auth = btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`);
-
-      const response = await fetch(
-        `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Messages.json`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Basic ${auth}`,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams({
-            From: TWILIO_CONFIG.alphaSender,
-            To: formattedPhone,
-            Body: message
-          })
-        }
-      );
+      const response = await fetch('https://rest.nexmo.com/sms/json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          api_key: VONAGE_CONFIG.apiKey,
+          api_secret: VONAGE_CONFIG.apiSecret,
+          from: VONAGE_CONFIG.alphaSender,
+          to: formattedPhone.replace('+', ''),  // Vonage expects number without + prefix
+          text: message,
+          type: 'unicode'  // Support Greek characters
+        })
+      });
 
       const data = await response.json();
 
-      if (response.ok) {
-        console.log('SMS sent successfully:', data.sid);
-        return { success: true, sid: data.sid };
+      // Vonage returns messages array with status for each message
+      if (data.messages && data.messages[0]) {
+        const msg = data.messages[0];
+        if (msg.status === '0') {
+          console.log('SMS sent successfully:', msg['message-id']);
+          return { success: true, sid: msg['message-id'] };
+        } else {
+          console.error('Vonage error:', msg['error-text']);
+          return { success: false, error: msg['error-text'] };
+        }
       } else {
-        console.error('Twilio error:', data);
-        return { success: false, error: data.message };
+        console.error('Vonage error: Invalid response', data);
+        return { success: false, error: 'Invalid response from Vonage' };
       }
     } catch (error) {
       console.error('Error sending SMS:', error);
@@ -417,7 +420,7 @@ class BookingSystem {
 💇 Κομμωτής: ${booking.barberName}
 ✂️ Υπηρεσία: ${booking.service}
 
-Για ακύρωση: ${TWILIO_CONFIG.businessPhone}
+Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
 
 Mondi Hairstyle`;
 
@@ -442,7 +445,7 @@ Mondi Hairstyle`;
 
 ⏰ Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.
 
-Για ακύρωση: ${TWILIO_CONFIG.businessPhone}
+Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
 
 Mondi Hairstyle`;
 
