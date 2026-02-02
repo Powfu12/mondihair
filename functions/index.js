@@ -68,8 +68,8 @@ function sendVonageSMS(to, message) {
       api_secret: VONAGE_CONFIG.apiSecret,
       from: VONAGE_CONFIG.alphaSender,
       to: to,
-      text: message,
-      type: 'unicode'
+      text: message
+      // Removed type: 'unicode' - let Vonage auto-detect encoding
     });
 
     console.log('Sending request to Vonage...');
@@ -192,16 +192,16 @@ exports.onBookingCreated = euFunctions.firestore
       year: 'numeric'
     });
 
-    const message = `✅ Επιβεβαίωση Ραντεβού
+    const message = `Επιβεβαίωση Ραντεβού
 
 Γεια σας ${booking.customerName}!
 
 Το ραντεβού σας επιβεβαιώθηκε:
 
-📅 ${dateStr}
-🕐 ${booking.timeSlot}
-💇 Κομμωτής: ${booking.barberName}
-✂️ Υπηρεσία: ${booking.service}
+${dateStr}
+Ώρα: ${booking.timeSlot}
+Κομμωτής: ${booking.barberName}
+Υπηρεσία: ${booking.service}
 
 Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
 
@@ -298,17 +298,17 @@ exports.sendReminders = euFunctions.pubsub
             continue;
           }
 
-          const message = `⏰ Υπενθύμιση Ραντεβού
+          const message = `Υπενθύμιση Ραντεβού
 
 Γεια σας ${booking.customerName}!
 
 Το ραντεβού σας είναι σε 2 ώρες:
 
-🕐 ${booking.timeSlot}
-💇 Κομμωτής: ${booking.barberName}
-✂️ Υπηρεσία: ${booking.service}
+Ώρα: ${booking.timeSlot}
+Κομμωτής: ${booking.barberName}
+Υπηρεσία: ${booking.service}
 
-Σας περιμένουμε! 😊
+Σας περιμένουμε!
 
 Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
 
