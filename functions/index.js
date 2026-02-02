@@ -1,6 +1,9 @@
 const functions = require('firebase-functions');
 const https = require('https');
 
+// Set region to Europe (Belgium - closest to Greece)
+const euFunctions = functions.region('europe-west1');
+
 // Vonage SMS Configuration
 const VONAGE_CONFIG = {
   apiKey: process.env.VONAGE_API_KEY || 'efacae61',
@@ -123,7 +126,7 @@ function sendVonageSMS(to, message) {
  * Cloud Function: Send SMS
  * Called from frontend via Firebase Functions HTTPS callable
  */
-exports.sendSMS = functions.https.onCall(async (data, context) => {
+exports.sendSMS = euFunctions.https.onCall(async (data, context) => {
   const { to, message, type } = data;
 
   // Validate input
@@ -152,7 +155,7 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
  * Cloud Function: Send Booking Confirmation SMS
  * Triggered automatically when a new booking is created in Firestore
  */
-exports.onBookingCreated = functions.firestore
+exports.onBookingCreated = euFunctions.firestore
   .document('bookings/{bookingId}')
   .onCreate(async (snap, context) => {
     console.log('=== onBookingCreated TRIGGERED ===');
