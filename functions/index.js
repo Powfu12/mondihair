@@ -192,22 +192,20 @@ exports.onBookingCreated = euFunctions.firestore
       year: 'numeric'
     });
 
-    const message = `MONDI HAIRSTYLE
-Επιβεβαίωση Ραντεβού
+    const message = `✅ Επιβεβαίωση Ραντεβού
 
-Αγαπητέ/ή ${booking.customerName},
+Γεια σας ${booking.customerName}!
 
-Το ραντεβού σας έχει επιβεβαιωθεί:
+Το ραντεβού σας επιβεβαιώθηκε:
 
-Ημερομηνία: ${dateStr}
-Ώρα: ${booking.timeSlot}
-Κομμωτής: ${booking.barberName}
-Υπηρεσία: ${booking.service}
+📅 ${dateStr}
+🕐 ${booking.timeSlot}
+💇 Κομμωτής: ${booking.barberName}
+✂️ Υπηρεσία: ${booking.service}
 
-Για αλλαγή ή ακύρωση, καλέστε μας:
-${VONAGE_CONFIG.businessPhone}
+Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
 
-Σας ευχαριστούμε που μας επιλέξατε!`;
+Mondi Hairstyle`;
 
     try {
       const result = await sendVonageSMS(formattedPhone, message);
@@ -300,23 +298,21 @@ exports.sendReminders = euFunctions.pubsub
             continue;
           }
 
-          const message = `MONDI HAIRSTYLE
-Υπενθύμιση Ραντεβού
+          const message = `⏰ Υπενθύμιση Ραντεβού
 
-Αγαπητέ/ή ${booking.customerName},
+Γεια σας ${booking.customerName}!
 
-Σας υπενθυμίζουμε ότι έχετε ραντεβού σε 2 ώρες:
+Το ραντεβού σας είναι σε 2 ώρες:
 
-Ώρα: ${booking.timeSlot}
-Κομμωτής: ${booking.barberName}
-Υπηρεσία: ${booking.service}
+🕐 ${booking.timeSlot}
+💇 Κομμωτής: ${booking.barberName}
+✂️ Υπηρεσία: ${booking.service}
 
-Παρακαλούμε να έρθετε 5 λεπτά νωρίτερα.
+Σας περιμένουμε! 😊
 
-Για αλλαγή ή ακύρωση:
-${VONAGE_CONFIG.businessPhone}
+Για ακύρωση: ${VONAGE_CONFIG.businessPhone}
 
-Σας περιμένουμε!`;
+Mondi Hairstyle`;
 
           reminderPromises.push(
             sendVonageSMS(formattedPhone, message)
