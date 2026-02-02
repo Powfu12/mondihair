@@ -2,13 +2,14 @@ const functions = require('firebase-functions');
 const https = require('https');
 
 // Vonage SMS Configuration
-// Credentials are loaded from .env file in functions directory
 const VONAGE_CONFIG = {
   apiKey: process.env.VONAGE_API_KEY || 'efacae61',
   apiSecret: process.env.VONAGE_API_SECRET || 'DtkFOZIjgzSola2s',
   alphaSender: 'MondiHair',
   businessPhone: '+306974628335'
 };
+
+console.log('Cloud Functions loaded. Vonage API Key:', VONAGE_CONFIG.apiKey ? 'SET' : 'NOT SET');
 
 /**
  * Format Greek phone number to E.164 format (without + prefix for Vonage)
@@ -49,6 +50,10 @@ function formatGreekPhone(phone) {
  * Send SMS via Vonage API
  */
 function sendVonageSMS(to, message) {
+  console.log('sendVonageSMS called - To:', to);
+  console.log('Using API Key:', VONAGE_CONFIG.apiKey);
+  console.log('Using Sender:', VONAGE_CONFIG.alphaSender);
+
   return new Promise((resolve, reject) => {
     const postData = JSON.stringify({
       api_key: VONAGE_CONFIG.apiKey,
@@ -58,6 +63,8 @@ function sendVonageSMS(to, message) {
       text: message,
       type: 'unicode'
     });
+
+    console.log('Sending request to Vonage...');
 
     const options = {
       hostname: 'rest.nexmo.com',
@@ -78,19 +85,26 @@ function sendVonageSMS(to, message) {
       });
 
       res.on('end', () => {
+        console.log('Vonage raw response:', data);
         try {
           const response = JSON.parse(data);
+          console.log('Vonage parsed response:', JSON.stringify(response));
           if (response.messages && response.messages[0]) {
             const msg = response.messages[0];
+            console.log('Message status:', msg.status, 'Error:', msg['error-text']);
             if (msg.status === '0') {
+              console.log('SMS sent successfully! ID:', msg['message-id']);
               resolve({ success: true, messageId: msg['message-id'] });
             } else {
+              console.error('Vonage error:', msg['error-text']);
               reject(new Error(msg['error-text'] || 'SMS sending failed'));
             }
           } else {
+            console.error('Invalid Vonage response structure');
             reject(new Error('Invalid response from Vonage'));
           }
         } catch (e) {
+          console.error('Failed to parse response:', e.message);
           reject(new Error('Failed to parse Vonage response'));
         }
       });
@@ -141,13 +155,19 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
 exports.onBookingCreated = functions.firestore
   .document('bookings/{bookingId}')
   .onCreate(async (snap, context) => {
+    console.log('=== onBookingCreated TRIGGERED ===');
+    console.log('Booking ID:', context.params.bookingId);
+
     const booking = snap.data();
+    console.log('Booking data:', JSON.stringify(booking));
 
     // Skip if no phone number
     if (!booking.customerPhone) {
       console.log('No phone number for booking, skipping SMS');
       return null;
     }
+
+    console.log('Customer phone:', booking.customerPhone);
 
     const formattedPhone = formatGreekPhone(booking.customerPhone);
     if (!formattedPhone) {
