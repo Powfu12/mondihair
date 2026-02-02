@@ -1,5 +1,10 @@
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const https = require('https');
+
+// Initialize Firebase Admin
+admin.initializeApp();
+const db = admin.firestore();
 
 // Set region to Europe (Belgium - closest to Greece)
 const euFunctions = functions.region('europe-west1');
@@ -217,6 +222,126 @@ ${VONAGE_CONFIG.businessPhone}
       return result;
     } catch (error) {
       console.error('Failed to send confirmation SMS:', error.message);
+      return null;
+    }
+  });
+
+/**
+ * Cloud Function: Send 2-Hour Reminder SMS
+ * Runs every 15 minutes to check for upcoming appointments
+ */
+exports.sendReminders = euFunctions.pubsub
+  .schedule('every 15 minutes')
+  .timeZone('Europe/Athens')
+  .onRun(async (context) => {
+    console.log('=== sendReminders TRIGGERED ===');
+
+    const now = new Date();
+    const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+    const twoHoursAndFifteenMins = new Date(now.getTime() + 2.25 * 60 * 60 * 1000);
+
+    // Get today's date in YYYY-MM-DD format (Athens timezone)
+    const athensDate = now.toLocaleDateString('en-CA', { timeZone: 'Europe/Athens' });
+
+    console.log('Checking for bookings on:', athensDate);
+    console.log('Current time (Athens):', now.toLocaleTimeString('el-GR', { timeZone: 'Europe/Athens' }));
+
+    try {
+      // Query bookings for today that haven't received a reminder
+      const bookingsSnapshot = await db.collection('bookings')
+        .where('date', '==', athensDate)
+        .where('status', '==', 'confirmed')
+        .get();
+
+      console.log('Found', bookingsSnapshot.size, 'bookings for today');
+
+      const reminderPromises = [];
+
+      for (const doc of bookingsSnapshot.docs) {
+        const booking = doc.data();
+
+        // Skip if reminder already sent
+        if (booking.reminderSent) {
+          continue;
+        }
+
+        // Skip if no phone number
+        if (!booking.customerPhone) {
+          continue;
+        }
+
+        // Parse booking time (format: "HH:MM" or "HH:MM - HH:MM")
+        const timeMatch = booking.timeSlot.match(/(\d{1,2}):(\d{2})/);
+        if (!timeMatch) {
+          console.log('Could not parse time slot:', booking.timeSlot);
+          continue;
+        }
+
+        const bookingHour = parseInt(timeMatch[1]);
+        const bookingMinute = parseInt(timeMatch[2]);
+
+        // Create booking datetime in Athens timezone
+        const bookingDate = new Date(booking.date + 'T00:00:00');
+        bookingDate.setHours(bookingHour, bookingMinute, 0, 0);
+
+        // Check if booking is within the 2-hour reminder window (between 1h45m and 2h15m from now)
+        const timeDiff = bookingDate.getTime() - now.getTime();
+        const minutesUntilBooking = timeDiff / (60 * 1000);
+
+        console.log(`Booking ${doc.id}: ${booking.timeSlot}, minutes until: ${minutesUntilBooking.toFixed(0)}`);
+
+        // Send reminder if booking is between 105 and 135 minutes away (1h45m - 2h15m)
+        if (minutesUntilBooking >= 105 && minutesUntilBooking <= 135) {
+          console.log('Sending reminder for booking:', doc.id);
+
+          const formattedPhone = formatGreekPhone(booking.customerPhone);
+          if (!formattedPhone) {
+            console.log('Invalid phone format for:', booking.customerPhone);
+            continue;
+          }
+
+          const message = `MONDI HAIRSTYLE
+Υπενθύμιση Ραντεβού
+
+Αγαπητέ/ή ${booking.customerName},
+
+Σας υπενθυμίζουμε ότι έχετε ραντεβού σε 2 ώρες:
+
+Ώρα: ${booking.timeSlot}
+Κομμωτής: ${booking.barberName}
+Υπηρεσία: ${booking.service}
+
+Παρακαλούμε να έρθετε 5 λεπτά νωρίτερα.
+
+Για αλλαγή ή ακύρωση:
+${VONAGE_CONFIG.businessPhone}
+
+Σας περιμένουμε!`;
+
+          reminderPromises.push(
+            sendVonageSMS(formattedPhone, message)
+              .then(async (result) => {
+                console.log('Reminder sent for booking:', doc.id);
+                await doc.ref.update({
+                  reminderSent: true,
+                  reminderSentAt: new Date()
+                });
+                return result;
+              })
+              .catch((error) => {
+                console.error('Failed to send reminder for booking:', doc.id, error.message);
+                return null;
+              })
+          );
+        }
+      }
+
+      const results = await Promise.all(reminderPromises);
+      console.log('Reminders sent:', results.filter(r => r !== null).length);
+
+      return null;
+    } catch (error) {
+      console.error('Error in sendReminders:', error.message);
       return null;
     }
   });
