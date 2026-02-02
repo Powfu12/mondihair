@@ -187,20 +187,22 @@ exports.onBookingCreated = euFunctions.firestore
       year: 'numeric'
     });
 
-    const message = `Epivevaiosi Rantevou
+    const message = `MONDI HAIRSTYLE
+Επιβεβαίωση Ραντεβού
 
-Geia sas ${booking.customerName}!
+Αγαπητέ/ή ${booking.customerName},
 
-To rantevou sas epivevaiotike:
+Το ραντεβού σας έχει επιβεβαιωθεί:
 
-${dateStr}
-${booking.timeSlot}
-Kommotis: ${booking.barberName}
-Ypiresia: ${booking.service}
+Ημερομηνία: ${dateStr}
+Ώρα: ${booking.timeSlot}
+Κομμωτής: ${booking.barberName}
+Υπηρεσία: ${booking.service}
 
-Gia akyrosi: ${VONAGE_CONFIG.businessPhone}
+Για αλλαγή ή ακύρωση, καλέστε μας:
+${VONAGE_CONFIG.businessPhone}
 
-Mondi Hairstyle`;
+Σας ευχαριστούμε που μας επιλέξατε!`;
 
     try {
       const result = await sendVonageSMS(formattedPhone, message);
