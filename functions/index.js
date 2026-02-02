@@ -2,10 +2,10 @@ const functions = require('firebase-functions');
 const https = require('https');
 
 // Vonage SMS Configuration
-// These should be set via: firebase functions:config:set vonage.api_key="xxx" vonage.api_secret="xxx"
+// Credentials are loaded from .env file in functions directory
 const VONAGE_CONFIG = {
-  apiKey: functions.config().vonage?.api_key || 'efacae61',
-  apiSecret: functions.config().vonage?.api_secret || 'DtkFOZIjgzSola2s',
+  apiKey: process.env.VONAGE_API_KEY || 'efacae61',
+  apiSecret: process.env.VONAGE_API_SECRET || 'DtkFOZIjgzSola2s',
   alphaSender: 'MondiHair',
   businessPhone: '+306974628335'
 };
