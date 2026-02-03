@@ -123,12 +123,30 @@ class BookingSystem {
         });
       };
 
-      // Filter out booked slots and check against time ranges
+      // Check if the selected date is today
+      const now = new Date();
+      const isToday = date.getFullYear() === now.getFullYear() &&
+                      date.getMonth() === now.getMonth() &&
+                      date.getDate() === now.getDate();
+
+      // Get current time in minutes for comparison
+      const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+
+      // Check if a slot is in the past (only applies to today)
+      const isSlotInPast = (slot) => {
+        if (!isToday) return false;
+        const slotTime = slot.split(':');
+        const slotMinutes = parseInt(slotTime[0]) * 60 + parseInt(slotTime[1]);
+        return slotMinutes <= currentTimeMinutes;
+      };
+
+      // Filter out booked slots, past times, and check against time ranges
       const availableSlots = timeSlots.filter(slot => {
         const inWorkingHours = isSlotInWorkingHours(slot, daySchedule.ranges);
         const isBooked = bookedSlots.includes(slot);
         const inClosureRange = isSlotInClosureRange(slot);
-        return inWorkingHours && !isBooked && !inClosureRange;
+        const isPast = isSlotInPast(slot);
+        return inWorkingHours && !isBooked && !inClosureRange && !isPast;
       });
 
       console.log('Available slots:', availableSlots);
