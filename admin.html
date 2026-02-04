@@ -2561,6 +2561,15 @@
         let currentFilter = 'all';
         let barberSchedule = {};
 
+        // Helper function to format date as YYYY-MM-DD in LOCAL timezone (not UTC!)
+        // IMPORTANT: Using toISOString() causes timezone bugs - dates shift by 1 day!
+        function formatDateLocal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Check for saved barber session
@@ -2676,10 +2685,10 @@
 
         // Update Statistics
         function updateStats() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
             const weekStart = new Date();
             weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-            const weekStartStr = weekStart.toISOString().split('T')[0];
+            const weekStartStr = formatDateLocal(weekStart);
 
             const todayBookings = allBookings.filter(b => b.date === today && b.status !== 'cancelled');
             const confirmedBookings = allBookings.filter(b => b.status === 'confirmed');
@@ -2699,7 +2708,7 @@
         // Open Add Booking Modal
         function openAddBookingModal() {
             document.getElementById('addBookingModal').classList.add('active');
-            document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
+            document.getElementById('newDate').min = formatDateLocal(new Date());
         }
 
         // Close Add Booking Modal
@@ -2765,7 +2774,7 @@
         function openRecurringBookingModal() {
             document.getElementById('recurringBookingModal').classList.add('active');
             // Set min date to today
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
             document.getElementById('recurringStartDate').min = today;
             document.getElementById('recurringStartDate').value = today;
             // Load time slots
@@ -3378,7 +3387,7 @@
         // Render Day View
         function renderDayView() {
             const container = document.getElementById('dayViewGrid');
-            const dateStr = currentCalendarDate.toISOString().split('T')[0];
+            const dateStr = formatDateLocal(currentCalendarDate);
 
             // Get bookings for this day
             const dayBookings = allBookings.filter(b =>
@@ -3419,14 +3428,14 @@
             const startOfWeek = new Date(currentCalendarDate);
             startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
             let html = '';
 
             // Create 7 columns for each day
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startOfWeek);
                 date.setDate(date.getDate() + i);
-                const dateStr = date.toISOString().split('T')[0];
+                const dateStr = formatDateLocal(date);
                 const isToday = dateStr === today;
 
                 // Get bookings for this day
@@ -3470,7 +3479,7 @@
             // Get day of week for first day (0 = Sunday)
             const startDay = firstDay.getDay();
 
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
 
             let html = '';
 
@@ -3489,7 +3498,7 @@
             // Days of month
             for (let day = 1; day <= lastDay.getDate(); day++) {
                 const date = new Date(year, month, day);
-                const dateStr = date.toISOString().split('T')[0];
+                const dateStr = formatDateLocal(date);
                 const isToday = dateStr === today;
 
                 // Get bookings for this day
@@ -3527,7 +3536,7 @@
         // =========================
 
         function renderTodaysAppointments() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
             const todaysBookings = allBookings
                 .filter(b => b.date === today && b.status !== 'cancelled')
                 .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
@@ -3716,7 +3725,7 @@
 
         async function cancelRecurringBookings(recurringGroupId, currentBookingId) {
             // Find all future bookings in this recurring group
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
             const recurringBookings = allBookings.filter(b =>
                 b.recurringGroupId === recurringGroupId &&
                 b.date >= today &&
@@ -3784,7 +3793,7 @@
             const recurringBookings = allBookings.filter(b =>
                 (b.recurringGroupId || (b.notes && b.notes.includes('[Εβδομαδιαίο'))) &&
                 b.status !== 'cancelled' &&
-                b.date >= new Date().toISOString().split('T')[0]
+                b.date >= formatDateLocal(new Date())
             ).sort((a, b) => a.date.localeCompare(b.date) || a.timeSlot.localeCompare(b.timeSlot));
 
             if (recurringBookings.length === 0) {
@@ -3858,14 +3867,14 @@
             const startOfWeek = new Date(currentCalendarDate);
             startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
             let html = '';
 
             // Create 7 columns for each day
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startOfWeek);
                 date.setDate(date.getDate() + i);
-                const dateStr = date.toISOString().split('T')[0];
+                const dateStr = formatDateLocal(date);
                 const isToday = dateStr === today;
 
                 // Get bookings for this day
@@ -3904,7 +3913,7 @@
         const originalRenderDayView = renderDayView;
         renderDayView = function() {
             const container = document.getElementById('dayViewGrid');
-            const dateStr = currentCalendarDate.toISOString().split('T')[0];
+            const dateStr = formatDateLocal(currentCalendarDate);
 
             // Get bookings for this day
             const dayBookings = allBookings.filter(b =>
