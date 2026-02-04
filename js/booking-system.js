@@ -205,7 +205,16 @@ class BookingSystem {
 
       const docRef = await db.collection('bookings').add(booking);
 
-      console.log('Booking created, sending confirmation SMS...');
+      console.log('=== BOOKING CREATED ===');
+      console.log('Booking ID:', docRef.id);
+      console.log('Barber ID:', booking.barberId);
+      console.log('Date:', booking.date);
+      console.log('Time:', booking.timeSlot);
+      console.log('Customer:', booking.customerName);
+      console.log('Status:', booking.status);
+      console.log('Recurring Group:', booking.recurringGroupId);
+      console.log('========================');
+      console.log('Sending confirmation SMS...');
 
       // Send confirmation SMS
       const smsResult = await this.sendBookingConfirmation({
@@ -296,17 +305,23 @@ class BookingSystem {
 
   // Listen for real-time updates
   listenToBookings(barberId, callback) {
+    console.log('Setting up listener for barber:', barberId);
     return db.collection('bookings')
       .where('barberId', '==', barberId)
+      .limit(1000)
       .onSnapshot(snapshot => {
-        const bookings = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+        console.log('Received', snapshot.docs.length, 'bookings from Firebase for', barberId);
+        const bookings = snapshot.docs.map(doc => {
+          const data = doc.data();
+          console.log('Booking:', doc.id, data.date, data.timeSlot, data.status, data.customerName);
+          return {
+            id: doc.id,
+            ...data
+          };
+        });
 
-        // Sort in JavaScript instead of Firestore (avoids needing index)
+        // Sort in JavaScript for display (by date then time)
         bookings.sort((a, b) => {
-          // Sort by date (newest first), then by time slot (latest first)
           if (a.date !== b.date) {
             return b.date.localeCompare(a.date);
           }
