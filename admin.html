@@ -3758,6 +3758,64 @@
             closeBookingDetailModal();
         }
 
+        // Delete all bookings in a recurring group (from the recurring list view)
+        async function deleteRecurringGroup(groupKey, customerName) {
+            const today = formatDateLocal(new Date());
+
+            // Find all bookings matching this group
+            let bookingsToCancel;
+            if (groupKey.startsWith('recurring_')) {
+                // It's a proper recurringGroupId
+                bookingsToCancel = allBookings.filter(b =>
+                    b.recurringGroupId === groupKey &&
+                    b.date >= today &&
+                    b.status !== 'cancelled'
+                );
+            } else if (groupKey.startsWith('name_')) {
+                // Grouped by customer name (legacy bookings without recurringGroupId)
+                const name = groupKey.substring(5);
+                bookingsToCancel = allBookings.filter(b =>
+                    b.customerName === name &&
+                    (b.notes && b.notes.includes('[Εβδομαδιαίο')) &&
+                    !b.recurringGroupId &&
+                    b.date >= today &&
+                    b.status !== 'cancelled'
+                );
+            } else {
+                bookingsToCancel = [];
+            }
+
+            if (bookingsToCancel.length === 0) {
+                alert('Δεν βρέθηκαν ραντεβού για ακύρωση.');
+                return;
+            }
+
+            const confirmMsg = `Θα ακυρωθούν ${bookingsToCancel.length} ραντεβού για ${customerName}. Είστε σίγουροι;`;
+            if (!confirm(confirmMsg)) return;
+
+            let cancelledCount = 0;
+
+            for (const booking of bookingsToCancel) {
+                try {
+                    await db.collection('bookings').doc(booking.id).update({
+                        status: 'cancelled',
+                        cancelledAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    cancelledCount++;
+                } catch (error) {
+                    console.error('Error cancelling booking:', booking.id, error);
+                }
+            }
+
+            alert(`Ακυρώθηκαν ${cancelledCount} ραντεβού για ${customerName}!`);
+            closeBookingDetailModal();
+
+            // Refresh the recurring view
+            setTimeout(() => {
+                showRecurringBookings();
+            }, 500);
+        }
+
         // =========================
         // QUICK NAVIGATION
         // =========================
@@ -3804,9 +3862,10 @@
             // Group by recurringGroupId or customer name
             const groups = {};
             recurringBookings.forEach(b => {
-                const key = b.recurringGroupId || b.customerName;
+                const key = b.recurringGroupId || ('name_' + b.customerName);
                 if (!groups[key]) {
                     groups[key] = {
+                        key: key,
                         customerName: b.customerName,
                         service: b.service,
                         bookings: []
@@ -3818,21 +3877,29 @@
             let html = `
                 <div style="margin-bottom: 20px;">
                     <h3 style="margin-bottom: 10px;"><i class="fas fa-repeat" style="color: #9c27b0;"></i> Επαναλαμβανόμενα Ραντεβού</h3>
-                    <p style="color: var(--text-gray); font-size: 0.9rem;">Κάντε κλικ σε οποιοδήποτε ραντεβού για λεπτομέρειες ή ακύρωση</p>
+                    <p style="color: var(--text-gray); font-size: 0.9rem;">Πατήστε "Ακύρωση Όλων" για να διαγράψετε όλα τα ραντεβού μιας ομάδας</p>
                 </div>
             `;
 
             Object.values(groups).forEach(group => {
+                // Create a safe ID for the delete button
+                const groupId = group.key.replace(/[^a-zA-Z0-9_]/g, '_');
+
                 html += `
                     <div style="background: rgba(156, 39, 176, 0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #9c27b0;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
                             <div>
                                 <strong>${group.customerName}</strong>
                                 <span style="color: var(--text-gray); margin-left: 10px;">${group.service}</span>
                             </div>
-                            <span style="background: #9c27b0; color: white; padding: 4px 10px; border-radius: 50px; font-size: 0.8rem;">
-                                ${group.bookings.length} ραντεβού
-                            </span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="background: #9c27b0; color: white; padding: 4px 10px; border-radius: 50px; font-size: 0.8rem;">
+                                    ${group.bookings.length} ραντεβού
+                                </span>
+                                <button onclick="deleteRecurringGroup('${group.key}', '${group.customerName}')" style="background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    <i class="fas fa-trash"></i> Ακύρωση Όλων
+                                </button>
+                            </div>
                         </div>
                         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                             ${group.bookings.map(b => {
