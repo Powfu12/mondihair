@@ -2570,6 +2570,43 @@
             return `${year}-${month}-${day}`;
         }
 
+        // Helper function to escape HTML to prevent XSS and broken onclick handlers
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Safe delete function that uses stored group data
+        async function deleteRecurringGroupSafe(safeKey) {
+            // Find the original group key by matching the safe key
+            const groups = window._recurringGroups;
+            if (!groups) {
+                alert('Σφάλμα: Δεν βρέθηκαν δεδομένα ομάδας');
+                return;
+            }
+
+            let originalKey = null;
+            let customerName = null;
+
+            for (const [key, group] of Object.entries(groups)) {
+                const checkKey = btoa(key).replace(/[^a-zA-Z0-9]/g, '');
+                if (checkKey === safeKey) {
+                    originalKey = key;
+                    customerName = group.customerName;
+                    break;
+                }
+            }
+
+            if (!originalKey) {
+                alert('Σφάλμα: Δεν βρέθηκε η ομάδα');
+                return;
+            }
+
+            await deleteRecurringGroup(originalKey, customerName);
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Check for saved barber session
@@ -3881,22 +3918,25 @@
                 </div>
             `;
 
-            Object.values(groups).forEach(group => {
-                // Create a safe ID for the delete button
-                const groupId = group.key.replace(/[^a-zA-Z0-9_]/g, '_');
+            // Store groups for delete function reference
+            window._recurringGroups = groups;
+
+            Object.entries(groups).forEach(([groupKey, group]) => {
+                // Create a safe index for referencing
+                const safeKey = btoa(groupKey).replace(/[^a-zA-Z0-9]/g, '');
 
                 html += `
                     <div style="background: rgba(156, 39, 176, 0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #9c27b0;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
                             <div>
-                                <strong>${group.customerName}</strong>
-                                <span style="color: var(--text-gray); margin-left: 10px;">${group.service}</span>
+                                <strong>${escapeHtml(group.customerName)}</strong>
+                                <span style="color: var(--text-gray); margin-left: 10px;">${escapeHtml(group.service)}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <span style="background: #9c27b0; color: white; padding: 4px 10px; border-radius: 50px; font-size: 0.8rem;">
                                     ${group.bookings.length} ραντεβού
                                 </span>
-                                <button onclick="deleteRecurringGroup('${group.key}', '${group.customerName}')" style="background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                <button data-group-key="${safeKey}" onclick="deleteRecurringGroupSafe(this.dataset.groupKey)" style="background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
                                     <i class="fas fa-trash"></i> Ακύρωση Όλων
                                 </button>
                             </div>
@@ -3906,7 +3946,7 @@
                                 const dateObj = new Date(b.date + 'T00:00:00');
                                 const dateStr = dateObj.toLocaleDateString('el-GR', { day: 'numeric', month: 'short' });
                                 return `
-                                    <div onclick="openBookingDetail('${b.id}')" style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                                    <div data-booking-id="${b.id}" onclick="openBookingDetail(this.dataset.bookingId)" style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
                                         <div style="font-weight: 600;">${dateStr}</div>
                                         <div style="font-size: 0.8rem; color: var(--text-gray);">${b.timeSlot}</div>
                                     </div>

@@ -298,7 +298,6 @@ class BookingSystem {
   listenToBookings(barberId, callback) {
     return db.collection('bookings')
       .where('barberId', '==', barberId)
-      .limit(100)
       .onSnapshot(snapshot => {
         const bookings = snapshot.docs.map(doc => ({
           id: doc.id,
