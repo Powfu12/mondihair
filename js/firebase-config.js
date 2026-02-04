@@ -63,7 +63,8 @@ const BARBERS = {
       },
       saturday: {
         ranges: [
-          { start: '09:00', end: '21:00' }
+          { start: '09:00', end: '14:20' },
+          { start: '16:40', end: '21:00' }
         ]
       },
       sunday: { closed: true }
