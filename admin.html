@@ -1886,6 +1886,22 @@
                         <label>Σημειώσεις</label>
                         <textarea id="newNotes" placeholder="Προσθέστε τυχόν σημειώσεις..."></textarea>
                     </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="isRecurring" style="width: 20px; height: 20px;">
+                            <span>Επαναλαμβανόμενο Ραντεβού (Εβδομαδιαία)</span>
+                        </label>
+                    </div>
+                    <div class="form-group" id="recurringWeeksGroup" style="display: none;">
+                        <label>Αριθμός Εβδομάδων *</label>
+                        <select id="recurringWeeks">
+                            <option value="2">2 εβδομάδες</option>
+                            <option value="4" selected>4 εβδομάδες</option>
+                            <option value="6">6 εβδομάδες</option>
+                            <option value="8">8 εβδομάδες</option>
+                            <option value="12">12 εβδομάδες</option>
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1981,6 +1997,26 @@
             </div>
             <div class="modal-footer">
                 <button class="modal-btn modal-btn-secondary" onclick="closeManageAvailabilityModal()">Κλείσιμο</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+         BOOKING DETAILS MODAL
+    ========================= -->
+    <div id="bookingDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Λεπτομέρειες Ραντεβού</h2>
+                <button class="modal-close" onclick="closeBookingDetailsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="bookingDetailsContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer" id="bookingDetailsFooter">
+                <!-- Buttons will be populated by JavaScript -->
             </div>
         </div>
     </div>
@@ -2154,23 +2190,54 @@
             const dateInput = document.getElementById('newDate');
             if (dateInput) {
                 dateInput.addEventListener('change', async function() {
-                    const selectedDate = new Date(this.value);
+                    // Fix: Parse date correctly to avoid timezone issues
+                    const [year, month, day] = this.value.split('-').map(Number);
+                    const selectedDate = new Date(year, month - 1, day);
                     const timeSelect = document.getElementById('newTime');
                     timeSelect.innerHTML = '<option value="">Επιλέξτε ώρα...</option>';
 
-                    // Get available slots
-                    const slots = await bookingSystem.getAvailableTimeSlots(currentBarberId, selectedDate);
-                    slots.forEach(slot => {
-                        const option = document.createElement('option');
-                        option.value = slot;
-                        option.textContent = slot;
-                        timeSelect.appendChild(option);
-                    });
+                    // Get ALL time slots for the barber (not just available ones for admin)
+                    const timeSlots = getTimeSlotsForBarber(currentBarberId);
+                    const barber = BARBERS[currentBarberId];
+                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                    const dayName = dayNames[selectedDate.getDay()];
+                    const daySchedule = barber.workingHours[dayName];
+
+                    if (daySchedule && !daySchedule.closed) {
+                        timeSlots.forEach(slot => {
+                            // Check if slot is within working hours
+                            const slotParts = slot.split(':');
+                            const slotMinutes = parseInt(slotParts[0]) * 60 + parseInt(slotParts[1]);
+
+                            const inWorkingHours = daySchedule.ranges.some(range => {
+                                const startParts = range.start.split(':');
+                                const endParts = range.end.split(':');
+                                const startMinutes = parseInt(startParts[0]) * 60 + parseInt(startParts[1]);
+                                const endMinutes = parseInt(endParts[0]) * 60 + parseInt(endParts[1]);
+                                return slotMinutes >= startMinutes && slotMinutes < endMinutes;
+                            });
+
+                            if (inWorkingHours) {
+                                const option = document.createElement('option');
+                                option.value = slot;
+                                option.textContent = slot;
+                                timeSelect.appendChild(option);
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Toggle recurring weeks dropdown
+            const recurringCheckbox = document.getElementById('isRecurring');
+            if (recurringCheckbox) {
+                recurringCheckbox.addEventListener('change', function() {
+                    document.getElementById('recurringWeeksGroup').style.display = this.checked ? 'block' : 'none';
                 });
             }
         });
 
-        // Submit New Booking
+        // Submit New Booking (supports recurring)
         async function submitNewBooking() {
             const form = document.getElementById('addBookingForm');
             if (!form.checkValidity()) {
@@ -2178,23 +2245,85 @@
                 return;
             }
 
-            const bookingData = {
-                barberId: currentBarberId,
-                customerName: document.getElementById('newCustomerName').value,
-                customerPhone: document.getElementById('newCustomerPhone').value,
-                customerEmail: document.getElementById('newCustomerEmail').value,
-                service: document.getElementById('newService').value,
-                date: document.getElementById('newDate').value,
-                timeSlot: document.getElementById('newTime').value,
-                notes: document.getElementById('newNotes').value
-            };
+            const isRecurring = document.getElementById('isRecurring').checked;
+            const recurringWeeks = isRecurring ? parseInt(document.getElementById('recurringWeeks').value) : 1;
+            const baseDate = document.getElementById('newDate').value;
+            const timeSlot = document.getElementById('newTime').value;
 
-            const result = await bookingSystem.createBooking(bookingData);
-            if (result.success) {
-                alert('Το ραντεβού δημιουργήθηκε επιτυχώς!');
+            // Generate seriesId for recurring bookings
+            const seriesId = isRecurring ? 'series_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) : null;
+
+            let successCount = 0;
+            let failedDates = [];
+
+            for (let week = 0; week < recurringWeeks; week++) {
+                const [year, month, day] = baseDate.split('-').map(Number);
+                const bookingDate = new Date(year, month - 1, day);
+                bookingDate.setDate(bookingDate.getDate() + (week * 7));
+
+                const dateStr = bookingDate.getFullYear() + '-' +
+                    String(bookingDate.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(bookingDate.getDate()).padStart(2, '0');
+
+                const bookingData = {
+                    barberId: currentBarberId,
+                    customerName: document.getElementById('newCustomerName').value,
+                    customerPhone: document.getElementById('newCustomerPhone').value,
+                    customerEmail: document.getElementById('newCustomerEmail').value,
+                    service: document.getElementById('newService').value,
+                    date: dateStr,
+                    timeSlot: timeSlot,
+                    notes: document.getElementById('newNotes').value,
+                    seriesId: seriesId,
+                    isRecurring: isRecurring
+                };
+
+                const result = await bookingSystem.createBookingAdmin(bookingData);
+                if (result.success) {
+                    successCount++;
+                } else {
+                    failedDates.push(dateStr);
+                }
+            }
+
+            if (successCount > 0) {
+                if (isRecurring) {
+                    let message = `Δημιουργήθηκαν ${successCount} από ${recurringWeeks} ραντεβού!`;
+                    if (failedDates.length > 0) {
+                        message += `\n\nΑποτυχία για: ${failedDates.join(', ')}`;
+                    }
+                    alert(message);
+                } else {
+                    alert('Το ραντεβού δημιουργήθηκε επιτυχώς!');
+                }
                 closeAddBookingModal();
             } else {
-                alert('Αποτυχία δημιουργίας: ' + result.message);
+                alert('Αποτυχία δημιουργίας ραντεβού');
+            }
+        }
+
+        // Delete entire recurring series
+        async function deleteBookingSeries(seriesId) {
+            if (!confirm('Θέλετε να διαγράψετε ΟΛΑ τα ραντεβού αυτής της σειράς;')) {
+                return;
+            }
+
+            try {
+                const snapshot = await db.collection('bookings')
+                    .where('seriesId', '==', seriesId)
+                    .get();
+
+                const batch = db.batch();
+                snapshot.docs.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+                await batch.commit();
+
+                alert(`Διαγράφηκαν ${snapshot.docs.length} ραντεβού!`);
+                closeBookingDetailsModal();
+            } catch (error) {
+                console.error('Error deleting series:', error);
+                alert('Αποτυχία διαγραφής σειράς');
             }
         }
 
@@ -2311,10 +2440,84 @@
             try {
                 await db.collection('bookings').doc(bookingId).delete();
                 alert('Το ραντεβού διαγράφηκε επιτυχώς');
+                closeBookingDetailsModal();
             } catch (error) {
                 console.error('Error deleting booking:', error);
                 alert('Αποτυχία διαγραφής: ' + error.message);
             }
+        }
+
+        // Open Booking Details Modal
+        function openBookingDetails(bookingId) {
+            const booking = allBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            const dateObj = new Date(booking.date + 'T00:00:00');
+            const dateStr = dateObj.toLocaleDateString('el-GR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const statusLabels = {
+                'confirmed': 'Επιβεβαιωμένο',
+                'pending': 'Σε αναμονή',
+                'completed': 'Ολοκληρωμένο',
+                'cancelled': 'Ακυρωμένο'
+            };
+
+            let content = `
+                <div style="display: grid; gap: 20px;">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div>
+                            <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 5px;">Πελάτης</div>
+                            <div style="font-weight: 600; font-size: 1.1rem;">${booking.customerName}</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 5px;">Τηλέφωνο</div>
+                            <div style="font-weight: 600;"><a href="tel:${booking.customerPhone}" style="color: var(--lime);">${booking.customerPhone}</a></div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 5px;">Ημερομηνία</div>
+                            <div style="font-weight: 600;">${dateStr}</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 5px;">Ώρα</div>
+                            <div style="font-weight: 600; color: var(--lime);">${booking.timeSlot}</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 5px;">Υπηρεσία</div>
+                            <div style="font-weight: 600;">${booking.service}</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-gray); font-size: 0.85rem; margin-bottom: 5px;">Κατάσταση</div>
+                            <div class="booking-status status-${booking.status}" style="display: inline-block; padding: 5px 12px; font-size: 0.8rem;">${statusLabels[booking.status] || booking.status}</div>
+                        </div>
+                    </div>
+                    ${booking.notes ? `<div style="padding: 12px; background: rgba(195, 227, 33, 0.05); border-left: 3px solid var(--lime); border-radius: 8px;"><strong>Σημειώσεις:</strong> ${booking.notes}</div>` : ''}
+                    ${booking.isRecurring ? `<div style="padding: 12px; background: rgba(33, 150, 243, 0.1); border-left: 3px solid var(--blue); border-radius: 8px;"><i class="fas fa-sync"></i> <strong>Επαναλαμβανόμενο Ραντεβού</strong> - Αυτό το ραντεβού ανήκει σε μια σειρά εβδομαδιαίων ραντεβού.</div>` : ''}
+                </div>
+            `;
+
+            document.getElementById('bookingDetailsContent').innerHTML = content;
+
+            // Generate footer buttons
+            let footerHtml = '';
+            if (booking.isRecurring && booking.seriesId) {
+                footerHtml += `<button class="modal-btn" style="background: rgba(244, 67, 54, 0.15); color: var(--danger); border: 1px solid rgba(244, 67, 54, 0.3);" onclick="deleteBookingSeries('${booking.seriesId}')"><i class="fas fa-trash"></i> Διαγραφή Όλης της Σειράς</button>`;
+            }
+            footerHtml += `<button class="modal-btn" style="background: rgba(244, 67, 54, 0.15); color: var(--danger); border: 1px solid rgba(244, 67, 54, 0.3);" onclick="deleteBooking('${booking.id}')"><i class="fas fa-trash"></i> Διαγραφή</button>`;
+            footerHtml += `<button class="modal-btn modal-btn-secondary" onclick="closeBookingDetailsModal()">Κλείσιμο</button>`;
+
+            document.getElementById('bookingDetailsFooter').innerHTML = footerHtml;
+
+            document.getElementById('bookingDetailsModal').classList.add('active');
+        }
+
+        // Close Booking Details Modal
+        function closeBookingDetailsModal() {
+            document.getElementById('bookingDetailsModal').classList.remove('active');
         }
 
         // Logout
@@ -2637,9 +2840,10 @@
                         <div class="time-label">${timeSlot}</div>
                         <div class="time-slot-content">
                             ${bookingsAtTime.map(booking => `
-                                <div class="calendar-booking-item status-${booking.status}">
+                                <div class="calendar-booking-item status-${booking.status}" onclick="openBookingDetails('${booking.id}')">
                                     <div class="calendar-booking-name">${booking.customerName}</div>
                                     <div class="calendar-booking-service">${booking.service}</div>
+                                    ${booking.isRecurring ? '<div style="color: var(--lime); font-size: 0.75rem;"><i class="fas fa-sync"></i> Επαναλαμβανόμενο</div>' : ''}
                                 </div>
                             `).join('')}
                         </div>

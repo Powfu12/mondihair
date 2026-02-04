@@ -233,6 +233,43 @@ class BookingSystem {
     }
   }
 
+  // Create booking from admin panel (no availability check)
+  async createBookingAdmin(bookingData) {
+    try {
+      // Create booking document (automatically confirmed, no slot validation)
+      const booking = {
+        barberId: bookingData.barberId,
+        barberName: BARBERS[bookingData.barberId].name,
+        customerName: bookingData.customerName,
+        customerPhone: bookingData.customerPhone,
+        customerEmail: bookingData.customerEmail || '',
+        service: bookingData.service,
+        date: bookingData.date,
+        timeSlot: bookingData.timeSlot,
+        status: 'confirmed',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        notes: bookingData.notes || '',
+        seriesId: bookingData.seriesId || null,
+        isRecurring: bookingData.isRecurring || false
+      };
+
+      const docRef = await db.collection('bookings').add(booking);
+
+      return {
+        success: true,
+        bookingId: docRef.id,
+        message: 'Booking created successfully!'
+      };
+    } catch (error) {
+      console.error('Error creating admin booking:', error);
+      return {
+        success: false,
+        message: error.message || 'Failed to create booking'
+      };
+    }
+  }
+
   // Get bookings for a specific barber
   async getBarberBookings(barberId, startDate, endDate) {
     try {
