@@ -2887,16 +2887,32 @@
             }
 
             let successCount = 0;
-            let failedDates = [];
+            let skippedDates = [];
 
             // Disable the button while processing
             const submitBtn = document.querySelector('#recurringBookingModal .modal-btn-primary');
             const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Δημιουργία...';
 
-            for (const date of dates) {
-                const dateStr = date.toISOString().split('T')[0];
+            for (let i = 0; i < dates.length; i++) {
+                const date = dates[i];
+                // Format date in local timezone to avoid UTC conversion issues
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const dateStr = `${year}-${month}-${day}`;
+
+                submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${i + 1}/${dates.length}...`;
+
+                // First check if the slot is available
+                const availableSlots = await bookingSystem.getAvailableTimeSlots(currentBarberId, date);
+
+                if (!availableSlots.includes(time)) {
+                    // Slot not available, skip this date
+                    const dateDisplay = date.toLocaleDateString('el-GR', { day: 'numeric', month: 'short' });
+                    skippedDates.push(dateDisplay + ' (κατειλημμένο)');
+                    continue;
+                }
 
                 const bookingData = {
                     barberId: currentBarberId,
@@ -2915,17 +2931,16 @@
                     if (result.success) {
                         successCount++;
                     } else {
-                        failedDates.push({
-                            date: dateStr,
-                            reason: result.message
-                        });
+                        const dateDisplay = date.toLocaleDateString('el-GR', { day: 'numeric', month: 'short' });
+                        skippedDates.push(dateDisplay);
                     }
                 } catch (error) {
-                    failedDates.push({
-                        date: dateStr,
-                        reason: error.message
-                    });
+                    const dateDisplay = date.toLocaleDateString('el-GR', { day: 'numeric', month: 'short' });
+                    skippedDates.push(dateDisplay);
                 }
+
+                // Small delay to prevent race conditions
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
 
             // Re-enable button
@@ -2933,15 +2948,14 @@
             submitBtn.innerHTML = originalText;
 
             // Show results
-            if (failedDates.length === 0) {
+            if (skippedDates.length === 0) {
                 alert(`Επιτυχία! Δημιουργήθηκαν ${successCount} ραντεβού για ${customerName}.`);
                 closeRecurringBookingModal();
+            } else if (successCount > 0) {
+                alert(`Δημιουργήθηκαν ${successCount} από ${dates.length} ραντεβού για ${customerName}.\n\nΠαραλείφθηκαν: ${skippedDates.join(', ')}`);
+                closeRecurringBookingModal();
             } else {
-                let failedMsg = failedDates.map(f => `${f.date}: ${f.reason}`).join('\n');
-                alert(`Δημιουργήθηκαν ${successCount} από ${dates.length} ραντεβού.\n\nΑποτυχία για:\n${failedMsg}`);
-                if (successCount > 0) {
-                    closeRecurringBookingModal();
-                }
+                alert(`Δεν ήταν δυνατή η δημιουργία ραντεβού.\n\nΌλες οι ημερομηνίες είναι κατειλημμένες ή μη διαθέσιμες.`);
             }
         }
 

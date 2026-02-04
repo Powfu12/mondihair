@@ -199,7 +199,8 @@ class BookingSystem {
         status: 'confirmed',
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        notes: bookingData.notes || ''
+        notes: bookingData.notes || '',
+        recurringGroupId: bookingData.recurringGroupId || null
       };
 
       const docRef = await db.collection('bookings').add(booking);
