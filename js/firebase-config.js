@@ -34,8 +34,8 @@ const BARBERS = {
     workingHours: {
       monday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
-          { start: '17:00', end: '21:00' }
+          { start: '09:00', end: '14:40' },
+          { start: '16:40', end: '21:00' }
         ]
       },
       tuesday: {
@@ -78,8 +78,8 @@ const BARBERS = {
     workingHours: {
       monday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
-          { start: '17:00', end: '21:00' }
+          { start: '09:00', end: '14:40' },
+          { start: '16:40', end: '21:00' }
         ]
       },
       tuesday: {
@@ -122,8 +122,8 @@ const BARBERS = {
     workingHours: {
       monday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
-          { start: '17:00', end: '21:00' }
+          { start: '09:00', end: '14:40' },
+          { start: '16:40', end: '21:00' }
         ]
       },
       tuesday: {
