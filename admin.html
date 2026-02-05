@@ -4084,8 +4084,14 @@
                 const batch = db.batch();
 
                 bookingsToDelete.forEach(booking => {
-                    const ref = db.collection('bookings').doc(booking.id);
-                    batch.delete(ref);
+                    // Delete the booking
+                    const bookingRef = db.collection('bookings').doc(booking.id);
+                    batch.delete(bookingRef);
+
+                    // Delete the corresponding slot lock
+                    const slotLockId = `${booking.barberId}_${booking.date}_${booking.timeSlot.replace(':', '')}`;
+                    const slotLockRef = db.collection('slotLocks').doc(slotLockId);
+                    batch.delete(slotLockRef);
                 });
 
                 await batch.commit();
@@ -4149,17 +4155,25 @@
                 // Generate unique recurring group ID
                 const recurringGroupId = 'recurring_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
-                // Create bookings for each week
+                // Create bookings for each week with slot locks
                 const batch = db.batch();
                 const startDateObj = new Date(startDate + 'T00:00:00');
+                const createdBookings = [];
 
                 for (let i = 0; i < weeks; i++) {
                     const bookingDate = new Date(startDateObj);
                     bookingDate.setDate(bookingDate.getDate() + (i * 7));
                     const dateStr = formatDateLocal(bookingDate);
 
+                    // Create slot lock ID
+                    const slotLockId = `${currentBarberId}_${dateStr}_${timeSlot.replace(':', '')}`;
+                    const slotLockRef = db.collection('slotLocks').doc(slotLockId);
+
+                    const bookingRef = db.collection('bookings').doc();
+
                     const bookingData = {
                         barberId: currentBarberId,
+                        barberName: BARBERS[currentBarberId].name,
                         customerName: customerName,
                         customerPhone: customerPhone,
                         customerEmail: customerEmail || '',
@@ -4169,12 +4183,22 @@
                         notes: notes || '',
                         status: 'confirmed',
                         recurringGroupId: recurringGroupId,
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        confirmedAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
 
-                    const docRef = db.collection('bookings').doc();
-                    batch.set(docRef, bookingData);
+                    // Add slot lock to batch
+                    batch.set(slotLockRef, {
+                        bookingId: bookingRef.id,
+                        barberId: currentBarberId,
+                        date: dateStr,
+                        timeSlot: timeSlot,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    // Add booking to batch
+                    batch.set(bookingRef, bookingData);
+                    createdBookings.push({ id: bookingRef.id, date: dateStr });
                 }
 
                 await batch.commit();
