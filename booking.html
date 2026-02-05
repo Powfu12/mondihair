@@ -1219,8 +1219,8 @@
             t('weekdays').forEach((day, i) => {
                 if (weekdayElements[i]) weekdayElements[i].textContent = day;
             });
-            if (!document.getElementById('step3').classList.contains('hidden')) {
-                renderCalendar();
+            if (!document.getElementById('step3').classList.contains('hidden') && Object.keys(availability).length > 0) {
+                updateCalendarUI(); // Just update UI with new language, don't reload data
             }
         }
 
@@ -1308,7 +1308,8 @@
             });
         }
 
-        async function renderCalendar() {
+        // Render calendar UI only (no data reload)
+        function updateCalendarUI() {
             const year = currentMonth.getFullYear();
             const month = currentMonth.getMonth();
 
@@ -1324,18 +1325,6 @@
 
             document.getElementById('prevMonth').disabled = isPast;
             document.getElementById('nextMonth').disabled = isBeyond;
-
-            // Show loading only if we don't have cached data
-            const needsLoading = Object.keys(availability).length === 0;
-            if (needsLoading) {
-                document.getElementById('loadingCalendar').classList.remove('hidden');
-            }
-
-            await loadMonthAvailability(year, month);
-
-            if (needsLoading) {
-                document.getElementById('loadingCalendar').classList.add('hidden');
-            }
 
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -1387,6 +1376,23 @@
             // Clear and append all at once for better performance
             container.innerHTML = '';
             container.appendChild(fragment);
+        }
+
+        // Full calendar render with data loading
+        async function renderCalendar() {
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+
+            // Show loading spinner
+            document.getElementById('loadingCalendar').classList.remove('hidden');
+            document.getElementById('calendarDays').innerHTML = '';
+
+            await loadMonthAvailability(year, month);
+
+            document.getElementById('loadingCalendar').classList.add('hidden');
+
+            // Now render the UI
+            updateCalendarUI();
         }
 
         async function loadMonthAvailability(year, month) {
@@ -1445,7 +1451,7 @@
         async function selectDate(dateStr, skipScroll = false) {
             selectedDate = dateStr;
             selectedTime = null;
-            renderCalendar();
+            updateCalendarUI(); // Just update UI, don't reload data
 
             // Clear any existing refresh interval
             if (slotsRefreshInterval) {
