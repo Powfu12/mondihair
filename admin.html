@@ -1616,11 +1616,29 @@
             align-items: center;
             gap: 5px;
             padding: 4px 10px;
-            background: rgba(33, 150, 243, 0.15);
-            color: var(--blue);
+            background: rgba(156, 39, 176, 0.15);
+            color: #ab47bc;
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 600;
+        }
+
+        .recurring-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 6px;
+            color: #ab47bc;
+            font-size: 0.75rem;
+        }
+
+        .recurring-icon-small {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            color: #ab47bc;
+            font-size: 0.65rem;
         }
 
         .recurring-group-actions {
@@ -1633,6 +1651,40 @@
             font-size: 0.9rem;
             color: var(--text-gray);
             margin-bottom: 10px;
+        }
+
+        /* Add Recurring Button */
+        .add-recurring-btn {
+            padding: 10px 20px;
+            background: rgba(156, 39, 176, 0.15);
+            color: #ab47bc;
+            border: 1px solid rgba(156, 39, 176, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-recurring-btn:hover {
+            background: rgba(156, 39, 176, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Recurring Form */
+        .recurring-weeks-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recurring-weeks-input input {
+            width: 80px;
+            text-align: center;
         }
 
         /* =========================
@@ -2253,6 +2305,10 @@
                     <i class="fas fa-plus-circle"></i>
                     <span>Νέο Ραντεβού</span>
                 </button>
+                <button class="add-recurring-btn" onclick="openAddRecurringModal()">
+                    <i class="fas fa-redo"></i>
+                    <span>Εβδομαδιαίο Ραντεβού</span>
+                </button>
                 <button class="edit-schedule-btn" onclick="openEditScheduleModal()">
                     <i class="fas fa-clock"></i>
                     <span>Ωράριο</span>
@@ -2493,6 +2549,74 @@
             </div>
             <div class="modal-footer">
                 <button class="modal-btn modal-btn-secondary" onclick="closeRecurringModal()">Κλείσιμο</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+         ADD RECURRING BOOKING MODAL
+    ========================= -->
+    <div id="addRecurringModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-redo" style="color: #ab47bc; margin-right: 10px;"></i>Νέο Εβδομαδιαίο Ραντεβού</h2>
+                <button class="modal-close" onclick="closeAddRecurringModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addRecurringForm" class="modal-form">
+                    <div class="form-group">
+                        <label>Όνομα Πελάτη *</label>
+                        <input type="text" id="recurringCustomerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Τηλέφωνο *</label>
+                        <input type="tel" id="recurringCustomerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="recurringCustomerEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Υπηρεσία *</label>
+                        <select id="recurringService" required>
+                            <option value="">Επιλέξτε υπηρεσία...</option>
+                            <option value="Haircut">Haircut</option>
+                            <option value="Beard Trim">Beard Trim</option>
+                            <option value="Haircut + Beard">Haircut + Beard</option>
+                            <option value="Hair Color">Hair Color</option>
+                            <option value="Kids Haircut">Kids Haircut</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ημέρα Έναρξης *</label>
+                        <input type="date" id="recurringStartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ώρα *</label>
+                        <select id="recurringTime" required>
+                            <option value="">Επιλέξτε ώρα...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Πόσες εβδομάδες; *</label>
+                        <div class="recurring-weeks-input">
+                            <input type="number" id="recurringWeeks" min="2" max="52" value="4" required>
+                            <span style="color: var(--text-gray);">εβδομάδες (2-52)</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Σημειώσεις</label>
+                        <textarea id="recurringNotes" placeholder="Προσθέστε τυχόν σημειώσεις..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeAddRecurringModal()">Ακύρωση</button>
+                <button class="modal-btn modal-btn-primary" onclick="submitRecurringBooking()" style="background: #ab47bc;">
+                    <i class="fas fa-redo"></i> Δημιουργία Εβδομαδιαίου
+                </button>
             </div>
         </div>
     </div>
@@ -3156,7 +3280,10 @@
                             ` : bookingsAtTime.map(booking => `
                                 <div class="calendar-booking-item status-${booking.status}" onclick="showBookingDetails('${booking.id}')">
                                     <div class="booking-item-header">
-                                        <div class="calendar-booking-name">${booking.customerName}</div>
+                                        <div class="calendar-booking-name">
+                                            ${booking.customerName}
+                                            ${booking.recurringGroupId ? '<span class="recurring-icon" title="Επαναλαμβανόμενο"><i class="fas fa-redo"></i></span>' : ''}
+                                        </div>
                                         <span class="booking-status-badge status-${booking.status}">${getStatusText(booking.status)}</span>
                                     </div>
                                     <div class="booking-item-details">
@@ -3271,8 +3398,11 @@
                             ${dayBookings.length === 0 ? `
                                 <div class="no-bookings">Κανένα ραντεβού</div>
                             ` : dayBookings.map(booking => `
-                                <div class="week-booking-item status-${booking.status}">
-                                    <div class="week-booking-time">${booking.timeSlot}</div>
+                                <div class="week-booking-item status-${booking.status}" onclick="event.stopPropagation(); openBookingDetail('${booking.id}')">
+                                    <div class="week-booking-time">
+                                        ${booking.timeSlot}
+                                        ${booking.recurringGroupId ? '<span class="recurring-icon-small"><i class="fas fa-redo"></i></span>' : ''}
+                                    </div>
                                     <div class="week-booking-name">${booking.customerName}</div>
                                     <div class="week-booking-service">${booking.service}</div>
                                 </div>
@@ -3399,7 +3529,10 @@
                     <div class="todays-item-left">
                         <span class="todays-time">${booking.timeSlot}</span>
                         <div class="todays-info">
-                            <h4>${booking.customerName}</h4>
+                            <h4>
+                                ${booking.customerName}
+                                ${booking.recurringGroupId ? '<span class="recurring-icon" title="Επαναλαμβανόμενο"><i class="fas fa-redo"></i></span>' : ''}
+                            </h4>
                             <span>${booking.service}</span>
                         </div>
                     </div>
@@ -3520,6 +3653,96 @@
             } catch (error) {
                 console.error('Error deleting recurring group:', error);
                 alert('Σφάλμα κατά τη διαγραφή. Παρακαλώ δοκιμάστε ξανά.');
+            }
+        }
+
+        // =========================
+        // ADD RECURRING BOOKING
+        // =========================
+        function openAddRecurringModal() {
+            const modal = document.getElementById('addRecurringModal');
+
+            // Clear form
+            document.getElementById('addRecurringForm').reset();
+
+            // Set minimum date to today
+            const today = formatDateLocal(new Date());
+            document.getElementById('recurringStartDate').min = today;
+            document.getElementById('recurringStartDate').value = today;
+
+            // Populate time slots
+            const timeSelect = document.getElementById('recurringTime');
+            const timeSlots = getTimeSlotsForBarber(currentBarberId);
+            timeSelect.innerHTML = '<option value="">Επιλέξτε ώρα...</option>' +
+                timeSlots.map(slot => `<option value="${slot}">${slot}</option>`).join('');
+
+            modal.classList.add('active');
+        }
+
+        function closeAddRecurringModal() {
+            document.getElementById('addRecurringModal').classList.remove('active');
+        }
+
+        async function submitRecurringBooking() {
+            const customerName = document.getElementById('recurringCustomerName').value.trim();
+            const customerPhone = document.getElementById('recurringCustomerPhone').value.trim();
+            const customerEmail = document.getElementById('recurringCustomerEmail').value.trim();
+            const service = document.getElementById('recurringService').value;
+            const startDate = document.getElementById('recurringStartDate').value;
+            const timeSlot = document.getElementById('recurringTime').value;
+            const weeks = parseInt(document.getElementById('recurringWeeks').value);
+            const notes = document.getElementById('recurringNotes').value.trim();
+
+            // Validation
+            if (!customerName || !customerPhone || !service || !startDate || !timeSlot || !weeks) {
+                alert('Παρακαλώ συμπληρώστε όλα τα απαιτούμενα πεδία');
+                return;
+            }
+
+            if (weeks < 2 || weeks > 52) {
+                alert('Οι εβδομάδες πρέπει να είναι μεταξύ 2 και 52');
+                return;
+            }
+
+            try {
+                // Generate unique recurring group ID
+                const recurringGroupId = 'recurring_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+                // Create bookings for each week
+                const batch = db.batch();
+                const startDateObj = new Date(startDate + 'T00:00:00');
+
+                for (let i = 0; i < weeks; i++) {
+                    const bookingDate = new Date(startDateObj);
+                    bookingDate.setDate(bookingDate.getDate() + (i * 7));
+                    const dateStr = formatDateLocal(bookingDate);
+
+                    const bookingData = {
+                        barberId: currentBarberId,
+                        customerName: customerName,
+                        customerPhone: customerPhone,
+                        customerEmail: customerEmail || '',
+                        service: service,
+                        date: dateStr,
+                        timeSlot: timeSlot,
+                        notes: notes || '',
+                        status: 'confirmed',
+                        recurringGroupId: recurringGroupId,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+
+                    const docRef = db.collection('bookings').doc();
+                    batch.set(docRef, bookingData);
+                }
+
+                await batch.commit();
+
+                alert(`Δημιουργήθηκαν ${weeks} εβδομαδιαία ραντεβού επιτυχώς!`);
+                closeAddRecurringModal();
+            } catch (error) {
+                console.error('Error creating recurring bookings:', error);
+                alert('Σφάλμα κατά τη δημιουργία. Παρακαλώ δοκιμάστε ξανά.');
             }
         }
 
