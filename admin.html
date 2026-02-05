@@ -3083,10 +3083,21 @@
             unsubscribesAll.forEach(unsub => unsub());
             unsubscribesAll = [];
 
+            // Get date range: 30 days ago to 90 days in future
+            const now = new Date();
+            const pastDate = new Date(now);
+            pastDate.setDate(pastDate.getDate() - 30);
+            const futureDate = new Date(now);
+            futureDate.setDate(futureDate.getDate() + 90);
+            const pastDateStr = formatDateLocal(pastDate);
+            const futureDateStr = formatDateLocal(futureDate);
+
             const barberIds = ['mondi', 'ervin', 'marios'];
             barberIds.forEach(barberId => {
                 const unsub = db.collection('bookings')
                     .where('barberId', '==', barberId)
+                    .where('date', '>=', pastDateStr)
+                    .where('date', '<=', futureDateStr)
                     .onSnapshot(snapshot => {
                         allBarbersData[barberId] = snapshot.docs.map(doc => ({
                             id: doc.id,

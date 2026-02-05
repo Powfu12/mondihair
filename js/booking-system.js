@@ -356,9 +356,20 @@ class BookingSystem {
 
   // Listen for real-time updates
   listenToBookings(barberId, callback) {
+    // Get date range: 30 days ago to 90 days in future
+    const now = new Date();
+    const pastDate = new Date(now);
+    pastDate.setDate(pastDate.getDate() - 30);
+    const futureDate = new Date(now);
+    futureDate.setDate(futureDate.getDate() + 90);
+
+    const pastDateStr = `${pastDate.getFullYear()}-${String(pastDate.getMonth() + 1).padStart(2, '0')}-${String(pastDate.getDate()).padStart(2, '0')}`;
+    const futureDateStr = `${futureDate.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`;
+
     return db.collection('bookings')
       .where('barberId', '==', barberId)
-      .limit(100)
+      .where('date', '>=', pastDateStr)
+      .where('date', '<=', futureDateStr)
       .onSnapshot(snapshot => {
         const bookings = snapshot.docs.map(doc => ({
           id: doc.id,
