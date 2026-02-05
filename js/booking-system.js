@@ -154,7 +154,24 @@ class BookingSystem {
       console.log('Date:', bookingData.date);
       console.log('Time slot:', bookingData.timeSlot);
 
-      // Create unique slot lock ID - this is the key to preventing double bookings
+      // Step 1: Check if slot is available using existing bookings (backwards compatibility)
+      // This handles old bookings that don't have slot locks
+      const existingBooking = await db.collection('bookings')
+        .where('barberId', '==', bookingData.barberId)
+        .where('date', '==', bookingData.date)
+        .where('timeSlot', '==', bookingData.timeSlot)
+        .where('status', 'in', ['pending', 'confirmed'])
+        .get();
+
+      if (!existingBooking.empty) {
+        console.log('ABORT: Slot already has an existing booking');
+        return {
+          success: false,
+          message: 'Αυτή η ώρα δεν είναι πλέον διαθέσιμη. Παρακαλώ επιλέξτε άλλη ώρα.'
+        };
+      }
+
+      // Step 2: Create unique slot lock ID for atomic operation
       const slotLockId = `${bookingData.barberId}_${bookingData.date}_${bookingData.timeSlot.replace(':', '')}`;
       const slotLockRef = db.collection('slotLocks').doc(slotLockId);
       const bookingRef = db.collection('bookings').doc(); // Auto-generate booking ID
@@ -162,20 +179,20 @@ class BookingSystem {
       console.log('Slot lock ID:', slotLockId);
       console.log('Starting atomic transaction...');
 
-      // Use Firestore transaction for atomic booking creation
+      // Step 3: Use Firestore transaction for atomic slot lock + booking creation
       // This guarantees that only ONE booking can be created for a given slot
       await db.runTransaction(async (transaction) => {
-        // Step 1: Check if slot is already locked (booked)
+        // Check if slot is already locked
         const slotLockDoc = await transaction.get(slotLockRef);
 
         if (slotLockDoc.exists) {
-          console.log('TRANSACTION ABORT: Slot already locked');
+          console.log('TRANSACTION ABORT: Slot already locked by another booking');
           throw new Error('Αυτή η ώρα δεν είναι πλέον διαθέσιμη. Παρακαλώ επιλέξτε άλλη ώρα.');
         }
 
         console.log('Slot is free, creating atomic booking...');
 
-        // Step 2: Create the booking document
+        // Create the booking document
         const booking = {
           barberId: bookingData.barberId,
           barberName: BARBERS[bookingData.barberId].name,
@@ -191,8 +208,7 @@ class BookingSystem {
           notes: bookingData.notes || ''
         };
 
-        // Step 3: Atomically create BOTH the slot lock AND the booking
-        // If either fails, the entire transaction is rolled back
+        // Atomically create BOTH the slot lock AND the booking
         transaction.set(slotLockRef, {
           bookingId: bookingRef.id,
           barberId: bookingData.barberId,
@@ -238,7 +254,7 @@ class BookingSystem {
 
       // Provide user-friendly error message
       let userMessage = error.message;
-      if (error.message.includes('Αυτή η ώρα')) {
+      if (error.message && error.message.includes('Αυτή η ώρα')) {
         userMessage = error.message; // Already Greek
       } else if (error.code === 'permission-denied') {
         userMessage = 'Δεν έχετε άδεια για αυτή την ενέργεια.';
