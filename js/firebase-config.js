@@ -182,7 +182,7 @@ const TIME_SLOTS_20 = [
   '18:00', '18:20', '18:40',
   '19:00', '19:20', '19:40',
   '20:00', '20:20', '20:40',
-  '21:00'
+  '21:00', '21:20'
 ];
 
 // Helper function to get time slots for a specific barber
