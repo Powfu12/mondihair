@@ -281,7 +281,64 @@
         .dashboard-content {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 30px;
+            padding: 24px;
+        }
+
+        /* Today's Summary */
+        .today-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(195, 227, 33, 0.1) 0%, rgba(195, 227, 33, 0.05) 100%);
+            border: 1px solid rgba(195, 227, 33, 0.2);
+            border-radius: 16px;
+            padding: 20px 30px;
+            margin-bottom: 24px;
+        }
+
+        .summary-date {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--lime);
+        }
+
+        .summary-date i {
+            font-size: 1.5rem;
+        }
+
+        .summary-stats {
+            display: flex;
+            gap: 40px;
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-light);
+            line-height: 1;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-stat.confirmed .summary-number {
+            color: var(--success);
+        }
+
+        .summary-stat.pending .summary-number {
+            color: var(--warning);
         }
 
         /* Section Headers */
@@ -1217,52 +1274,54 @@
         ========================= */
         .action-buttons {
             display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
         }
 
         .add-booking-btn,
         .edit-schedule-btn,
         .manage-availability-btn {
-            padding: 12px 30px;
+            padding: 10px 20px;
             background: var(--lime);
             color: var(--darker);
             border: none;
-            border-radius: 50px;
+            border-radius: 10px;
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .add-booking-btn:hover,
         .edit-schedule-btn:hover,
         .manage-availability-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(195, 227, 33, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .edit-schedule-btn {
-            background: var(--blue);
-            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .edit-schedule-btn:hover {
-            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.4);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .manage-availability-btn {
-            background: var(--warning);
-            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .manage-availability-btn:hover {
-            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.4);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         /* =========================
@@ -1647,11 +1706,23 @@
             }
 
             .dashboard-content {
-                padding: 20px 15px;
+                padding: 16px;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .today-summary {
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px;
+            }
+
+            .summary-stats {
+                width: 100%;
+                justify-content: space-around;
+                gap: 20px;
+            }
+
+            .summary-number {
+                font-size: 1.5rem;
             }
 
             .booking-header {
@@ -1806,19 +1877,41 @@
 
         <!-- Content -->
         <div class="dashboard-content">
+            <!-- Today's Quick Summary -->
+            <div class="today-summary" id="todaySummary">
+                <div class="summary-date">
+                    <i class="fas fa-calendar-day"></i>
+                    <span id="summaryDateText">Σήμερα</span>
+                </div>
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <span class="summary-number" id="todayBookingsCount">0</span>
+                        <span class="summary-label">Ραντεβού</span>
+                    </div>
+                    <div class="summary-stat confirmed">
+                        <span class="summary-number" id="todayConfirmedCount">0</span>
+                        <span class="summary-label">Επιβεβαιωμένα</span>
+                    </div>
+                    <div class="summary-stat pending">
+                        <span class="summary-number" id="todayPendingCount">0</span>
+                        <span class="summary-label">Εκκρεμή</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="add-booking-btn" onclick="openAddBookingModal()">
                     <i class="fas fa-plus-circle"></i>
-                    <span>Προσθήκη Ραντεβού</span>
+                    <span>Νέο Ραντεβού</span>
                 </button>
                 <button class="edit-schedule-btn" onclick="openEditScheduleModal()">
-                    <i class="fas fa-calendar-edit"></i>
-                    <span>Επεξεργασία Ωραρίου</span>
+                    <i class="fas fa-clock"></i>
+                    <span>Ωράριο</span>
                 </button>
                 <button class="manage-availability-btn" onclick="openManageAvailabilityModal()">
                     <i class="fas fa-calendar-times"></i>
-                    <span>Διαχείριση Διαθεσιμότητας</span>
+                    <span>Άδειες</span>
                 </button>
             </div>
 
@@ -2141,8 +2234,26 @@
 
             unsubscribeBookings = bookingSystem.listenToBookings(currentBarberId, (bookings) => {
                 allBookings = bookings;
+                updateTodaySummary();
                 renderCalendar();
             });
+        }
+
+        // Update Today's Summary
+        function updateTodaySummary() {
+            const today = formatDateLocal(new Date());
+            const todayBookings = allBookings.filter(b => b.date === today && b.status !== 'cancelled');
+            const confirmedBookings = todayBookings.filter(b => b.status === 'confirmed');
+            const pendingBookings = todayBookings.filter(b => b.status === 'pending');
+
+            document.getElementById('todayBookingsCount').textContent = todayBookings.length;
+            document.getElementById('todayConfirmedCount').textContent = confirmedBookings.length;
+            document.getElementById('todayPendingCount').textContent = pendingBookings.length;
+
+            // Update date text
+            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+            const dateText = new Date().toLocaleDateString('el-GR', dateOptions);
+            document.getElementById('summaryDateText').textContent = dateText;
         }
 
         // =========================
@@ -2567,6 +2678,14 @@
         let currentCalendarView = 'week';
         let currentCalendarDate = new Date();
 
+        // Helper function to format date as YYYY-MM-DD in local timezone
+        function formatDateLocal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         // Switch between day/week/month calendar views
         function switchCalendarView(view) {
             currentCalendarView = view;
@@ -2629,7 +2748,7 @@
         // Render Day View
         function renderDayView() {
             const container = document.getElementById('dayViewGrid');
-            const dateStr = currentCalendarDate.toISOString().split('T')[0];
+            const dateStr = formatDateLocal(currentCalendarDate);
 
             // Get bookings for this day (including cancelled for visibility)
             const dayBookings = allBookings.filter(b => b.date === dateStr);
@@ -2722,7 +2841,8 @@
 
         // Go to specific day
         function goToDay(dateStr) {
-            currentCalendarDate = new Date(dateStr + 'T00:00:00');
+            const [year, month, day] = dateStr.split('-').map(Number);
+            currentCalendarDate = new Date(year, month - 1, day);
             switchCalendarView('day');
         }
 
@@ -2736,14 +2856,14 @@
             const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Monday as first day
             startOfWeek.setDate(startOfWeek.getDate() + diff);
 
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
             let html = '';
 
             // Create 7 columns for each day (Monday to Sunday)
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startOfWeek);
                 date.setDate(date.getDate() + i);
-                const dateStr = date.toISOString().split('T')[0];
+                const dateStr = formatDateLocal(date);
                 const isToday = dateStr === today;
 
                 // Get bookings for this day
@@ -2793,7 +2913,7 @@
             let startDay = firstDay.getDay();
             startDay = startDay === 0 ? 6 : startDay - 1; // Convert Sunday=0 to Monday=0
 
-            const today = new Date().toISOString().split('T')[0];
+            const today = formatDateLocal(new Date());
 
             let html = '';
 
@@ -2812,7 +2932,7 @@
             // Days of month
             for (let day = 1; day <= lastDay.getDate(); day++) {
                 const date = new Date(year, month, day);
-                const dateStr = date.toISOString().split('T')[0];
+                const dateStr = formatDateLocal(date);
                 const isToday = dateStr === today;
 
                 // Get bookings for this day
