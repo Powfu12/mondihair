@@ -1325,6 +1325,317 @@
         }
 
         /* =========================
+           QUICK NAVIGATION
+        ========================= */
+        .quick-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-nav-btn {
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .quick-nav-btn.active {
+            background: var(--lime);
+            color: var(--darker);
+            border-color: var(--lime);
+        }
+
+        .quick-nav-btn i {
+            font-size: 0.9rem;
+        }
+
+        /* =========================
+           TODAY'S APPOINTMENTS SECTION
+        ========================= */
+        .todays-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .todays-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .todays-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--lime);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .todays-count {
+            background: var(--lime);
+            color: var(--darker);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .todays-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .todays-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 3px solid var(--lime);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .todays-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(3px);
+        }
+
+        .todays-item.status-confirmed {
+            border-left-color: var(--success);
+        }
+
+        .todays-item.status-pending {
+            border-left-color: var(--warning);
+        }
+
+        .todays-item.status-completed {
+            border-left-color: var(--text-gray);
+        }
+
+        .todays-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .todays-time {
+            font-weight: 700;
+            color: var(--lime);
+            min-width: 50px;
+        }
+
+        .todays-item.status-confirmed .todays-time {
+            color: var(--success);
+        }
+
+        .todays-item.status-pending .todays-time {
+            color: var(--warning);
+        }
+
+        .todays-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .todays-info span {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        .todays-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .todays-status.status-confirmed {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+        }
+
+        .todays-status.status-pending {
+            background: rgba(255, 152, 0, 0.15);
+            color: var(--warning);
+        }
+
+        .todays-status.status-completed {
+            background: rgba(176, 176, 176, 0.15);
+            color: var(--text-gray);
+        }
+
+        .todays-empty {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-gray);
+        }
+
+        .todays-empty i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        /* =========================
+           BOOKING DETAIL MODAL
+        ========================= */
+        .booking-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .booking-detail-time {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--lime);
+        }
+
+        .booking-detail-date {
+            font-size: 1rem;
+            color: var(--text-gray);
+        }
+
+        .booking-detail-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .booking-detail-info {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .booking-detail-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .booking-detail-row i {
+            width: 20px;
+            color: var(--lime);
+        }
+
+        .booking-detail-row span {
+            flex: 1;
+        }
+
+        .booking-detail-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .detail-action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .detail-action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .detail-action-btn.btn-confirm {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .detail-action-btn.btn-complete {
+            background: rgba(33, 150, 243, 0.15);
+            color: var(--blue);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .detail-action-btn.btn-cancel {
+            background: rgba(244, 67, 54, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .detail-action-btn.btn-delete {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(244, 67, 54, 0.2);
+        }
+
+        /* Recurring indicator */
+        .recurring-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: rgba(33, 150, 243, 0.15);
+            color: var(--blue);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .recurring-group-actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .recurring-group-actions h4 {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        /* =========================
            MODAL
         ========================= */
         .modal {
@@ -1899,6 +2210,43 @@
                 </div>
             </div>
 
+            <!-- Quick Navigation -->
+            <div class="quick-nav">
+                <button class="quick-nav-btn active" onclick="quickNavTo('today')">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Σήμερα</span>
+                </button>
+                <button class="quick-nav-btn" onclick="quickNavTo('tomorrow')">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>Αύριο</span>
+                </button>
+                <button class="quick-nav-btn" onclick="quickNavTo('week')">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>Εβδομάδα</span>
+                </button>
+                <button class="quick-nav-btn" onclick="showRecurringBookings()">
+                    <i class="fas fa-redo"></i>
+                    <span>Επαναλαμβανόμενα</span>
+                </button>
+            </div>
+
+            <!-- Today's Appointments -->
+            <div class="todays-section" id="todaysSection">
+                <div class="todays-header">
+                    <div class="todays-title">
+                        <i class="fas fa-list"></i>
+                        <span>Σημερινά Ραντεβού</span>
+                    </div>
+                    <span class="todays-count" id="todaysCount">0</span>
+                </div>
+                <div class="todays-list" id="todaysList">
+                    <div class="todays-empty">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>Δεν υπάρχουν ραντεβού για σήμερα</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="add-booking-btn" onclick="openAddBookingModal()">
@@ -2112,6 +2460,43 @@
         </div>
     </div>
 
+    <!-- =========================
+         BOOKING DETAIL MODAL
+    ========================= -->
+    <div id="bookingDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Λεπτομέρειες Ραντεβού</h2>
+                <button class="modal-close" onclick="closeBookingDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="bookingDetailContent">
+                <!-- Content populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+         RECURRING BOOKINGS MODAL
+    ========================= -->
+    <div id="recurringModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Επαναλαμβανόμενα Ραντεβού</h2>
+                <button class="modal-close" onclick="closeRecurringModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="recurringContent">
+                <!-- Content populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeRecurringModal()">Κλείσιμο</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -2236,6 +2621,7 @@
                 allBookings = bookings;
                 updateTodaySummary();
                 renderCalendar();
+                renderTodaysAppointments();
             });
         }
 
@@ -2966,6 +3352,294 @@
             }
 
             container.innerHTML = html;
+        }
+
+        // =========================
+        // TODAY'S APPOINTMENTS
+        // =========================
+        function renderTodaysAppointments() {
+            const today = formatDateLocal(new Date());
+            const todaysBookings = allBookings.filter(b =>
+                b.date === today && b.status !== 'cancelled'
+            ).sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
+
+            const container = document.getElementById('todaysList');
+            const countEl = document.getElementById('todaysCount');
+
+            // Update count
+            countEl.textContent = todaysBookings.length;
+
+            // Update today's summary counts
+            const todayBookingsCount = document.getElementById('todayBookingsCount');
+            const todayConfirmedCount = document.getElementById('todayConfirmedCount');
+            const todayPendingCount = document.getElementById('todayPendingCount');
+
+            if (todayBookingsCount) {
+                todayBookingsCount.textContent = todaysBookings.length;
+            }
+            if (todayConfirmedCount) {
+                todayConfirmedCount.textContent = todaysBookings.filter(b => b.status === 'confirmed').length;
+            }
+            if (todayPendingCount) {
+                todayPendingCount.textContent = todaysBookings.filter(b => b.status === 'pending').length;
+            }
+
+            if (todaysBookings.length === 0) {
+                container.innerHTML = `
+                    <div class="todays-empty">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>Δεν υπάρχουν ραντεβού για σήμερα</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = todaysBookings.map(booking => `
+                <div class="todays-item status-${booking.status}" onclick="openBookingDetail('${booking.id}')">
+                    <div class="todays-item-left">
+                        <span class="todays-time">${booking.timeSlot}</span>
+                        <div class="todays-info">
+                            <h4>${booking.customerName}</h4>
+                            <span>${booking.service}</span>
+                        </div>
+                    </div>
+                    <span class="todays-status status-${booking.status}">${getStatusText(booking.status)}</span>
+                </div>
+            `).join('');
+        }
+
+        // =========================
+        // QUICK NAVIGATION
+        // =========================
+        function quickNavTo(target) {
+            // Update active button
+            document.querySelectorAll('.quick-nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            if (target === 'today') {
+                currentCalendarDate = new Date();
+                switchCalendarView('day');
+            } else if (target === 'tomorrow') {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                currentCalendarDate = tomorrow;
+                switchCalendarView('day');
+            } else if (target === 'week') {
+                currentCalendarDate = new Date();
+                switchCalendarView('week');
+            }
+        }
+
+        // =========================
+        // RECURRING BOOKINGS
+        // =========================
+        function showRecurringBookings() {
+            const modal = document.getElementById('recurringModal');
+            const content = document.getElementById('recurringContent');
+
+            // Group bookings by recurringGroupId
+            const recurringGroups = {};
+            allBookings.forEach(booking => {
+                if (booking.recurringGroupId) {
+                    if (!recurringGroups[booking.recurringGroupId]) {
+                        recurringGroups[booking.recurringGroupId] = [];
+                    }
+                    recurringGroups[booking.recurringGroupId].push(booking);
+                }
+            });
+
+            const groupIds = Object.keys(recurringGroups);
+
+            if (groupIds.length === 0) {
+                content.innerHTML = `
+                    <div class="todays-empty">
+                        <i class="fas fa-redo"></i>
+                        <p>Δεν υπάρχουν επαναλαμβανόμενα ραντεβού</p>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = groupIds.map(groupId => {
+                    const bookings = recurringGroups[groupId].sort((a, b) => a.date.localeCompare(b.date));
+                    const firstBooking = bookings[0];
+                    const upcomingBookings = bookings.filter(b => b.date >= formatDateLocal(new Date()) && b.status !== 'cancelled');
+
+                    return `
+                        <div class="recurring-group" style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div>
+                                    <h3 style="font-size: 1.1rem; margin-bottom: 5px;">${firstBooking.customerName}</h3>
+                                    <div style="display: flex; gap: 15px; color: var(--text-gray); font-size: 0.85rem;">
+                                        <span><i class="fas fa-cut"></i> ${firstBooking.service}</span>
+                                        <span><i class="fas fa-clock"></i> ${firstBooking.timeSlot}</span>
+                                        <span><i class="fas fa-calendar"></i> ${upcomingBookings.length} επερχόμενα</span>
+                                    </div>
+                                </div>
+                                <button class="action-btn btn-cancel" onclick="deleteRecurringGroup('${groupId}')">
+                                    <i class="fas fa-trash"></i> Διαγραφή όλων
+                                </button>
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                ${upcomingBookings.slice(0, 8).map(b => `
+                                    <span style="padding: 6px 12px; background: rgba(195,227,33,0.1); border-radius: 6px; font-size: 0.8rem; cursor: pointer;" onclick="openBookingDetail('${b.id}')">
+                                        ${new Date(b.date).toLocaleDateString('el-GR', { day: 'numeric', month: 'short' })}
+                                    </span>
+                                `).join('')}
+                                ${upcomingBookings.length > 8 ? `<span style="padding: 6px 12px; color: var(--text-gray); font-size: 0.8rem;">+${upcomingBookings.length - 8} ακόμα</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeRecurringModal() {
+            document.getElementById('recurringModal').classList.remove('active');
+        }
+
+        async function deleteRecurringGroup(groupId) {
+            if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε ΟΛΑ τα ραντεβού αυτής της ομάδας;')) {
+                return;
+            }
+
+            try {
+                const bookingsToDelete = allBookings.filter(b => b.recurringGroupId === groupId);
+                const batch = db.batch();
+
+                bookingsToDelete.forEach(booking => {
+                    const ref = db.collection('bookings').doc(booking.id);
+                    batch.delete(ref);
+                });
+
+                await batch.commit();
+                alert('Όλα τα ραντεβού της ομάδας διαγράφηκαν επιτυχώς!');
+                closeRecurringModal();
+            } catch (error) {
+                console.error('Error deleting recurring group:', error);
+                alert('Σφάλμα κατά τη διαγραφή. Παρακαλώ δοκιμάστε ξανά.');
+            }
+        }
+
+        // =========================
+        // BOOKING DETAIL MODAL
+        // =========================
+        function openBookingDetail(bookingId) {
+            const booking = allBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            const modal = document.getElementById('bookingDetailModal');
+            const content = document.getElementById('bookingDetailContent');
+
+            const dateObj = new Date(booking.date + 'T00:00:00');
+            const dateFormatted = dateObj.toLocaleDateString('el-GR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            content.innerHTML = `
+                <div class="booking-detail-header">
+                    <div>
+                        <div class="booking-detail-time">${booking.timeSlot}</div>
+                        <div class="booking-detail-date">${dateFormatted}</div>
+                    </div>
+                    <span class="booking-detail-status booking-status status-${booking.status}">${getStatusText(booking.status)}</span>
+                </div>
+
+                ${booking.recurringGroupId ? `
+                    <div class="recurring-badge" style="margin-bottom: 15px;">
+                        <i class="fas fa-redo"></i>
+                        <span>Επαναλαμβανόμενο ραντεβού</span>
+                    </div>
+                ` : ''}
+
+                <div class="booking-detail-info">
+                    <div class="booking-detail-row">
+                        <i class="fas fa-user"></i>
+                        <span>${booking.customerName}</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <i class="fas fa-phone"></i>
+                        <span>${booking.customerPhone || '-'}</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <i class="fas fa-envelope"></i>
+                        <span>${booking.customerEmail || '-'}</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <i class="fas fa-cut"></i>
+                        <span>${booking.service}</span>
+                    </div>
+                    ${booking.notes ? `
+                        <div class="booking-detail-row">
+                            <i class="fas fa-sticky-note"></i>
+                            <span>${booking.notes}</span>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="booking-detail-actions">
+                    ${booking.status === 'pending' ? `
+                        <button class="detail-action-btn btn-confirm" onclick="updateBookingStatusAndRefresh('${booking.id}', 'confirmed')">
+                            <i class="fas fa-check"></i> Επιβεβαίωση
+                        </button>
+                    ` : ''}
+                    ${booking.status === 'confirmed' ? `
+                        <button class="detail-action-btn btn-complete" onclick="updateBookingStatusAndRefresh('${booking.id}', 'completed')">
+                            <i class="fas fa-check-double"></i> Ολοκλήρωση
+                        </button>
+                    ` : ''}
+                    ${booking.status !== 'cancelled' && booking.status !== 'completed' ? `
+                        <button class="detail-action-btn btn-cancel" onclick="updateBookingStatusAndRefresh('${booking.id}', 'cancelled')">
+                            <i class="fas fa-times"></i> Ακύρωση
+                        </button>
+                    ` : ''}
+                    <button class="detail-action-btn btn-delete" onclick="deleteBookingAndClose('${booking.id}')">
+                        <i class="fas fa-trash"></i> Διαγραφή
+                    </button>
+                </div>
+
+                ${booking.recurringGroupId ? `
+                    <div class="recurring-group-actions">
+                        <h4>Ενέργειες Ομάδας</h4>
+                        <button class="detail-action-btn btn-delete" onclick="deleteRecurringGroupAndClose('${booking.recurringGroupId}')">
+                            <i class="fas fa-trash"></i> Διαγραφή όλων των επαναλαμβανόμενων
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+
+            modal.classList.add('active');
+        }
+
+        function closeBookingDetailModal() {
+            document.getElementById('bookingDetailModal').classList.remove('active');
+        }
+
+        async function updateBookingStatusAndRefresh(bookingId, newStatus) {
+            await updateBookingStatus(bookingId, newStatus);
+            closeBookingDetailModal();
+        }
+
+        async function deleteBookingAndClose(bookingId) {
+            if (confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το ραντεβού;')) {
+                await deleteBooking(bookingId);
+                closeBookingDetailModal();
+            }
+        }
+
+        async function deleteRecurringGroupAndClose(groupId) {
+            await deleteRecurringGroup(groupId);
+            closeBookingDetailModal();
+        }
+
+        // Override showBookingDetails to use openBookingDetail
+        function showBookingDetails(bookingId) {
+            openBookingDetail(bookingId);
         }
     </script>
 </body>
