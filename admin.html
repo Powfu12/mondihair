@@ -1331,6 +1331,338 @@
         }
 
         /* =========================
+           MULTI-BARBER VIEW (ALL)
+        ========================= */
+        .all-barbers-view {
+            display: none;
+        }
+
+        .all-barbers-view.active {
+            display: block;
+        }
+
+        .all-barbers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            height: calc(100vh - 280px);
+            min-height: 600px;
+        }
+
+        .barber-column {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .barber-column-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .barber-column-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .barber-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .barber-avatar.mondi {
+            background: linear-gradient(135deg, var(--lime), #a8c91d);
+            color: var(--darker);
+        }
+
+        .barber-avatar.ervin {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .barber-avatar.marios {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+        }
+
+        .barber-column-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .barber-column-stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .barber-stat {
+            text-align: center;
+        }
+
+        .barber-stat-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .barber-stat-value.confirmed {
+            color: var(--success);
+        }
+
+        .barber-stat-value.pending {
+            color: var(--warning);
+        }
+
+        .barber-stat-label {
+            font-size: 0.65rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .barber-timeline {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .barber-timeline::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .barber-timeline::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .barber-timeline::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .timeline-slot {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 6px;
+            min-height: 52px;
+        }
+
+        .timeline-time {
+            width: 48px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-gray);
+            padding-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-empty {
+            height: 44px;
+            border-radius: 10px;
+            border: 1px dashed rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timeline-empty:hover {
+            border-color: rgba(195, 227, 33, 0.3);
+            background: rgba(195, 227, 33, 0.02);
+            color: rgba(195, 227, 33, 0.4);
+        }
+
+        .timeline-booking {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 10px 12px;
+            border-left: 3px solid var(--lime);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timeline-booking:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(3px);
+        }
+
+        .timeline-booking.status-confirmed {
+            border-left-color: var(--success);
+        }
+
+        .timeline-booking.status-pending {
+            border-left-color: var(--warning);
+        }
+
+        .timeline-booking.status-completed {
+            border-left-color: var(--text-gray);
+            opacity: 0.6;
+        }
+
+        .timeline-booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .timeline-booking-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .timeline-booking-name .recurring-icon {
+            color: #a855f7;
+            font-size: 0.7rem;
+        }
+
+        .timeline-booking-status {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .timeline-booking-status.status-confirmed {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .timeline-booking-status.status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .timeline-booking-details {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            display: flex;
+            gap: 10px;
+        }
+
+        .timeline-booking-details i {
+            opacity: 0.6;
+            width: 12px;
+        }
+
+        /* All view header adjustments */
+        .all-view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .all-view-date {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .all-view-date-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .all-view-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .all-view-nav-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .all-view-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-light);
+        }
+
+        .all-view-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .all-barbers-grid {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .barber-column {
+                max-height: 500px;
+            }
+        }
+
+        /* Barber Select Option for All Modal */
+        .barber-select-option {
+            padding: 16px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .barber-select-option:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .barber-select-option.selected {
+            border-color: var(--lime);
+            background: rgba(195, 227, 33, 0.05);
+        }
+
+        /* Hide single barber elements when in ALL mode */
+        .all-mode .today-summary,
+        .all-mode .premium-actions,
+        .all-mode .calendar-view {
+            display: none !important;
+        }
+
+        .all-mode .all-barbers-view {
+            display: block !important;
+        }
+
+        /* =========================
            PREMIUM ACTION BAR
         ========================= */
         .premium-actions {
@@ -2097,6 +2429,7 @@
                     <label>Επιλέξτε Προφίλ Κομμωτή</label>
                     <select id="barberSelect" required>
                         <option value="">Επιλέξτε το προφίλ σας...</option>
+                        <option value="all">Όλοι οι Κομμωτές</option>
                         <option value="mondi">Mondi</option>
                         <option value="ervin">Ervin</option>
                         <option value="marios">Marios</option>
@@ -2235,6 +2568,109 @@
                 <div class="month-view-container" id="monthViewContainer">
                     <div class="month-grid" id="monthViewGrid"></div>
                 </div>
+            </div>
+
+            <!-- ALL BARBERS VIEW -->
+            <div class="all-barbers-view" id="allBarbersView">
+                <!-- Header with date nav -->
+                <div class="all-view-header">
+                    <div class="all-view-date">
+                        <div class="all-view-nav">
+                            <button class="all-view-nav-btn" onclick="navigateAllView(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        <span class="all-view-date-text" id="allViewDateText">Σήμερα</span>
+                        <div class="all-view-nav">
+                            <button class="all-view-nav-btn" onclick="navigateAllView(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <button class="all-view-nav-btn" onclick="goToTodayAllView()">
+                                <i class="fas fa-calendar-day"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="all-view-actions">
+                        <button class="premium-btn primary" onclick="openAddBookingModalAll()">
+                            <i class="fas fa-plus"></i>
+                            <span>Νέο Ραντεβού</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3 Column Grid -->
+                <div class="all-barbers-grid" id="allBarbersGrid">
+                    <!-- Columns populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+         ADD BOOKING MODAL (ALL VIEW)
+    ========================= -->
+    <div id="addBookingModalAll" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Νέο Ραντεβού</h2>
+                <button class="modal-close" onclick="closeAddBookingModalAll()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Επιλογή Κομμωτή</label>
+                    <div class="barber-select-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+                        <div class="barber-select-option selected" data-barber="mondi" onclick="selectBarberAll('mondi')">
+                            <div class="barber-avatar mondi" style="margin: 0 auto 8px;">M</div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">Mondi</div>
+                        </div>
+                        <div class="barber-select-option" data-barber="ervin" onclick="selectBarberAll('ervin')">
+                            <div class="barber-avatar ervin" style="margin: 0 auto 8px;">E</div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">Ervin</div>
+                        </div>
+                        <div class="barber-select-option" data-barber="marios" onclick="selectBarberAll('marios')">
+                            <div class="barber-avatar marios" style="margin: 0 auto 8px;">M</div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">Marios</div>
+                        </div>
+                    </div>
+                </div>
+                <form id="addBookingFormAll" class="modal-form">
+                    <div class="form-group">
+                        <label>Όνομα Πελάτη *</label>
+                        <input type="text" id="newCustomerNameAll" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Τηλέφωνο *</label>
+                        <input type="tel" id="newCustomerPhoneAll" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Υπηρεσία *</label>
+                        <select id="newServiceAll" required>
+                            <option value="">Επιλέξτε υπηρεσία...</option>
+                            <option value="Haircut">Haircut</option>
+                            <option value="Beard Trim">Beard Trim</option>
+                            <option value="Haircut + Beard">Haircut + Beard</option>
+                            <option value="Hair Color">Hair Color</option>
+                        </select>
+                    </div>
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>Ημερομηνία *</label>
+                            <input type="date" id="newDateAll" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ώρα *</label>
+                            <select id="newTimeAll" required>
+                                <option value="">Επιλέξτε ώρα...</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeAddBookingModalAll()">Ακύρωση</button>
+                <button class="modal-btn modal-btn-primary" onclick="submitBookingAll()">Δημιουργία</button>
             </div>
         </div>
     </div>
@@ -2601,13 +3037,22 @@
         function showDashboard() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
-            document.getElementById('dashboardTitle').textContent = 'Πίνακας Διαχείρισης - ' + BARBERS[currentBarberId].name;
-            document.getElementById('userEmail').textContent = currentUser.email;
 
-            loadBookings();
+            if (currentBarberId === 'all') {
+                // ALL MODE
+                document.getElementById('dashboardTitle').textContent = 'Όλοι οι Κομμωτές';
+                document.querySelector('.dashboard-content').classList.add('all-mode');
+                loadAllBarbersBookings();
+            } else {
+                // SINGLE BARBER MODE
+                document.getElementById('dashboardTitle').textContent = 'Πίνακας Διαχείρισης - ' + BARBERS[currentBarberId].name;
+                document.querySelector('.dashboard-content').classList.remove('all-mode');
+                loadBookings();
+            }
+            document.getElementById('userEmail').textContent = currentUser.email;
         }
 
-        // Load Bookings
+        // Load Bookings (single barber)
         function loadBookings() {
             if (unsubscribeBookings) {
                 unsubscribeBookings();
@@ -2618,6 +3063,203 @@
                 updateTodaySummary();
                 renderCalendar();
             });
+        }
+
+        // =========================
+        // ALL BARBERS VIEW
+        // =========================
+        let allBarbersData = { mondi: [], ervin: [], marios: [] };
+        let allViewDate = new Date();
+        let selectedBarberAll = 'mondi';
+        let unsubscribesAll = [];
+
+        function loadAllBarbersBookings() {
+            // Clear previous listeners
+            unsubscribesAll.forEach(unsub => unsub());
+            unsubscribesAll = [];
+
+            const barberIds = ['mondi', 'ervin', 'marios'];
+            barberIds.forEach(barberId => {
+                const unsub = db.collection('bookings')
+                    .where('barberId', '==', barberId)
+                    .onSnapshot(snapshot => {
+                        allBarbersData[barberId] = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+                        renderAllBarbersView();
+                    });
+                unsubscribesAll.push(unsub);
+            });
+        }
+
+        function renderAllBarbersView() {
+            const dateStr = formatDateLocal(allViewDate);
+            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+            document.getElementById('allViewDateText').textContent = allViewDate.toLocaleDateString('el-GR', dateOptions);
+
+            const barbers = [
+                { id: 'mondi', name: 'Mondi', initial: 'M', color: 'mondi' },
+                { id: 'ervin', name: 'Ervin', initial: 'E', color: 'ervin' },
+                { id: 'marios', name: 'Marios', initial: 'M', color: 'marios' }
+            ];
+
+            const grid = document.getElementById('allBarbersGrid');
+            grid.innerHTML = barbers.map(barber => {
+                const bookings = (allBarbersData[barber.id] || [])
+                    .filter(b => b.date === dateStr && b.status !== 'cancelled')
+                    .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
+
+                const confirmed = bookings.filter(b => b.status === 'confirmed').length;
+                const pending = bookings.filter(b => b.status === 'pending').length;
+                const timeSlots = getTimeSlotsForBarber(barber.id);
+
+                return `
+                    <div class="barber-column">
+                        <div class="barber-column-header">
+                            <div class="barber-column-info">
+                                <div class="barber-avatar ${barber.color}">${barber.initial}</div>
+                                <div class="barber-column-name">${barber.name}</div>
+                            </div>
+                            <div class="barber-column-stats">
+                                <div class="barber-stat">
+                                    <div class="barber-stat-value confirmed">${confirmed}</div>
+                                    <div class="barber-stat-label">Confirmed</div>
+                                </div>
+                                <div class="barber-stat">
+                                    <div class="barber-stat-value pending">${pending}</div>
+                                    <div class="barber-stat-label">Pending</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="barber-timeline">
+                            ${renderBarberTimeline(barber.id, timeSlots, bookings)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderBarberTimeline(barberId, timeSlots, bookings) {
+            return timeSlots.map(time => {
+                const booking = bookings.find(b => b.timeSlot === time);
+
+                if (booking) {
+                    return `
+                        <div class="timeline-slot">
+                            <div class="timeline-time">${time}</div>
+                            <div class="timeline-content">
+                                <div class="timeline-booking status-${booking.status}" onclick="openBookingDetail('${booking.id}')">
+                                    <div class="timeline-booking-header">
+                                        <div class="timeline-booking-name">
+                                            ${booking.customerName}
+                                            ${booking.recurringGroupId ? '<i class="fas fa-redo recurring-icon"></i>' : ''}
+                                        </div>
+                                        <span class="timeline-booking-status status-${booking.status}">
+                                            ${getStatusText(booking.status)}
+                                        </span>
+                                    </div>
+                                    <div class="timeline-booking-details">
+                                        <span><i class="fas fa-cut"></i> ${booking.service}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="timeline-slot">
+                        <div class="timeline-time">${time}</div>
+                        <div class="timeline-content">
+                            <div class="timeline-empty" onclick="openAddBookingModalAllWithSlot('${barberId}', '${time}')">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function navigateAllView(delta) {
+            allViewDate.setDate(allViewDate.getDate() + delta);
+            renderAllBarbersView();
+        }
+
+        function goToTodayAllView() {
+            allViewDate = new Date();
+            renderAllBarbersView();
+        }
+
+        // ALL VIEW Modal Functions
+        function openAddBookingModalAll() {
+            document.getElementById('addBookingModalAll').classList.add('active');
+            document.getElementById('newDateAll').value = formatDateLocal(allViewDate);
+            updateTimeSlotsAll();
+        }
+
+        function openAddBookingModalAllWithSlot(barberId, time) {
+            selectBarberAll(barberId);
+            document.getElementById('addBookingModalAll').classList.add('active');
+            document.getElementById('newDateAll').value = formatDateLocal(allViewDate);
+            updateTimeSlotsAll();
+            setTimeout(() => {
+                document.getElementById('newTimeAll').value = time;
+            }, 100);
+        }
+
+        function closeAddBookingModalAll() {
+            document.getElementById('addBookingModalAll').classList.remove('active');
+            document.getElementById('addBookingFormAll').reset();
+        }
+
+        function selectBarberAll(barberId) {
+            selectedBarberAll = barberId;
+            document.querySelectorAll('.barber-select-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.barber === barberId);
+            });
+            updateTimeSlotsAll();
+        }
+
+        function updateTimeSlotsAll() {
+            const timeSelect = document.getElementById('newTimeAll');
+            const slots = getTimeSlotsForBarber(selectedBarberAll);
+            timeSelect.innerHTML = '<option value="">Επιλέξτε ώρα...</option>' +
+                slots.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        async function submitBookingAll() {
+            const name = document.getElementById('newCustomerNameAll').value.trim();
+            const phone = document.getElementById('newCustomerPhoneAll').value.trim();
+            const service = document.getElementById('newServiceAll').value;
+            const date = document.getElementById('newDateAll').value;
+            const time = document.getElementById('newTimeAll').value;
+
+            if (!name || !phone || !service || !date || !time) {
+                alert('Παρακαλώ συμπληρώστε όλα τα υποχρεωτικά πεδία');
+                return;
+            }
+
+            try {
+                await db.collection('bookings').add({
+                    barberId: selectedBarberAll,
+                    customerName: name,
+                    customerPhone: phone,
+                    customerEmail: '',
+                    service: service,
+                    date: date,
+                    timeSlot: time,
+                    notes: '',
+                    status: 'confirmed',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+
+                closeAddBookingModalAll();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Σφάλμα κατά τη δημιουργία');
+            }
         }
 
         // Update Today's Summary
@@ -3540,7 +4182,15 @@
         // BOOKING DETAIL MODAL
         // =========================
         function openBookingDetail(bookingId) {
-            const booking = allBookings.find(b => b.id === bookingId);
+            // Find booking in either single barber or all barbers data
+            let booking = allBookings.find(b => b.id === bookingId);
+            if (!booking && currentBarberId === 'all') {
+                // Search in all barbers data
+                for (const barberId of ['mondi', 'ervin', 'marios']) {
+                    booking = (allBarbersData[barberId] || []).find(b => b.id === bookingId);
+                    if (booking) break;
+                }
+            }
             if (!booking) return;
 
             const modal = document.getElementById('bookingDetailModal');
