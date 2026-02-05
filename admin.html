@@ -284,53 +284,86 @@
             padding: 24px;
         }
 
-        /* Today's Summary */
+        /* Today's Summary - Premium Glass Card */
         .today-summary {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, rgba(195, 227, 33, 0.1) 0%, rgba(195, 227, 33, 0.05) 100%);
-            border: 1px solid rgba(195, 227, 33, 0.2);
-            border-radius: 16px;
-            padding: 20px 30px;
-            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 24px 32px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .today-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(195, 227, 33, 0.3), transparent);
         }
 
         .summary-date {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 1.2rem;
+            gap: 14px;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: var(--lime);
+            color: var(--text-light);
         }
 
         .summary-date i {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+            color: var(--lime);
+            opacity: 0.9;
         }
 
         .summary-stats {
             display: flex;
-            gap: 40px;
+            gap: 48px;
         }
 
         .summary-stat {
             text-align: center;
+            position: relative;
+        }
+
+        .summary-stat::after {
+            content: '';
+            position: absolute;
+            right: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 30px;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-stat:last-child::after {
+            display: none;
         }
 
         .summary-number {
             display: block;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--text-light);
             line-height: 1;
+            margin-bottom: 4px;
         }
 
         .summary-label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-gray);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
 
         .summary-stat.confirmed .summary-number {
@@ -750,77 +783,87 @@
             display: none;
         }
 
-        /* Calendar Header */
+        /* Calendar Header - Premium */
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 24px;
+            padding: 16px 24px;
+            background: transparent;
         }
 
         .calendar-nav {
             display: flex;
-            gap: 15px;
+            gap: 8px;
             align-items: center;
         }
 
         .calendar-nav-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-gray);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
 
         .calendar-nav-btn:hover {
-            background: var(--lime);
-            color: var(--darker);
-            border-color: var(--lime);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-light);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .calendar-nav-btn:active {
+            transform: scale(0.95);
         }
 
         .calendar-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: var(--text-light);
-            min-width: 250px;
+            min-width: 220px;
             text-align: center;
+            letter-spacing: -0.5px;
         }
 
         .calendar-view-tabs {
             display: flex;
-            gap: 10px;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .calendar-view-tab {
             padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border-radius: 50px;
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            border-radius: 8px;
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
             font-weight: 500;
-            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
         }
 
         .calendar-view-tab.active {
             background: var(--lime);
             color: var(--darker);
-            border-color: var(--lime);
+            box-shadow: 0 2px 8px rgba(195, 227, 33, 0.3);
         }
 
         .calendar-view-tab:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         /* Day View */
@@ -904,7 +947,7 @@
             color: var(--text-gray);
         }
 
-        /* Week View */
+        /* Week View - Premium */
         .week-view-container {
             display: none;
         }
@@ -916,38 +959,56 @@
         .week-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
         .week-day-col {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-height: 500px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 16px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 480px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .week-day-col:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .week-day-col.today {
+            background: rgba(195, 227, 33, 0.03);
+            border-color: rgba(195, 227, 33, 0.15);
         }
 
         .week-day-header {
             text-align: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .week-day-name {
-            font-weight: 700;
-            font-size: 0.9rem;
+            font-weight: 600;
+            font-size: 0.75rem;
             color: var(--text-gray);
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .week-day-date {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--text-light);
         }
 
         .week-day-col.today .week-day-date {
+            color: var(--lime);
+        }
+
+        .week-day-col.today .week-day-name {
             color: var(--lime);
         }
 
@@ -1270,240 +1331,86 @@
         }
 
         /* =========================
-           ACTION BUTTONS
+           PREMIUM ACTION BAR
         ========================= */
-        .action-buttons {
+        .premium-actions {
+            margin-bottom: 24px;
+        }
+
+        .action-group {
             display: flex;
             gap: 12px;
-            margin-bottom: 24px;
             flex-wrap: wrap;
         }
 
-        .add-booking-btn,
-        .edit-schedule-btn,
-        .manage-availability-btn {
-            padding: 10px 20px;
-            background: var(--lime);
-            color: var(--darker);
+        .premium-btn {
+            padding: 12px 24px;
             border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .add-booking-btn:hover,
-        .edit-schedule-btn:hover,
-        .manage-availability-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .edit-schedule-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .edit-schedule-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .manage-availability-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .manage-availability-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        /* =========================
-           QUICK NAVIGATION
-        ========================= */
-        .quick-nav {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .quick-nav-btn {
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .quick-nav-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .quick-nav-btn.active {
-            background: var(--lime);
-            color: var(--darker);
-            border-color: var(--lime);
-        }
-
-        .quick-nav-btn i {
-            font-size: 0.9rem;
-        }
-
-        /* =========================
-           TODAY'S APPOINTMENTS SECTION
-        ========================= */
-        .todays-section {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .todays-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .todays-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--lime);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .todays-count {
-            background: var(--lime);
-            color: var(--darker);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .todays-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .todays-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            border-left: 3px solid var(--lime);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .todays-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateX(3px);
-        }
-
-        .todays-item.status-confirmed {
-            border-left-color: var(--success);
-        }
-
-        .todays-item.status-pending {
-            border-left-color: var(--warning);
-        }
-
-        .todays-item.status-completed {
-            border-left-color: var(--text-gray);
-        }
-
-        .todays-item-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .todays-time {
-            font-weight: 700;
-            color: var(--lime);
-            min-width: 50px;
-        }
-
-        .todays-item.status-confirmed .todays-time {
-            color: var(--success);
-        }
-
-        .todays-item.status-pending .todays-time {
-            color: var(--warning);
-        }
-
-        .todays-info h4 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .todays-info span {
-            font-size: 0.8rem;
-            color: var(--text-gray);
-        }
-
-        .todays-status {
-            padding: 4px 10px;
             border-radius: 12px;
-            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .todays-status.status-confirmed {
-            background: rgba(76, 175, 80, 0.15);
-            color: var(--success);
+        .premium-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
         }
 
-        .todays-status.status-pending {
-            background: rgba(255, 152, 0, 0.15);
-            color: var(--warning);
+        .premium-btn:hover::before {
+            left: 100%;
         }
 
-        .todays-status.status-completed {
-            background: rgba(176, 176, 176, 0.15);
-            color: var(--text-gray);
+        .premium-btn.primary {
+            background: linear-gradient(135deg, var(--lime) 0%, #a8c91d 100%);
+            color: var(--darker);
+            box-shadow: 0 4px 15px rgba(195, 227, 33, 0.3);
         }
 
-        .todays-empty {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-gray);
+        .premium-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(195, 227, 33, 0.4);
         }
 
-        .todays-empty i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            opacity: 0.5;
+        .premium-btn.recurring {
+            background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(171, 71, 188, 0.3);
+        }
+
+        .premium-btn.recurring:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(171, 71, 188, 0.4);
+        }
+
+        .premium-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .premium-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .premium-btn i {
+            font-size: 1rem;
         }
 
         /* =========================
@@ -2262,61 +2169,26 @@
                 </div>
             </div>
 
-            <!-- Quick Navigation -->
-            <div class="quick-nav">
-                <button class="quick-nav-btn active" onclick="quickNavTo('today')">
-                    <i class="fas fa-calendar-day"></i>
-                    <span>Σήμερα</span>
-                </button>
-                <button class="quick-nav-btn" onclick="quickNavTo('tomorrow')">
-                    <i class="fas fa-calendar-plus"></i>
-                    <span>Αύριο</span>
-                </button>
-                <button class="quick-nav-btn" onclick="quickNavTo('week')">
-                    <i class="fas fa-calendar-week"></i>
-                    <span>Εβδομάδα</span>
-                </button>
-                <button class="quick-nav-btn" onclick="showRecurringBookings()">
-                    <i class="fas fa-redo"></i>
-                    <span>Επαναλαμβανόμενα</span>
-                </button>
-            </div>
-
-            <!-- Today's Appointments -->
-            <div class="todays-section" id="todaysSection">
-                <div class="todays-header">
-                    <div class="todays-title">
-                        <i class="fas fa-list"></i>
-                        <span>Σημερινά Ραντεβού</span>
-                    </div>
-                    <span class="todays-count" id="todaysCount">0</span>
+            <!-- Premium Action Bar -->
+            <div class="premium-actions">
+                <div class="action-group">
+                    <button class="premium-btn primary" onclick="openAddBookingModal()">
+                        <i class="fas fa-plus"></i>
+                        <span>Νέο Ραντεβού</span>
+                    </button>
+                    <button class="premium-btn recurring" onclick="openAddRecurringModal()">
+                        <i class="fas fa-redo"></i>
+                        <span>Εβδομαδιαίο</span>
+                    </button>
+                    <button class="premium-btn secondary" onclick="showRecurringBookings()">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Επαναλαμβανόμενα</span>
+                    </button>
+                    <button class="premium-btn secondary" onclick="openManageAvailabilityModal()">
+                        <i class="fas fa-calendar-times"></i>
+                        <span>Άδειες</span>
+                    </button>
                 </div>
-                <div class="todays-list" id="todaysList">
-                    <div class="todays-empty">
-                        <i class="fas fa-calendar-check"></i>
-                        <p>Δεν υπάρχουν ραντεβού για σήμερα</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="add-booking-btn" onclick="openAddBookingModal()">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Νέο Ραντεβού</span>
-                </button>
-                <button class="add-recurring-btn" onclick="openAddRecurringModal()">
-                    <i class="fas fa-redo"></i>
-                    <span>Εβδομαδιαίο Ραντεβού</span>
-                </button>
-                <button class="edit-schedule-btn" onclick="openEditScheduleModal()">
-                    <i class="fas fa-clock"></i>
-                    <span>Ωράριο</span>
-                </button>
-                <button class="manage-availability-btn" onclick="openManageAvailabilityModal()">
-                    <i class="fas fa-calendar-times"></i>
-                    <span>Άδειες</span>
-                </button>
             </div>
 
             <!-- CALENDAR VIEW -->
@@ -2745,7 +2617,6 @@
                 allBookings = bookings;
                 updateTodaySummary();
                 renderCalendar();
-                renderTodaysAppointments();
             });
         }
 
@@ -3482,87 +3353,6 @@
             }
 
             container.innerHTML = html;
-        }
-
-        // =========================
-        // TODAY'S APPOINTMENTS
-        // =========================
-        function renderTodaysAppointments() {
-            const today = formatDateLocal(new Date());
-            const todaysBookings = allBookings.filter(b =>
-                b.date === today && b.status !== 'cancelled'
-            ).sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
-
-            const container = document.getElementById('todaysList');
-            const countEl = document.getElementById('todaysCount');
-
-            // Update count
-            countEl.textContent = todaysBookings.length;
-
-            // Update today's summary counts
-            const todayBookingsCount = document.getElementById('todayBookingsCount');
-            const todayConfirmedCount = document.getElementById('todayConfirmedCount');
-            const todayPendingCount = document.getElementById('todayPendingCount');
-
-            if (todayBookingsCount) {
-                todayBookingsCount.textContent = todaysBookings.length;
-            }
-            if (todayConfirmedCount) {
-                todayConfirmedCount.textContent = todaysBookings.filter(b => b.status === 'confirmed').length;
-            }
-            if (todayPendingCount) {
-                todayPendingCount.textContent = todaysBookings.filter(b => b.status === 'pending').length;
-            }
-
-            if (todaysBookings.length === 0) {
-                container.innerHTML = `
-                    <div class="todays-empty">
-                        <i class="fas fa-calendar-check"></i>
-                        <p>Δεν υπάρχουν ραντεβού για σήμερα</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = todaysBookings.map(booking => `
-                <div class="todays-item status-${booking.status}" onclick="openBookingDetail('${booking.id}')">
-                    <div class="todays-item-left">
-                        <span class="todays-time">${booking.timeSlot}</span>
-                        <div class="todays-info">
-                            <h4>
-                                ${booking.customerName}
-                                ${booking.recurringGroupId ? '<span class="recurring-icon" title="Επαναλαμβανόμενο"><i class="fas fa-redo"></i></span>' : ''}
-                            </h4>
-                            <span>${booking.service}</span>
-                        </div>
-                    </div>
-                    <span class="todays-status status-${booking.status}">${getStatusText(booking.status)}</span>
-                </div>
-            `).join('');
-        }
-
-        // =========================
-        // QUICK NAVIGATION
-        // =========================
-        function quickNavTo(target) {
-            // Update active button
-            document.querySelectorAll('.quick-nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-
-            if (target === 'today') {
-                currentCalendarDate = new Date();
-                switchCalendarView('day');
-            } else if (target === 'tomorrow') {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                currentCalendarDate = tomorrow;
-                switchCalendarView('day');
-            } else if (target === 'week') {
-                currentCalendarDate = new Date();
-                switchCalendarView('week');
-            }
         }
 
         // =========================
