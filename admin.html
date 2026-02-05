@@ -3246,7 +3246,8 @@
             }
 
             try {
-                await db.collection('bookings').add({
+                // Use atomic transaction to prevent double bookings
+                const result = await bookingSystem.createBooking({
                     barberId: selectedBarberAll,
                     customerName: name,
                     customerPhone: phone,
@@ -3254,13 +3255,16 @@
                     service: service,
                     date: date,
                     timeSlot: time,
-                    notes: '',
-                    status: 'confirmed',
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
+                    notes: ''
                 });
 
-                closeAddBookingModalAll();
+                if (result.success) {
+                    closeAddBookingModalAll();
+                    // Refresh the view
+                    loadAllBarbersBookings();
+                } else {
+                    alert(result.message || 'Σφάλμα κατά τη δημιουργία');
+                }
             } catch (error) {
                 console.error('Error:', error);
                 alert('Σφάλμα κατά τη δημιουργία');
