@@ -1222,8 +1222,25 @@
         }
 
         .empty-slot {
-            color: var(--text-gray);
-            opacity: 0.3;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 1rem;
+            height: 50px;
+            border-radius: 10px;
+            border: 1px dashed rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .empty-slot:hover {
+            border-color: rgba(195, 227, 33, 0.4);
+            background: rgba(195, 227, 33, 0.05);
+            color: rgba(195, 227, 33, 0.6);
+        }
+
+        .empty-slot i {
             font-size: 0.9rem;
         }
 
@@ -3309,6 +3326,22 @@
             document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
         }
 
+        // Open Add Booking Modal with pre-selected time slot (for quick add from day view)
+        function openAddBookingModalWithSlot(timeSlot) {
+            document.getElementById('addBookingModal').classList.add('active');
+
+            // Set the date to the currently viewed date
+            const dateStr = formatDateLocal(currentCalendarDate);
+            document.getElementById('newDate').value = dateStr;
+            document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
+
+            // Update time slots dropdown and pre-select the clicked time
+            const timeSelect = document.getElementById('newTime');
+            const timeSlots = getTimeSlotsForBarber(currentBarberId);
+            timeSelect.innerHTML = '<option value="">Επιλέξτε ώρα...</option>' +
+                timeSlots.map(slot => `<option value="${slot}" ${slot === timeSlot ? 'selected' : ''}>${slot}</option>`).join('');
+        }
+
         // Close Add Booking Modal
         function closeAddBookingModal() {
             document.getElementById('addBookingModal').classList.remove('active');
@@ -3809,7 +3842,9 @@
                         <div class="time-label">${timeSlot}</div>
                         <div class="time-slot-content">
                             ${bookingsAtTime.length === 0 ? `
-                                <div class="empty-slot">-</div>
+                                <div class="empty-slot" onclick="openAddBookingModalWithSlot('${timeSlot}')">
+                                    <i class="fas fa-plus"></i>
+                                </div>
                             ` : bookingsAtTime.map(booking => `
                                 <div class="calendar-booking-item status-${booking.status}" onclick="showBookingDetails('${booking.id}')">
                                     <div class="booking-item-header">
