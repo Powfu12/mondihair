@@ -3019,6 +3019,11 @@
 
         // Load Barber Schedule from Firestore
         async function loadBarberSchedule() {
+            // Skip for "all" mode - no single barber schedule needed
+            if (currentBarberId === 'all') {
+                return;
+            }
+
             try {
                 const scheduleDoc = await db.collection('schedules').doc(currentBarberId).get();
                 if (scheduleDoc.exists) {
