@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Book Appointment - Mondi Hairstyle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Κλείστε Ραντεβού - Mondi Hairstyle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,6 +16,7 @@
 
         :root {
             --lime: #c3e321;
+            --lime-dark: #a8c41c;
             --dark: #1a1a1a;
             --darker: #0f0f0f;
             --text-light: #ffffff;
@@ -28,12 +29,13 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--darker);
             color: var(--text-light);
             min-height: 100vh;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            padding-bottom: 20px;
         }
 
         /* Modern Background */
@@ -45,20 +47,21 @@
             right: 0;
             bottom: 0;
             background:
-                radial-gradient(circle at 20% 50%, rgba(195, 227, 33, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(195, 227, 33, 0.03) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, rgba(195, 227, 33, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(195, 227, 33, 0.05) 0%, transparent 50%);
             z-index: -1;
         }
 
         /* Header */
         .header {
-            background: var(--dark);
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            padding: 16px;
+            padding: 14px 16px;
             position: sticky;
             top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
         }
 
         .header-content {
@@ -76,73 +79,81 @@
             align-items: center;
             gap: 8px;
             font-size: 14px;
+            font-weight: 600;
             transition: color 0.2s;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: var(--card-bg);
         }
 
-        .back-btn:hover {
-            color: var(--lime);
+        .back-btn:active {
+            transform: scale(0.95);
         }
 
         .lang-switch {
             display: flex;
             gap: 4px;
             background: var(--card-bg);
-            border-radius: 8px;
+            border-radius: 25px;
             padding: 4px;
+            border: 1px solid var(--border);
         }
 
         .lang-btn {
             background: transparent;
             border: none;
             color: var(--text-gray);
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
         }
 
         .lang-btn.active {
             background: var(--lime);
             color: var(--dark);
+            box-shadow: 0 2px 10px rgba(195, 227, 33, 0.3);
         }
 
         /* Container */
         .container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 16px 12px;
+            padding: 20px 16px;
         }
 
         /* Title */
         .page-title {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .page-title h1 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 6px;
+            font-size: clamp(24px, 6vw, 28px);
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--lime);
         }
 
         .page-title p {
             color: var(--text-gray);
-            font-size: 13px;
+            font-size: clamp(14px, 3vw, 15px);
         }
 
         /* Progress Dots */
         .progress {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 24px;
+            gap: 10px;
+            margin-bottom: 28px;
         }
 
         .progress-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: var(--border);
             transition: all 0.3s;
@@ -150,94 +161,165 @@
 
         .progress-dot.active {
             background: var(--lime);
-            width: 24px;
-            border-radius: 4px;
+            width: 28px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(195, 227, 33, 0.5);
         }
 
         /* Card */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
+            font-size: clamp(18px, 4vw, 20px);
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--lime);
         }
 
-        /* Barber Grid */
+        /* ===========================
+           BARBER SELECTION - ENHANCED
+        =========================== */
         .barber-grid {
             display: grid;
-            gap: 12px;
+            gap: 16px;
         }
 
         .barber-item {
             background: rgba(255, 255, 255, 0.02);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
+            border: 3px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .barber-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--lime), var(--lime-dark));
+            transform: scaleX(0);
+            transition: transform 0.3s;
         }
 
         .barber-item:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .barber-item.selected {
             border-color: var(--lime);
-            background: rgba(195, 227, 33, 0.05);
+            background: rgba(195, 227, 33, 0.08);
+            box-shadow: 0 0 20px rgba(195, 227, 33, 0.2);
         }
 
-        .barber-icon {
-            width: 48px;
-            height: 48px;
+        .barber-item.selected::before {
+            transform: scaleX(1);
+        }
+
+        .barber-photo {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            background: var(--lime);
-            color: var(--dark);
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 3px solid var(--lime);
+            background: linear-gradient(135deg, var(--dark) 0%, var(--lime) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
+            font-size: 32px;
+            color: var(--darker);
+            position: relative;
+        }
+
+        .barber-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .barber-info {
+            flex: 1;
         }
 
         .barber-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-size: clamp(18px, 4vw, 20px);
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-light);
         }
 
         .barber-info p {
-            font-size: 13px;
+            font-size: clamp(13px, 3vw, 14px);
             color: var(--text-gray);
+            line-height: 1.5;
+        }
+
+        .barber-badge {
+            display: inline-block;
+            background: rgba(195, 227, 33, 0.15);
+            color: var(--lime);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Service Grid */
         .service-item {
             background: rgba(255, 255, 255, 0.02);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
+            border: 3px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 12px;
+            transition: all 0.3s;
+            margin-bottom: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--lime), var(--lime-dark));
+            transform: scaleX(0);
+            transition: transform 0.3s;
         }
 
         .service-item:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .service-item.selected {
             border-color: var(--lime);
-            background: rgba(195, 227, 33, 0.05);
+            background: rgba(195, 227, 33, 0.08);
+            box-shadow: 0 0 20px rgba(195, 227, 33, 0.2);
+        }
+
+        .service-item.selected::before {
+            transform: scaleX(1);
         }
 
         .service-header {
@@ -248,53 +330,60 @@
         }
 
         .service-name {
-            font-size: 15px;
-            font-weight: 600;
+            font-size: clamp(16px, 4vw, 17px);
+            font-weight: 700;
+            color: var(--text-light);
         }
 
         .service-price {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: clamp(20px, 5vw, 22px);
+            font-weight: 800;
             color: var(--lime);
+            white-space: nowrap;
+            margin-left: 12px;
         }
 
         .service-desc {
-            font-size: 13px;
+            font-size: clamp(13px, 3vw, 14px);
             color: var(--text-gray);
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
-        /* Calendar */
+        /* ===========================
+           CALENDAR - MOBILE OPTIMIZED
+        =========================== */
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            padding: 0 4px;
         }
 
         .calendar-month {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: clamp(16px, 4vw, 18px);
+            font-weight: 700;
+            color: var(--lime);
         }
 
         .calendar-nav {
             display: flex;
-            gap: 6px;
+            gap: 8px;
         }
 
         .calendar-nav-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border);
             color: var(--text-light);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 12px;
+            font-size: 14px;
         }
 
         .calendar-nav-btn:disabled {
@@ -303,139 +392,162 @@
         }
 
         .calendar-nav-btn:not(:disabled):active {
-            transform: scale(0.95);
+            transform: scale(0.9);
+            background: rgba(195, 227, 33, 0.1);
         }
 
         .weekdays {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 3px;
-            margin-bottom: 6px;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 4px;
+            margin-bottom: 8px;
+            padding: 0;
         }
 
         .weekday {
             text-align: center;
-            font-size: 10px;
-            font-weight: 600;
+            font-size: clamp(11px, 2.5vw, 12px);
+            font-weight: 700;
             color: var(--text-gray);
-            padding: 4px 0;
+            padding: 8px 0;
+            text-transform: uppercase;
         }
 
         .calendar-days {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 3px;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 4px;
+            padding: 0;
         }
 
         .calendar-day {
             aspect-ratio: 1;
-            border-radius: 6px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
-            font-weight: 500;
+            font-size: clamp(13px, 3.2vw, 16px);
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.15s;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1.5px solid transparent;
-            min-height: 42px;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid transparent;
+            min-height: 48px;
+            min-width: 0;
+            position: relative;
         }
 
         .calendar-day.empty {
             cursor: default;
             background: transparent;
+            border: none;
         }
 
         .calendar-day.past {
-            opacity: 0.3;
+            opacity: 0.25;
             cursor: not-allowed;
         }
 
         .calendar-day.closed {
-            opacity: 0.4;
-            background: rgba(239, 68, 68, 0.1);
+            opacity: 0.3;
+            background: rgba(239, 68, 68, 0.08);
             cursor: not-allowed;
+            text-decoration: line-through;
         }
 
         .calendar-day.available {
-            border-color: rgba(16, 185, 129, 0.3);
-            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.06);
         }
 
         .calendar-day.busy {
-            border-color: rgba(245, 158, 11, 0.3);
-            background: rgba(245, 158, 11, 0.05);
+            border-color: rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.06);
         }
 
         .calendar-day.full {
-            opacity: 0.4;
-            background: rgba(239, 68, 68, 0.1);
+            opacity: 0.35;
+            background: rgba(239, 68, 68, 0.08);
             cursor: not-allowed;
         }
 
         .calendar-day.selected {
-            background: var(--lime);
-            border-color: var(--lime);
-            color: var(--dark);
+            background: var(--lime) !important;
+            border-color: var(--lime) !important;
+            color: var(--dark) !important;
+            box-shadow: 0 0 15px rgba(195, 227, 33, 0.4);
+            transform: scale(1.05);
         }
 
         .calendar-day:not(.empty):not(.past):not(.full):not(.closed):active {
-            transform: scale(0.95);
+            transform: scale(0.92);
         }
 
         .day-number {
-            font-size: 13px;
-            font-weight: 600;
+            font-size: clamp(14px, 3.5vw, 16px);
+            font-weight: 700;
         }
 
-        .day-status {
-            font-size: 8px;
-            margin-top: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        /* Time Slots */
+        /* ===========================
+           TIME SLOTS - IMPROVED
+        =========================== */
         .time-slots {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 10px;
             margin-top: 16px;
         }
 
         .time-slot {
-            padding: 12px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.02);
+            padding: 16px 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
             border: 2px solid var(--border);
             text-align: center;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: clamp(15px, 3.5vw, 16px);
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-slot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--lime);
+            transform: scaleX(0);
+            transition: transform 0.3s;
         }
 
         .time-slot:active {
-            transform: scale(0.95);
+            transform: scale(0.93);
         }
 
         .time-slot.selected {
             background: var(--lime);
             border-color: var(--lime);
             color: var(--dark);
+            box-shadow: 0 4px 15px rgba(195, 227, 33, 0.3);
         }
 
-        /* Input */
+        .time-slot.selected::before {
+            transform: scaleX(1);
+        }
+
+        /* Input Fields */
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .input-label {
             display: block;
-            font-size: 13px;
+            font-size: clamp(13px, 3vw, 14px);
             font-weight: 600;
             margin-bottom: 8px;
             color: var(--text-gray);
@@ -443,23 +555,26 @@
 
         .input-field {
             width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border);
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border);
             color: var(--text-light);
             font-size: 16px;
-            font-family: inherit;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s;
         }
 
         .input-field:focus {
             outline: none;
             border-color: var(--lime);
+            background: rgba(195, 227, 33, 0.05);
         }
 
         textarea.input-field {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
         }
 
         /* Buttons */
@@ -471,45 +586,53 @@
 
         .btn {
             flex: 1;
-            padding: 14px 24px;
-            border-radius: 10px;
+            padding: 16px 24px;
+            border-radius: 12px;
             border: none;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: clamp(15px, 4vw, 16px);
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
         }
 
         .btn-primary {
             background: var(--lime);
             color: var(--dark);
+            box-shadow: 0 4px 20px rgba(195, 227, 33, 0.3);
+        }
+
+        .btn-primary:active {
+            box-shadow: 0 2px 10px rgba(195, 227, 33, 0.3);
         }
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-light);
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
         }
 
         /* Loading */
         .loading {
             text-align: center;
-            padding: 40px;
+            padding: 30px;
             color: var(--text-gray);
         }
 
         .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(195, 227, 33, 0.3);
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(195, 227, 33, 0.2);
             border-top-color: var(--lime);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -520,41 +643,49 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Success */
+        /* Success Screen */
         .success-screen {
             text-align: center;
             padding: 40px 20px;
         }
 
         .success-icon {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 129, 0.15);
             color: var(--success);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
+            font-size: 50px;
             margin: 0 auto 24px;
+            animation: successPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes successPop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .success-title {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: clamp(24px, 6vw, 28px);
+            font-weight: 800;
             margin-bottom: 12px;
+            color: var(--lime);
         }
 
         .success-desc {
             color: var(--text-gray);
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            font-size: clamp(14px, 3.5vw, 15px);
         }
 
         .booking-summary {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
             margin-top: 24px;
             text-align: left;
         }
@@ -562,8 +693,9 @@
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
+            padding: 14px 0;
             border-bottom: 1px solid var(--border);
+            gap: 16px;
         }
 
         .summary-row:last-child {
@@ -572,39 +704,37 @@
 
         .summary-label {
             color: var(--text-gray);
-            font-size: 14px;
+            font-size: clamp(14px, 3.5vw, 15px);
+            font-weight: 500;
         }
 
         .summary-value {
-            font-weight: 600;
-            font-size: 14px;
+            font-weight: 700;
+            font-size: clamp(14px, 3.5vw, 15px);
+            text-align: right;
+            color: var(--lime);
         }
 
         /* Hide/Show */
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         /* Alert */
         .alert {
-            padding: 10px 12px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            font-size: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: clamp(13px, 3vw, 14px);
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .alert-warning {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: var(--warning);
+            gap: 10px;
+            font-weight: 500;
         }
 
         .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(59, 130, 246, 0.12);
+            border: 2px solid rgba(59, 130, 246, 0.3);
             color: #60a5fa;
         }
 
@@ -612,22 +742,23 @@
         .legend {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 14px;
             flex-wrap: wrap;
-            margin-top: 12px;
-            font-size: 10px;
+            margin-top: 16px;
+            font-size: clamp(11px, 2.5vw, 12px);
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             color: var(--text-gray);
+            font-weight: 600;
         }
 
         .legend-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
         }
 
@@ -643,326 +774,80 @@
             background: var(--danger);
         }
 
-        /* ===========================
-           MOBILE RESPONSIVE DESIGN
-        =========================== */
-
-        /* Small phones (320px - 374px) */
-        @media (max-width: 374px) {
+        /* Mobile Responsive */
+        @media (max-width: 360px) {
             .container {
-                padding: 12px 8px;
-            }
-
-            .page-title h1 {
-                font-size: 20px;
-            }
-
-            .page-title p {
-                font-size: 12px;
+                padding: 16px 10px;
             }
 
             .card {
-                padding: 12px;
+                padding: 14px;
             }
 
-            .card-title {
-                font-size: 15px;
+            .calendar-days {
+                gap: 2px;
             }
 
-            .barber-item {
-                padding: 12px;
-                gap: 10px;
-            }
-
-            .barber-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-
-            .barber-info h3 {
-                font-size: 14px;
-            }
-
-            .barber-info p {
-                font-size: 11px;
-            }
-
-            .service-item {
-                padding: 12px;
-            }
-
-            .service-name {
-                font-size: 14px;
-            }
-
-            .service-price {
-                font-size: 16px;
-            }
-
-            .service-desc {
+            .calendar-day {
+                min-height: 34px;
                 font-size: 12px;
+                border-radius: 6px;
+            }
+
+            .weekday {
+                font-size: 10px;
+                padding: 6px 0;
+            }
+
+            .barber-photo {
+                width: 65px;
+                height: 65px;
+                font-size: 26px;
             }
 
             .time-slots {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-            }
-
-            .time-slot {
-                padding: 10px;
-                font-size: 13px;
-            }
-
-            .calendar-day {
-                min-height: 38px;
-                font-size: 12px;
-            }
-
-            .day-number {
-                font-size: 12px;
-            }
-
-            .day-status {
-                font-size: 7px;
-            }
-
-            .btn-group {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .btn {
-                padding: 12px 20px;
-                font-size: 14px;
-            }
-
-            .input-field {
-                font-size: 16px; /* Prevent iOS zoom */
-                padding: 10px 14px;
-            }
-
-            .summary-row {
-                flex-direction: column;
-                gap: 4px;
-                padding: 10px 0;
-            }
-
-            .summary-label,
-            .summary-value {
-                font-size: 13px;
+                gap: 8px;
             }
         }
 
-        /* Standard phones (375px - 479px) */
-        @media (min-width: 375px) and (max-width: 479px) {
-            .container {
-                padding: 14px 10px;
-            }
-
-            .time-slots {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .calendar-day {
-                min-height: 40px;
-            }
-        }
-
-        /* Large phones / Small tablets (480px - 599px) */
-        @media (min-width: 480px) and (max-width: 599px) {
+        @media (max-width: 374px) {
             .container {
                 padding: 16px 12px;
-                max-width: 500px;
             }
 
-            .time-slots {
-                grid-template-columns: repeat(4, 1fr);
+            .card {
+                padding: 16px;
             }
 
-            .barber-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Tablets and up (600px+) */
-        @media (min-width: 600px) {
-            .container {
-                padding: 24px 16px;
-            }
-
-            .page-title h1 {
+            .barber-photo {
+                width: 70px;
+                height: 70px;
                 font-size: 28px;
             }
 
-            .page-title p {
-                font-size: 15px;
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            .card {
-                padding: 24px;
+            .calendar-days {
+                gap: 3px;
             }
 
-            .card-title {
-                font-size: 18px;
+            .calendar-day {
+                min-height: 44px;
+                border-radius: 8px;
+                font-size: clamp(12px, 3vw, 14px);
+            }
+        }
+
+        @media (min-width: 600px) {
+            .time-slots {
+                grid-template-columns: repeat(4, 1fr);
             }
 
             .barber-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-
-            .time-slots {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 10px;
-            }
-
-            .btn-group {
-                gap: 16px;
-            }
-
-            .calendar-day {
-                min-height: 48px;
-                font-size: 14px;
-            }
-        }
-
-        /* Large tablets / Small desktops (768px+) */
-        @media (min-width: 768px) {
-            .time-slots {
-                grid-template-columns: repeat(5, 1fr);
-            }
-
-            .barber-item {
-                padding: 20px;
-            }
-
-            .service-item {
-                padding: 20px;
-            }
-        }
-
-        /* Landscape orientation adjustments */
-        @media (max-height: 600px) and (orientation: landscape) {
-            .container {
-                padding: 12px;
-            }
-
-            .page-title {
-                margin-bottom: 12px;
-            }
-
-            .card {
-                padding: 12px;
-                margin-bottom: 12px;
-            }
-
-            .success-screen {
-                padding: 20px;
-            }
-
-            .success-icon {
-                width: 60px;
-                height: 60px;
-                font-size: 30px;
-                margin-bottom: 16px;
-            }
-
-            .success-title {
-                font-size: 20px;
-            }
-        }
-
-        /* Touch-specific improvements */
-        @media (hover: none) and (pointer: coarse) {
-            /* Larger touch targets for mobile */
-            .barber-item,
-            .service-item,
-            .calendar-day:not(.empty):not(.past):not(.full):not(.closed),
-            .time-slot,
-            .btn {
-                min-height: 44px; /* iOS recommended touch target */
-            }
-
-            .calendar-nav-btn {
-                width: 36px;
-                height: 36px;
-            }
-
-            /* Remove hover effects on touch devices */
-            .back-btn:hover {
-                color: var(--text-gray);
-            }
-
-            /* Better active states for touch */
-            .barber-item:active {
-                transform: scale(0.97);
-                opacity: 0.8;
-            }
-
-            .service-item:active {
-                transform: scale(0.97);
-                opacity: 0.8;
-            }
-
-            .calendar-day:not(.empty):not(.past):not(.full):not(.closed):active {
-                transform: scale(0.93);
-            }
-
-            .time-slot:active {
-                transform: scale(0.93);
-            }
-
-            .btn:active {
-                transform: scale(0.96);
-            }
-        }
-
-        /* High DPI screens (Retina) */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .calendar-day,
-            .time-slot,
-            .barber-item,
-            .service-item {
-                border-width: 1.5px;
-            }
-        }
-
-        /* Dark mode support (in case user prefers dark) */
-        @media (prefers-color-scheme: dark) {
-            /* Already dark by default, but ensuring consistency */
-            body {
-                background: var(--darker);
-            }
-        }
-
-        /* Reduce motion for accessibility */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-
-            .spinner {
-                animation: none;
-                border-top-color: var(--lime);
-            }
-        }
-
-        /* Print styles */
-        @media print {
-            .header,
-            .progress,
-            .btn-group {
-                display: none;
-            }
-
-            .container {
-                max-width: 100%;
-            }
-
-            body::before {
-                display: none;
             }
         }
     </style>
@@ -973,11 +858,11 @@
         <div class="header-content">
             <a href="index.html" class="back-btn">
                 <i class="fas fa-arrow-left"></i>
-                <span>Back</span>
+                <span>Πίσω</span>
             </a>
             <div class="lang-switch">
-                <button class="lang-btn active" onclick="switchLang('en')">EN</button>
-                <button class="lang-btn" onclick="switchLang('el')">ΕΛ</button>
+                <button class="lang-btn" onclick="switchLang('en')">EN</button>
+                <button class="lang-btn active" onclick="switchLang('el')">ΕΛ</button>
             </div>
         </div>
     </div>
@@ -1001,33 +886,32 @@
         <!-- Step 1: Select Barber -->
         <div id="step1" class="step">
             <div class="card">
-                <h2 class="card-title">Επιλέξτε Κομμωτή</h2>
+                <h2 class="card-title">
+                    <i class="fas fa-user-tie"></i> Επιλέξτε Κομμωτή
+                </h2>
                 <div class="barber-grid">
                     <div class="barber-item" onclick="selectBarber('mondi')">
-                        <div class="barber-icon">
-                            <i class="fas fa-user-tie"></i>
+                        <div class="barber-photo">
+                            <img src="mondi.jpg" alt="Mondi" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
                         </div>
                         <div class="barber-info">
                             <h3>Mondi</h3>
-                            <p>Μαστρο Κομμωτής • 20λ διαστήματα</p>
                         </div>
                     </div>
                     <div class="barber-item" onclick="selectBarber('ervin')">
-                        <div class="barber-icon">
-                            <i class="fas fa-user-tie"></i>
+                        <div class="barber-photo">
+                            <img src="ervin.jpg" alt="Ervin" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
                         </div>
                         <div class="barber-info">
                             <h3>Ervin</h3>
-                            <p>Έμπειρος Κομμωτής • 30λ διαστήματα</p>
                         </div>
                     </div>
                     <div class="barber-item" onclick="selectBarber('marios')">
-                        <div class="barber-icon">
-                            <i class="fas fa-user-tie"></i>
+                        <div class="barber-photo">
+                            <img src="mario.jpg" alt="Marios" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user-tie\'></i>'">
                         </div>
                         <div class="barber-info">
                             <h3>Marios</h3>
-                            <p>Κομμωτής Στυλίστας • 30λ διαστήματα</p>
                         </div>
                     </div>
                 </div>
@@ -1042,35 +926,33 @@
         <!-- Step 2: Select Service -->
         <div id="step2" class="step hidden">
             <div class="card">
-                <h2 class="card-title">Επιλέξτε Υπηρεσία</h2>
+                <h2 class="card-title">
+                    <i class="fas fa-cut"></i> Επιλέξτε Υπηρεσία
+                </h2>
                 <div class="service-grid">
                     <div class="service-item" onclick="selectService('Haircut')">
                         <div class="service-header">
                             <div class="service-name">Κούρεμα</div>
                             <div class="service-price">€13</div>
                         </div>
-                        <div class="service-desc">Παραδοσιακό κούρεμα με σύγχρονη ακρίβεια</div>
                     </div>
                     <div class="service-item" onclick="selectService('Haircut + Beard')">
                         <div class="service-header">
                             <div class="service-name">Κούρεμα + Γένια</div>
                             <div class="service-price">€15</div>
                         </div>
-                        <div class="service-desc">Πλήρης υπηρεσία κουρέματος και περιποίησης γενιών</div>
                     </div>
                     <div class="service-item" onclick="selectService('Beard Trim & Shape')">
                         <div class="service-header">
                             <div class="service-name">Περιποίηση Γενιών</div>
-                            <div class="service-price">€10</div>
+                            <div class="service-price">€7</div>
                         </div>
-                        <div class="service-desc">Επαγγελματική περιποίηση γενιών με στυλ</div>
                     </div>
                     <div class="service-item" onclick="selectService('Haircut + Beard + Wash + Styling')">
                         <div class="service-header">
                             <div class="service-name">Πλήρες Πακέτο</div>
                             <div class="service-price">€20</div>
                         </div>
-                        <div class="service-desc">Πλήρες πακέτο περιποίησης - Το πιο δημοφιλές!</div>
                     </div>
                 </div>
             </div>
@@ -1087,7 +969,9 @@
         <!-- Step 3: Select Date & Time -->
         <div id="step3" class="step hidden">
             <div class="card">
-                <h2 class="card-title">Επιλέξτε Ημερομηνία</h2>
+                <h2 class="card-title">
+                    <i class="fas fa-calendar-alt"></i> Επιλέξτε Ημερομηνία
+                </h2>
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
                     <span>Διαθέσιμα ραντεβού για τις επόμενες 30 ημέρες</span>
@@ -1106,13 +990,13 @@
                 </div>
 
                 <div class="weekdays">
-                    <div class="weekday">Κ</div>
-                    <div class="weekday">Δ</div>
-                    <div class="weekday">Τ</div>
-                    <div class="weekday">Τ</div>
-                    <div class="weekday">Π</div>
-                    <div class="weekday">Π</div>
-                    <div class="weekday">Σ</div>
+                    <div class="weekday">ΚΥΡ</div>
+                    <div class="weekday">ΔΕΥ</div>
+                    <div class="weekday">ΤΡΙ</div>
+                    <div class="weekday">ΤΕΤ</div>
+                    <div class="weekday">ΠΕΜ</div>
+                    <div class="weekday">ΠΑΡ</div>
+                    <div class="weekday">ΣΑΒ</div>
                 </div>
 
                 <div id="loadingCalendar" class="loading hidden">
@@ -1139,7 +1023,9 @@
             </div>
 
             <div id="timeSlotsCard" class="card hidden">
-                <h2 class="card-title">Επιλέξτε Ώρα</h2>
+                <h2 class="card-title">
+                    <i class="fas fa-clock"></i> Επιλέξτε Ώρα
+                </h2>
                 <div id="loadingSlots" class="loading hidden">
                     <div class="spinner"></div>
                     <div>Φόρτωση ωρών...</div>
@@ -1160,14 +1046,16 @@
         <!-- Step 4: Contact Details -->
         <div id="step4" class="step hidden">
             <div class="card">
-                <h2 class="card-title">Τα Στοιχεία σας</h2>
+                <h2 class="card-title">
+                    <i class="fas fa-user"></i> Τα Στοιχεία σας
+                </h2>
                 <div class="input-group">
                     <label class="input-label">Ονοματεπώνυμο *</label>
                     <input type="text" class="input-field" id="customerName" placeholder="Γιάννης Παπαδόπουλος" required>
                 </div>
                 <div class="input-group">
                     <label class="input-label">Τηλέφωνο *</label>
-                    <input type="tel" class="input-field" id="customerPhone" placeholder="+357 99 123456" required>
+                    <input type="tel" class="input-field" id="customerPhone" placeholder="+30 69 12345678" required>
                 </div>
                 <div class="input-group">
                     <label class="input-label">Email (Προαιρετικό)</label>
@@ -1183,7 +1071,7 @@
                     <i class="fas fa-arrow-left"></i> Πίσω
                 </button>
                 <button class="btn btn-primary" onclick="submitBooking()">
-                    <i class="fas fa-check"></i> Επιβεβαίωση Ραντεβού
+                    <i class="fas fa-check-circle"></i> Επιβεβαίωση
                 </button>
             </div>
         </div>
@@ -1192,7 +1080,7 @@
         <div id="step5" class="step hidden">
             <div class="success-screen">
                 <div class="success-icon">
-                    <i class="fas fa-check"></i>
+                    <i class="fas fa-check-circle"></i>
                 </div>
                 <h2 class="success-title">Το Ραντεβού Επιβεβαιώθηκε!</h2>
                 <p class="success-desc">Το ραντεβού σας έχει κλειστεί με επιτυχία. Σας περιμένουμε!</p>
@@ -1201,7 +1089,7 @@
 
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="location.reload()">
-                        Κλείστε Άλλο Ραντεβού
+                        <i class="fas fa-plus-circle"></i> Κλείστε Άλλο Ραντεβού
                     </button>
                 </div>
             </div>
@@ -1212,8 +1100,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="js/firebase-config.js?v=30"></script>
-    <script src="js/booking-system.js?v=30"></script>
+    <script src="js/firebase-config.js?v=31"></script>
+    <script src="js/booking-system.js?v=31"></script>
 
     <script>
         let currentStep = 1;
@@ -1223,10 +1111,10 @@
         let selectedTime = null;
         let currentMonth = new Date();
         let availability = {};
-        let slotsCache = {}; // Cache for time slots
-        let currentLang = 'el'; // Greek as default
+        let slotsCache = {};
+        let currentLang = 'el';
+        let slotsRefreshInterval = null;
 
-        // Helper function to format date in local timezone (not UTC)
         function formatDateLocal(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -1234,7 +1122,6 @@
             return `${year}-${month}-${day}`;
         }
 
-        // Translations
         const translations = {
             el: {
                 pageTitle: 'Κλείστε το Ραντεβού σας',
@@ -1250,14 +1137,12 @@
                 specialRequests: 'Ειδικές Απαιτήσεις (Προαιρετικό)',
                 next: 'Επόμενο',
                 back: 'Πίσω',
-                confirmBooking: 'Επιβεβαίωση Ραντεβού',
+                confirmBooking: 'Επιβεβαίωση',
                 bookAnother: 'Κλείστε Άλλο Ραντεβού',
-                bookingAvailable30Days: 'Διαθέσιμα ραντεβού για τις επόμενες 30 ημέρες',
                 selectTime: 'Επιλέξτε Ώρα',
                 available: 'Διαθέσιμο',
                 busy: 'Πολυάσχολο',
                 full: 'Πλήρες',
-                closed: 'Κλειστά',
                 barber: 'Κομμωτής',
                 service: 'Υπηρεσία',
                 dateTime: 'Ημερομηνία & Ώρα',
@@ -1272,15 +1157,8 @@
                 errorLoadingSlots: 'Σφάλμα φόρτωσης ωρών. Παρακαλώ προσπαθήστε ξανά.',
                 loadingAvailability: 'Φόρτωση διαθεσιμότητας...',
                 loadingSlots: 'Φόρτωση ωρών...',
-                back: 'Πίσω',
-                masterBarber: 'Μαστρο Κομμωτής',
-                seniorBarber: 'Έμπειρος Κομμωτής',
-                barberStylist: 'Κομμωτής Στυλίστας',
-                slots20min: '20λ διαστήματα',
-                slots30min: '30λ διαστήματα',
                 months: ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'],
-                weekdays: ['Κ', 'Δ', 'Τ', 'Τ', 'Π', 'Π', 'Σ'],
-                weekdaysFull: ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο']
+                weekdays: ['ΚΥΡ', 'ΔΕΥ', 'ΤΡΙ', 'ΤΕΤ', 'ΠΕΜ', 'ΠΑΡ', 'ΣΑΒ']
             },
             en: {
                 pageTitle: 'Book Your Appointment',
@@ -1296,14 +1174,12 @@
                 specialRequests: 'Special Requests (Optional)',
                 next: 'Next',
                 back: 'Back',
-                confirmBooking: 'Confirm Booking',
+                confirmBooking: 'Confirm',
                 bookAnother: 'Book Another Appointment',
-                bookingAvailable30Days: 'Bookings available for the next 30 days',
                 selectTime: 'Select Time',
                 available: 'Available',
                 busy: 'Busy',
                 full: 'Full',
-                closed: 'Closed',
                 barber: 'Barber',
                 service: 'Service',
                 dateTime: 'Date & Time',
@@ -1318,14 +1194,8 @@
                 errorLoadingSlots: 'Error loading time slots. Please try again.',
                 loadingAvailability: 'Loading availability...',
                 loadingSlots: 'Loading time slots...',
-                masterBarber: 'Master Barber',
-                seniorBarber: 'Senior Barber',
-                barberStylist: 'Barber Stylist',
-                slots20min: '20min slots',
-                slots30min: '30min slots',
                 months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                weekdays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-                weekdaysFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+                weekdays: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
             }
         };
 
@@ -1333,78 +1203,29 @@
             return translations[currentLang][key] || key;
         }
 
-        // Language switch
         function switchLang(lang) {
             currentLang = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.textContent === (lang === 'el' ? 'ΕΛ' : 'EN')) {
-                    btn.classList.add('active');
-                }
             });
+            event.target.classList.add('active');
             updateLanguage();
         }
 
         function updateLanguage() {
-            // Update page title
             document.querySelector('.page-title h1').textContent = t('pageTitle');
             document.querySelector('.page-title p').textContent = t('pageSubtitle');
-
-            // Update step titles
-            document.querySelectorAll('.card-title')[0].textContent = t('selectBarber');
-            document.querySelectorAll('.card-title')[1].textContent = t('selectService');
-            document.querySelectorAll('.card-title')[2].textContent = t('selectDateTime');
-            document.querySelectorAll('.card-title')[3].textContent = t('yourDetails');
-
-            // Update buttons
-            document.querySelectorAll('.btn-primary').forEach(btn => {
-                if (btn.textContent.includes('Next') || btn.textContent.includes('Επόμενο')) {
-                    btn.innerHTML = `${t('next')} <i class="fas fa-arrow-right"></i>`;
-                } else if (btn.textContent.includes('Confirm') || btn.textContent.includes('Επιβεβαίωση')) {
-                    btn.innerHTML = `<i class="fas fa-check"></i> ${t('confirmBooking')}`;
-                } else if (btn.textContent.includes('Another') || btn.textContent.includes('Άλλο')) {
-                    btn.textContent = t('bookAnother');
-                }
-            });
-
-            document.querySelectorAll('.btn-secondary').forEach(btn => {
-                btn.innerHTML = `<i class="fas fa-arrow-left"></i> ${t('back')}`;
-            });
-
-            // Update alert
-            document.querySelector('.alert-info span').textContent = t('bookingAvailable30Days');
-
-            // Update input labels
-            document.querySelectorAll('.input-label')[0].textContent = t('fullName') + ' *';
-            document.querySelectorAll('.input-label')[1].textContent = t('phoneNumber') + ' *';
-            document.querySelectorAll('.input-label')[2].textContent = t('email');
-            document.querySelectorAll('.input-label')[3].textContent = t('specialRequests');
-
-            // Update legend
-            document.querySelectorAll('.legend-item span')[0].textContent = t('available');
-            document.querySelectorAll('.legend-item span')[1].textContent = t('busy');
-            document.querySelectorAll('.legend-item span')[2].textContent = t('full');
-
-            // Update success screen
-            document.querySelector('.success-title').textContent = t('bookingConfirmed');
-            document.querySelector('.success-desc').textContent = t('successMessage');
-
-            // Update weekdays
             const weekdayElements = document.querySelectorAll('.weekday');
             t('weekdays').forEach((day, i) => {
                 if (weekdayElements[i]) weekdayElements[i].textContent = day;
             });
-
-            // Re-render calendar if visible
             if (!document.getElementById('step3').classList.contains('hidden')) {
                 renderCalendar();
             }
         }
 
-        // Select Barber
         function selectBarber(barber) {
             selectedBarber = barber;
-            // Clear cache when switching barbers to prevent stale data
             slotsCache = {};
             availability = {};
             document.querySelectorAll('.barber-item').forEach(item => {
@@ -1413,7 +1234,6 @@
             event.currentTarget.classList.add('selected');
         }
 
-        // Select Service
         function selectService(service) {
             selectedService = service;
             document.querySelectorAll('.service-item').forEach(item => {
@@ -1422,7 +1242,6 @@
             event.currentTarget.classList.add('selected');
         }
 
-        // Navigation
         function nextStep() {
             if (currentStep === 1 && !selectedBarber) {
                 alert(t('pleaseSelectBarber'));
@@ -1435,6 +1254,12 @@
             if (currentStep === 3 && (!selectedDate || !selectedTime)) {
                 alert(t('pleaseSelectDateTime'));
                 return;
+            }
+
+            // Clear refresh interval when leaving step 3
+            if (currentStep === 3 && slotsRefreshInterval) {
+                clearInterval(slotsRefreshInterval);
+                slotsRefreshInterval = null;
             }
 
             document.getElementById(`step${currentStep}`).classList.add('hidden');
@@ -1450,8 +1275,28 @@
         }
 
         function prevStep() {
+            // Clear refresh interval when leaving step 3
+            if (currentStep === 3 && slotsRefreshInterval) {
+                clearInterval(slotsRefreshInterval);
+                slotsRefreshInterval = null;
+            }
+
             document.getElementById(`step${currentStep}`).classList.add('hidden');
             currentStep--;
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToStep(stepNumber) {
+            // Clear refresh interval when leaving step 3
+            if (currentStep === 3 && slotsRefreshInterval) {
+                clearInterval(slotsRefreshInterval);
+                slotsRefreshInterval = null;
+            }
+
+            document.getElementById(`step${currentStep}`).classList.add('hidden');
+            currentStep = stepNumber;
             document.getElementById(`step${currentStep}`).classList.remove('hidden');
             updateProgress();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1463,15 +1308,12 @@
             });
         }
 
-        // Calendar
         async function renderCalendar() {
             const year = currentMonth.getFullYear();
             const month = currentMonth.getMonth();
 
-            // Update header
             document.getElementById('calendarMonth').textContent = `${t('months')[month]} ${year}`;
 
-            // Date limits
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const maxDate = new Date(today);
@@ -1483,40 +1325,43 @@
             document.getElementById('prevMonth').disabled = isPast;
             document.getElementById('nextMonth').disabled = isBeyond;
 
-            // Load availability
-            const loadingText = document.getElementById('loadingCalendar').querySelector('div:last-child');
-            if (loadingText) loadingText.textContent = t('loadingAvailability');
-            document.getElementById('loadingCalendar').classList.remove('hidden');
-            await loadMonthAvailability(year, month);
-            document.getElementById('loadingCalendar').classList.add('hidden');
+            // Show loading only if we don't have cached data
+            const needsLoading = Object.keys(availability).length === 0;
+            if (needsLoading) {
+                document.getElementById('loadingCalendar').classList.remove('hidden');
+            }
 
-            // Render days
+            await loadMonthAvailability(year, month);
+
+            if (needsLoading) {
+                document.getElementById('loadingCalendar').classList.add('hidden');
+            }
+
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const container = document.getElementById('calendarDays');
-            container.innerHTML = '';
 
-            // Empty cells
+            // Use DocumentFragment for faster rendering
+            const fragment = document.createDocumentFragment();
+
+            // Add empty cells for days before month starts
             for (let i = 0; i < firstDay; i++) {
                 const div = document.createElement('div');
                 div.className = 'calendar-day empty';
-                container.appendChild(div);
+                fragment.appendChild(div);
             }
 
-            // Days
             const todayStr = formatDateLocal(today);
             const maxDateStr = formatDateLocal(maxDate);
-            const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
+            // Render all days at once
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 const dateStr = formatDateLocal(date);
-                const dayName = dayNames[date.getDay()];
 
                 const div = document.createElement('div');
                 div.className = 'calendar-day';
 
-                // Check status
                 if (dateStr < todayStr || dateStr > maxDateStr) {
                     div.classList.add('past');
                 } else {
@@ -1533,19 +1378,20 @@
                     div.classList.add('selected');
                 }
 
-                div.innerHTML = `
-                    <div class="day-number">${day}</div>
-                    ${availability[dateStr] && availability[dateStr].status !== 'closed' ?
-                        `<div class="day-status">${availability[dateStr].status}</div>` : ''}
-                `;
+                // Only show day number - color indicates status
+                div.innerHTML = `<div class="day-number">${day}</div>`;
 
-                container.appendChild(div);
+                fragment.appendChild(div);
             }
+
+            // Clear and append all at once for better performance
+            container.innerHTML = '';
+            container.appendChild(fragment);
         }
 
         async function loadMonthAvailability(year, month) {
             availability = {};
-            slotsCache = {}; // Clear cache to prevent stale data
+            slotsCache = {};
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -1574,7 +1420,6 @@
                     const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
                     const totalSlots = getTimeSlotsForBarber(selectedBarber).length;
 
-                    // Cache the actual slots for faster loading
                     const cacheKey = `${selectedBarber}_${dateStr}`;
                     slotsCache[cacheKey] = slots;
 
@@ -1597,43 +1442,35 @@
             renderCalendar();
         }
 
-        async function selectDate(dateStr) {
+        async function selectDate(dateStr, skipScroll = false) {
             selectedDate = dateStr;
             selectedTime = null;
             renderCalendar();
 
-            // Load time slots
+            // Clear any existing refresh interval
+            if (slotsRefreshInterval) {
+                clearInterval(slotsRefreshInterval);
+            }
+
             document.getElementById('timeSlotsCard').classList.remove('hidden');
             document.getElementById('loadingSlots').classList.remove('hidden');
             document.getElementById('timeSlots').innerHTML = '';
 
             try {
-                // Create date object properly with UTC to avoid timezone issues
                 const [year, month, day] = selectedDate.split('-').map(Number);
                 const date = new Date(year, month - 1, day);
 
-                console.log('Selected date:', selectedDate);
-                console.log('Date object:', date);
-                console.log('Day of week:', date.getDay());
-                console.log('Day name:', ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][date.getDay()]);
-
-                // Use cache for faster loading
                 const cacheKey = `${selectedBarber}_${selectedDate}`;
-                let slots = slotsCache[cacheKey];
-
-                if (!slots) {
-                    slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
-                    slotsCache[cacheKey] = slots;
-                }
-
-                console.log('Available slots:', slots);
+                // Always fetch fresh data to ensure availability is current
+                const slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
+                slotsCache[cacheKey] = slots;
 
                 document.getElementById('loadingSlots').classList.add('hidden');
 
                 const container = document.getElementById('timeSlots');
 
                 if (slots.length === 0) {
-                    container.innerHTML = `<div style="text-align:center;color:var(--text-gray);padding:20px;">${t('noSlotsAvailable')}</div>`;
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-gray);padding:20px;grid-column: 1/-1;">${t('noSlotsAvailable')}</div>`;
                 } else {
                     slots.forEach(slot => {
                         const div = document.createElement('div');
@@ -1648,11 +1485,38 @@
                     });
                 }
 
-                document.getElementById('timeSlotsCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                // Auto-refresh time slots every 30 seconds to keep them current
+                slotsRefreshInterval = setInterval(async () => {
+                    console.log('Auto-refreshing time slots...');
+                    const currentSelectedTime = selectedTime;
+                    const freshSlots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
+
+                    // Only update if slots have changed
+                    if (JSON.stringify(freshSlots) !== JSON.stringify(slots)) {
+                        slotsCache[cacheKey] = freshSlots;
+                        await selectDate(dateStr, true);
+
+                        // Restore selected time if still available
+                        if (currentSelectedTime && freshSlots.includes(currentSelectedTime)) {
+                            selectedTime = currentSelectedTime;
+                            const selectedSlot = Array.from(document.querySelectorAll('.time-slot'))
+                                .find(s => s.textContent === currentSelectedTime);
+                            if (selectedSlot) {
+                                selectedSlot.classList.add('selected');
+                            }
+                        }
+                    }
+                }, 30000);
+
+                if (!skipScroll) {
+                    setTimeout(() => {
+                        document.getElementById('timeSlotsCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                }
             } catch (error) {
                 console.error('Error loading time slots:', error);
                 document.getElementById('loadingSlots').classList.add('hidden');
-                document.getElementById('timeSlots').innerHTML = `<div style="text-align:center;color:var(--danger);padding:20px;">${t('errorLoadingSlots')}</div>`;
+                document.getElementById('timeSlots').innerHTML = `<div style="text-align:center;color:var(--danger);padding:20px;grid-column: 1/-1;">${t('errorLoadingSlots')}</div>`;
             }
         }
 
@@ -1667,15 +1531,6 @@
                 return;
             }
 
-            console.log('Submitting booking with data:', {
-                barberId: selectedBarber,
-                service: selectedService,
-                date: selectedDate,
-                timeSlot: selectedTime,
-                customerName: name,
-                customerPhone: phone
-            });
-
             const booking = {
                 barberId: selectedBarber,
                 service: selectedService,
@@ -1689,16 +1544,48 @@
 
             try {
                 const result = await bookingSystem.createBooking(booking);
-                console.log('Booking result:', result);
 
                 if (result.success) {
                     showSuccess();
                 } else {
-                    alert(result.message || t('bookingFailed'));
+                    // If the time slot is no longer available, refresh and go back
+                    if (result.message && result.message.includes('no longer available')) {
+                        const errorMsg = currentLang === 'el'
+                            ? 'Λυπούμαστε, αυτή η ώρα μόλις κρατήθηκε από κάποιον άλλον. Παρακαλώ επιλέξτε άλλη ώρα.'
+                            : 'Sorry, this time slot was just booked by someone else. Please select another time.';
+                        alert(errorMsg);
+
+                        // Clear cache and refresh available slots
+                        const cacheKey = `${selectedBarber}_${selectedDate}`;
+                        delete slotsCache[cacheKey];
+
+                        // Go back to time selection
+                        goToStep(3);
+                        await selectDate(selectedDate);
+                    } else {
+                        alert(result.message || t('bookingFailed'));
+                    }
                 }
             } catch (error) {
                 console.error('Error submitting booking:', error);
-                alert(t('bookingFailed') + ': ' + (error.message || 'Unknown error'));
+
+                // Check if it's an availability error
+                if (error.message && error.message.includes('no longer available')) {
+                    const errorMsg = currentLang === 'el'
+                        ? 'Λυπούμαστε, αυτή η ώρα μόλις κρατήθηκε από κάποιον άλλον. Παρακαλώ επιλέξτε άλλη ώρα.'
+                        : 'Sorry, this time slot was just booked by someone else. Please select another time.';
+                    alert(errorMsg);
+
+                    // Clear cache and refresh available slots
+                    const cacheKey = `${selectedBarber}_${selectedDate}`;
+                    delete slotsCache[cacheKey];
+
+                    // Go back to time selection
+                    goToStep(3);
+                    await selectDate(selectedDate);
+                } else {
+                    alert(t('bookingFailed') + ': ' + (error.message || 'Unknown error'));
+                }
             }
         }
 
@@ -1734,15 +1621,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Initialize on page load
         window.addEventListener('DOMContentLoaded', () => {
-            // Set Greek as default active
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent === 'ΕΛ') {
-                    btn.classList.add('active');
-                }
-            });
             updateLanguage();
         });
     </script>
