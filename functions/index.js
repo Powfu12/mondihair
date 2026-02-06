@@ -17,6 +17,9 @@ if (apiKey && apiSecret) {
     apiKey: apiKey,
     apiSecret: apiSecret
   });
+  console.log('Vonage initialized successfully');
+} else {
+  console.log('Vonage credentials not configured. API Key:', apiKey ? 'SET' : 'MISSING', 'API Secret:', apiSecret ? 'SET' : 'MISSING');
 }
 
 // Helper function to get current time in Greek timezone
@@ -38,7 +41,7 @@ function formatDateGreek(date) {
 // Helper function to send SMS via Vonage
 async function sendSMS(to, message) {
   if (!vonage) {
-    console.error('Vonage not configured');
+    console.error('Vonage not configured - check firebase functions:config');
     return { success: false, error: 'Vonage not configured' };
   }
 
@@ -57,23 +60,43 @@ async function sendSMS(to, message) {
       }
     }
 
-    console.log('Sending SMS to:', formattedPhone);
+    // Remove the + for Vonage API
+    const phoneForVonage = formattedPhone.replace('+', '');
 
+    console.log('Sending SMS to:', phoneForVonage, 'from:', fromNumber);
+    console.log('Message:', message.substring(0, 50) + '...');
+
+    // Vonage SDK v3 SMS send
     const response = await vonage.sms.send({
-      to: formattedPhone.replace('+', ''),
+      to: phoneForVonage,
       from: fromNumber,
       text: message
     });
 
-    if (response.messages[0].status === '0') {
-      console.log('SMS sent successfully:', response.messages[0]['message-id']);
-      return { success: true, messageId: response.messages[0]['message-id'] };
+    console.log('Vonage response:', JSON.stringify(response));
+
+    // Check response - Vonage v3 returns messages array
+    if (response && response.messages && response.messages.length > 0) {
+      const msg = response.messages[0];
+      if (msg.status === '0' || msg.status === 0) {
+        console.log('SMS sent successfully! Message ID:', msg['message-id']);
+        return { success: true, messageId: msg['message-id'] };
+      } else {
+        console.error('Vonage SMS error - Status:', msg.status, 'Error:', msg['error-text']);
+        return { success: false, error: msg['error-text'] || 'Unknown error' };
+      }
+    } else if (response && response.messageUuid) {
+      // Alternative response format
+      console.log('SMS sent successfully! UUID:', response.messageUuid);
+      return { success: true, messageId: response.messageUuid };
     } else {
-      console.error('Vonage error:', response.messages[0]['error-text']);
-      return { success: false, error: response.messages[0]['error-text'] };
+      console.log('Unexpected response format:', JSON.stringify(response));
+      // Assume success if no error thrown
+      return { success: true, messageId: 'unknown' };
     }
   } catch (error) {
-    console.error('Error sending SMS:', error);
+    console.error('Error sending SMS:', error.message);
+    console.error('Full error:', JSON.stringify(error, null, 2));
     return { success: false, error: error.message };
   }
 }
@@ -85,6 +108,8 @@ exports.send2HourReminders = functions.pubsub
   .schedule('every 10 minutes')
   .timeZone('Europe/Athens')
   .onRun(async (context) => {
+    console.log('=== 2-Hour Reminder Check Started ===');
+
     const nowGreek = getGreekTime();
     const twoHoursLater = new Date(nowGreek.getTime() + 2 * 60 * 60 * 1000);
 
@@ -105,64 +130,57 @@ exports.send2HourReminders = functions.pubsub
     }
 
     const db = admin.firestore();
-    const promises = [];
+    const results = [];
 
     for (const dateStr of dates) {
+      console.log('Checking bookings for date:', dateStr);
+
       const snapshot = await db.collection('bookings')
         .where('date', '==', dateStr)
         .where('status', 'in', ['confirmed', 'pending'])
         .get();
 
-      snapshot.forEach(doc => {
+      console.log(`Found ${snapshot.size} bookings for ${dateStr}`);
+
+      for (const doc of snapshot.docs) {
         const booking = doc.data();
 
         if (booking.reminderSent) {
-          return;
+          console.log(`Skipping ${doc.id} - reminder already sent`);
+          continue;
         }
 
         const [bookingHour, bookingMinute] = booking.timeSlot.split(':').map(Number);
         const bookingTimeMinutes = bookingHour * 60 + bookingMinute;
         const timeDiff = Math.abs(bookingTimeMinutes - targetTimeMinutes);
 
+        console.log(`Booking ${doc.id}: ${booking.timeSlot}, diff: ${timeDiff} minutes`);
+
         if (timeDiff <= 5) {
           console.log(`Sending 2-hour reminder for booking ${doc.id} at ${booking.timeSlot}`);
 
-          const message = `Υπενθύμιση Ραντεβού - 2 ώρες!
+          const message = `Υπενθύμιση: Το ραντεβού σας είναι σε 2 ώρες!
 
-Γεια σας ${booking.customerName}!
+${booking.customerName}, σας περιμένουμε στις ${booking.timeSlot} για ${booking.service}.
 
-Το ραντεβού σας είναι σε 2 ώρες:
-${booking.timeSlot} - ${booking.service}
-Κομμωτής: ${booking.barberName || booking.barberId}
-
-Σας περιμένουμε!
 Mondi Hairstyle
+Ακύρωση: ${businessPhone}`;
 
-Για ακύρωση: ${businessPhone}`;
+          const result = await sendSMS(booking.customerPhone, message);
+          results.push({ bookingId: doc.id, result });
 
-          promises.push(
-            sendSMS(booking.customerPhone, message)
-              .then(result => {
-                if (result.success) {
-                  return doc.ref.update({
-                    reminderSent: true,
-                    reminderSentAt: admin.firestore.FieldValue.serverTimestamp()
-                  });
-                }
-              })
-              .catch(err => console.error(`Reminder failed for ${doc.id}:`, err))
-          );
+          if (result.success) {
+            await doc.ref.update({
+              reminderSent: true,
+              reminderSentAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+            console.log(`Reminder sent and marked for ${doc.id}`);
+          }
         }
-      });
+      }
     }
 
-    if (promises.length > 0) {
-      await Promise.all(promises);
-      console.log(`Sent ${promises.length} 2-hour reminder(s)`);
-    } else {
-      console.log('No 2-hour reminders needed');
-    }
-
+    console.log(`=== Reminder check complete. Sent ${results.length} reminders ===`);
     return null;
   });
 
@@ -172,34 +190,43 @@ Mondi Hairstyle
 exports.sendBookingConfirmationSMS = functions.firestore
   .document('bookings/{bookingId}')
   .onCreate(async (snap, context) => {
+    const bookingId = context.params.bookingId;
+    console.log('=== New booking created:', bookingId, '===');
+
     const booking = snap.data();
+    console.log('Booking data:', JSON.stringify(booking));
 
     if (!booking.customerPhone) {
-      console.log('No phone number, skipping SMS');
+      console.log('No phone number provided, skipping SMS');
       return null;
     }
 
-    const message = `Επιβεβαίωση Ραντεβού ✓
+    const message = `Επιβεβαίωση Ραντεβού
 
-Γεια σας ${booking.customerName}!
-
-Το ραντεβού σας:
+${booking.customerName}, το ραντεβού σας:
 ${booking.date} στις ${booking.timeSlot}
 ${booking.service}
-Κομμωτής: ${booking.barberName || booking.barberId}
 
-Θα λάβετε υπενθύμιση 2 ώρες πριν.
+Θα σας στείλουμε υπενθύμιση 2 ώρες πριν.
 
 Mondi Hairstyle
-Για ακύρωση: ${businessPhone}`;
+Ακύρωση: ${businessPhone}`;
 
+    console.log('Sending confirmation SMS to:', booking.customerPhone);
     const result = await sendSMS(booking.customerPhone, message);
+    console.log('SMS result:', JSON.stringify(result));
 
     if (result.success) {
       await snap.ref.update({
         smsSent: true,
         smsSentAt: admin.firestore.FieldValue.serverTimestamp()
       });
+      console.log('Booking updated with smsSent=true');
+    } else {
+      await snap.ref.update({
+        smsError: result.error
+      });
+      console.log('Booking updated with smsError');
     }
 
     return null;
@@ -215,22 +242,43 @@ exports.sendBookingCancellationSMS = functions.firestore
     const after = change.after.data();
 
     if (before.status !== 'cancelled' && after.status === 'cancelled') {
+      console.log('=== Booking cancelled:', context.params.bookingId, '===');
+
       if (!after.customerPhone) {
+        console.log('No phone number, skipping cancellation SMS');
         return null;
       }
 
       const message = `Ακύρωση Ραντεβού
 
-Γεια σας ${after.customerName},
+${after.customerName}, το ραντεβού σας για ${after.date} στις ${after.timeSlot} ακυρώθηκε.
 
-Το ραντεβού σας για ${after.date} στις ${after.timeSlot} έχει ακυρωθεί.
-
-Για νέο ραντεβού επισκεφθείτε την ιστοσελίδα μας.
+Για νέο ραντεβού: mondihairstyle.gr
 
 Mondi Hairstyle`;
 
-      await sendSMS(after.customerPhone, message);
+      const result = await sendSMS(after.customerPhone, message);
+      console.log('Cancellation SMS result:', JSON.stringify(result));
     }
 
     return null;
   });
+
+// ============================================
+// TEST FUNCTION - Call manually to test SMS
+// ============================================
+exports.testSMS = functions.https.onRequest(async (req, res) => {
+  const phone = req.query.phone || '+306974628335';
+  const message = 'Test SMS from Mondi Hairstyle - ' + new Date().toISOString();
+
+  console.log('Testing SMS to:', phone);
+  const result = await sendSMS(phone, message);
+
+  res.json({
+    vonageConfigured: vonage !== null,
+    apiKey: apiKey ? 'SET' : 'MISSING',
+    apiSecret: apiSecret ? 'SET' : 'MISSING',
+    from: fromNumber,
+    result: result
+  });
+});
