@@ -145,34 +145,54 @@ class BookingSystem {
     }
   }
 
-  // Create a new booking using ATOMIC Firestore transaction
-  // This prevents race conditions and double bookings at the database level
+  // Create a new booking - simple and reliable
+  // Uses a deterministic document ID to prevent duplicates
   async createBooking(bookingData) {
     try {
-      console.log('=== ATOMIC BOOKING CREATION ===');
+      console.log('=== BOOKING CREATION ===');
       console.log('Barber ID:', bookingData.barberId);
       console.log('Date:', bookingData.date);
       console.log('Time slot:', bookingData.timeSlot);
 
-      // Step 1: Check if slot is available using existing bookings
-      const existingBooking = await db.collection('bookings')
+      // Create a deterministic booking ID based on slot
+      // This ensures only ONE booking can exist per slot
+      const slotId = `${bookingData.barberId}_${bookingData.date}_${bookingData.timeSlot.replace(':', '')}`;
+      const bookingRef = db.collection('bookings').doc(slotId);
+
+      // Check if this exact slot already has a booking (new format)
+      const existingDoc = await bookingRef.get();
+
+      if (existingDoc.exists) {
+        const existingData = existingDoc.data();
+        // Only block if existing booking is active
+        if (existingData.status === 'pending' || existingData.status === 'confirmed') {
+          console.log('ABORT: Slot already booked with ID:', slotId);
+          return {
+            success: false,
+            message: 'Αυτή η ώρα δεν είναι πλέον διαθέσιμη. Παρακαλώ επιλέξτε άλλη ώρα.'
+          };
+        }
+        // If cancelled, we can overwrite it
+        console.log('Overwriting cancelled booking:', slotId);
+      }
+
+      // Also check for old-format bookings with random IDs
+      const existingBookings = await db.collection('bookings')
         .where('barberId', '==', bookingData.barberId)
         .where('date', '==', bookingData.date)
         .where('timeSlot', '==', bookingData.timeSlot)
         .where('status', 'in', ['pending', 'confirmed'])
         .get();
 
-      if (!existingBooking.empty) {
-        console.log('ABORT: Slot already has an existing booking');
+      if (!existingBookings.empty) {
+        console.log('ABORT: Slot has old-format booking');
         return {
           success: false,
           message: 'Αυτή η ώρα δεν είναι πλέον διαθέσιμη. Παρακαλώ επιλέξτε άλλη ώρα.'
         };
       }
 
-      // Step 2: Create the booking directly (Cloud Functions will handle SMS)
-      const bookingRef = db.collection('bookings').doc();
-
+      // Create the booking
       const booking = {
         barberId: bookingData.barberId,
         barberName: BARBERS[bookingData.barberId].name,
@@ -191,12 +211,12 @@ class BookingSystem {
       await bookingRef.set(booking);
 
       console.log('Booking created successfully');
-      console.log('Booking ID:', bookingRef.id);
+      console.log('Booking ID:', slotId);
       console.log('SMS will be sent by Cloud Functions');
 
       return {
         success: true,
-        bookingId: bookingRef.id,
+        bookingId: slotId,
         message: 'Booking created successfully!'
       };
     } catch (error) {
