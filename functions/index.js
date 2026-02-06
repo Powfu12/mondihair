@@ -10,6 +10,23 @@ const authToken = functions.config().twilio?.auth_token;
 const alphaSender = functions.config().twilio?.alpha_sender || 'MondiHair';
 const businessPhone = functions.config().twilio?.business_phone || '+35799123456';
 
+// Helper function to get current time in Greek timezone
+function getGreekTime() {
+  const now = new Date();
+  // Convert to Greek timezone string
+  const greekTimeStr = now.toLocaleString('en-US', { timeZone: 'Europe/Athens' });
+  return new Date(greekTimeStr);
+}
+
+// Helper function to format date as YYYY-MM-DD in Greek timezone
+function formatDateGreek(date) {
+  const greekDate = new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Athens' }));
+  const year = greekDate.getFullYear();
+  const month = String(greekDate.getMonth() + 1).padStart(2, '0');
+  const day = String(greekDate.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 let twilioClient = null;
 if (accountSid && authToken) {
   twilioClient = twilio(accountSid, authToken);
@@ -50,25 +67,28 @@ exports.send2HourReminders = functions.pubsub
   .schedule('every 10 minutes')
   .timeZone('Europe/Athens')
   .onRun(async (context) => {
-    const now = new Date();
+    // Get current time in Greek timezone
+    const nowGreek = getGreekTime();
 
-    // Calculate 2 hours from now
-    const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+    // Calculate 2 hours from now in Greek time
+    const twoHoursLater = new Date(nowGreek.getTime() + 2 * 60 * 60 * 1000);
 
-    // Format today's date as YYYY-MM-DD
-    const todayStr = now.toISOString().split('T')[0];
-    const tomorrowStr = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    // Format dates in Greek timezone as YYYY-MM-DD
+    const todayStr = formatDateGreek(nowGreek);
+    const tomorrowGreek = new Date(nowGreek.getTime() + 24 * 60 * 60 * 1000);
+    const tomorrowStr = formatDateGreek(tomorrowGreek);
 
-    // Target time (2 hours from now)
+    // Target time (2 hours from now in Greek time)
     const targetHour = twoHoursLater.getHours();
     const targetMinute = twoHoursLater.getMinutes();
     const targetTimeMinutes = targetHour * 60 + targetMinute;
 
-    console.log(`Checking for 2-hour reminders. Now: ${now.toISOString()}, Target time: ${targetHour}:${targetMinute}`);
+    console.log(`[Greek Time] Now: ${nowGreek.toLocaleString()}, Target: ${targetHour}:${String(targetMinute).padStart(2, '0')}, Date: ${todayStr}`);
 
     // Get bookings for today and tomorrow (in case it's late evening)
     const dates = [todayStr];
-    if (twoHoursLater.toISOString().split('T')[0] !== todayStr) {
+    const twoHoursLaterDateStr = formatDateGreek(twoHoursLater);
+    if (twoHoursLaterDateStr !== todayStr) {
       dates.push(tomorrowStr);
     }
 
