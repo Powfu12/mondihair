@@ -1408,6 +1408,89 @@
             transform: translateX(24px);
         }
 
+        /* Recurring Booking Styles */
+        .recurring-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+
+        .recurring-toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recurring-toggle-row label:first-child {
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0;
+        }
+
+        .recurring-options {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(195, 227, 33, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(195, 227, 33, 0.15);
+        }
+
+        .recurring-day-label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        .recurring-days {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .day-btn {
+            padding: 10px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .day-btn:hover {
+            border-color: var(--lime);
+            color: var(--text-light);
+            background: rgba(195, 227, 33, 0.1);
+        }
+
+        .day-btn.selected {
+            background: var(--lime);
+            color: var(--darker);
+            border-color: var(--lime);
+        }
+
+        .recurring-preview {
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            display: none;
+        }
+
+        .recurring-preview.visible {
+            display: block;
+        }
+
+        .recurring-preview .preview-count {
+            color: var(--lime);
+            font-weight: 700;
+        }
+
         .schedule-times {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1886,6 +1969,39 @@
                         <label>Σημειώσεις</label>
                         <textarea id="newNotes" placeholder="Προσθέστε τυχόν σημειώσεις..."></textarea>
                     </div>
+
+                    <!-- Recurring Booking Section -->
+                    <div class="form-group recurring-section">
+                        <div class="recurring-toggle-row">
+                            <label>Επαναλαμβανόμενο Ραντεβού</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="recurringToggle" onchange="toggleRecurringOptions()">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div id="recurringOptions" class="recurring-options" style="display: none;">
+                            <div class="recurring-day-label">Επιλέξτε ημέρα επανάληψης:</div>
+                            <div class="recurring-days">
+                                <button type="button" class="day-btn" data-day="monday" onclick="selectRecurringDay(this)">Δευ</button>
+                                <button type="button" class="day-btn" data-day="tuesday" onclick="selectRecurringDay(this)">Τρι</button>
+                                <button type="button" class="day-btn" data-day="wednesday" onclick="selectRecurringDay(this)">Τετ</button>
+                                <button type="button" class="day-btn" data-day="thursday" onclick="selectRecurringDay(this)">Πεμ</button>
+                                <button type="button" class="day-btn" data-day="friday" onclick="selectRecurringDay(this)">Παρ</button>
+                                <button type="button" class="day-btn" data-day="saturday" onclick="selectRecurringDay(this)">Σαβ</button>
+                                <button type="button" class="day-btn" data-day="sunday" onclick="selectRecurringDay(this)">Κυρ</button>
+                            </div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label>Αριθμός εβδομάδων</label>
+                                <select id="recurringWeeks">
+                                    <option value="2">2 εβδομάδες</option>
+                                    <option value="4" selected>4 εβδομάδες (1 μήνας)</option>
+                                    <option value="8">8 εβδομάδες (2 μήνες)</option>
+                                    <option value="12">12 εβδομάδες (3 μήνες)</option>
+                                </select>
+                            </div>
+                            <div id="recurringPreview" class="recurring-preview"></div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -2137,16 +2253,90 @@
         // MODAL FUNCTIONS
         // =========================
 
+        // =========================
+        // RECURRING BOOKING FUNCTIONS
+        // =========================
+        let selectedRecurringDay = null;
+
+        function toggleRecurringOptions() {
+            const isRecurring = document.getElementById('recurringToggle').checked;
+            const optionsDiv = document.getElementById('recurringOptions');
+            optionsDiv.style.display = isRecurring ? 'block' : 'none';
+
+            if (!isRecurring) {
+                // Reset recurring selections
+                selectedRecurringDay = null;
+                document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('selected'));
+                document.getElementById('recurringPreview').classList.remove('visible');
+            }
+        }
+
+        function selectRecurringDay(btn) {
+            // Deselect all other buttons
+            document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('selected'));
+            // Select this one
+            btn.classList.add('selected');
+            selectedRecurringDay = btn.dataset.day;
+
+            updateRecurringPreview();
+        }
+
+        function updateRecurringPreview() {
+            const preview = document.getElementById('recurringPreview');
+            if (!selectedRecurringDay) {
+                preview.classList.remove('visible');
+                return;
+            }
+
+            const weeks = parseInt(document.getElementById('recurringWeeks').value);
+            const dayNames = {
+                'monday': 'Δευτέρα',
+                'tuesday': 'Τρίτη',
+                'wednesday': 'Τετάρτη',
+                'thursday': 'Πέμπτη',
+                'friday': 'Παρασκευή',
+                'saturday': 'Σάββατο',
+                'sunday': 'Κυριακή'
+            };
+
+            const dayGreek = dayNames[selectedRecurringDay];
+            preview.innerHTML = `Θα δημιουργηθούν <span class="preview-count">${weeks}</span> ραντεβού κάθε <strong>${dayGreek}</strong> για τις επόμενες ${weeks} εβδομάδες στην ίδια ώρα.`;
+            preview.classList.add('visible');
+        }
+
+        // Get the next occurrence of a specific day of week from a start date
+        function getNextDayOfWeek(startDate, dayName) {
+            const dayMap = {
+                'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
+                'thursday': 4, 'friday': 5, 'saturday': 6
+            };
+            const targetDay = dayMap[dayName];
+            const date = new Date(startDate);
+            const currentDay = date.getDay();
+            let daysUntil = targetDay - currentDay;
+            if (daysUntil <= 0) daysUntil += 7;
+            date.setDate(date.getDate() + daysUntil);
+            return date;
+        }
+
         // Open Add Booking Modal
         function openAddBookingModal() {
             document.getElementById('addBookingModal').classList.add('active');
             document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
+            // Reset recurring state
+            document.getElementById('recurringToggle').checked = false;
+            toggleRecurringOptions();
         }
 
         // Close Add Booking Modal
         function closeAddBookingModal() {
             document.getElementById('addBookingModal').classList.remove('active');
             document.getElementById('addBookingForm').reset();
+            // Reset recurring state
+            selectedRecurringDay = null;
+            document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('recurringOptions').style.display = 'none';
+            document.getElementById('recurringPreview').classList.remove('visible');
         }
 
         // Update time slots when date changes
@@ -2168,9 +2358,15 @@
                     });
                 });
             }
+
+            // Update preview when weeks dropdown changes
+            const weeksSelect = document.getElementById('recurringWeeks');
+            if (weeksSelect) {
+                weeksSelect.addEventListener('change', updateRecurringPreview);
+            }
         });
 
-        // Submit New Booking
+        // Submit New Booking (supports recurring)
         async function submitNewBooking() {
             const form = document.getElementById('addBookingForm');
             if (!form.checkValidity()) {
@@ -2178,23 +2374,71 @@
                 return;
             }
 
-            const bookingData = {
+            const isRecurring = document.getElementById('recurringToggle').checked;
+
+            // Validate recurring fields
+            if (isRecurring && !selectedRecurringDay) {
+                alert('Παρακαλώ επιλέξτε ημέρα για το επαναλαμβανόμενο ραντεβού');
+                return;
+            }
+
+            const baseBookingData = {
                 barberId: currentBarberId,
                 customerName: document.getElementById('newCustomerName').value,
                 customerPhone: document.getElementById('newCustomerPhone').value,
                 customerEmail: document.getElementById('newCustomerEmail').value,
                 service: document.getElementById('newService').value,
-                date: document.getElementById('newDate').value,
                 timeSlot: document.getElementById('newTime').value,
                 notes: document.getElementById('newNotes').value
             };
 
-            const result = await bookingSystem.createBooking(bookingData);
-            if (result.success) {
-                alert('Το ραντεβού δημιουργήθηκε επιτυχώς!');
-                closeAddBookingModal();
+            if (!isRecurring) {
+                // Single booking
+                baseBookingData.date = document.getElementById('newDate').value;
+                const result = await bookingSystem.createBooking(baseBookingData);
+                if (result.success) {
+                    alert('Το ραντεβού δημιουργήθηκε επιτυχώς!');
+                    closeAddBookingModal();
+                } else {
+                    alert('Αποτυχία δημιουργίας: ' + result.message);
+                }
             } else {
-                alert('Αποτυχία δημιουργίας: ' + result.message);
+                // Recurring bookings
+                const weeks = parseInt(document.getElementById('recurringWeeks').value);
+                const startDate = new Date(document.getElementById('newDate').value + 'T00:00:00');
+                let nextDate = getNextDayOfWeek(startDate, selectedRecurringDay);
+
+                let created = 0;
+                let failed = 0;
+                let failedDates = [];
+
+                for (let i = 0; i < weeks; i++) {
+                    const dateStr = nextDate.toISOString().split('T')[0];
+                    const bookingData = { ...baseBookingData, date: dateStr };
+
+                    try {
+                        const result = await bookingSystem.createBooking(bookingData);
+                        if (result.success) {
+                            created++;
+                        } else {
+                            failed++;
+                            failedDates.push(dateStr);
+                        }
+                    } catch (err) {
+                        failed++;
+                        failedDates.push(dateStr);
+                    }
+
+                    // Move to next week
+                    nextDate.setDate(nextDate.getDate() + 7);
+                }
+
+                let message = `Δημιουργήθηκαν ${created} από ${weeks} επαναλαμβανόμενα ραντεβού.`;
+                if (failed > 0) {
+                    message += `\n\nΑποτυχία για ${failed} ημερομηνίες:\n${failedDates.join('\n')}\n(Πιθανώς η ώρα δεν είναι διαθέσιμη αυτές τις ημέρες)`;
+                }
+                alert(message);
+                closeAddBookingModal();
             }
         }
 
