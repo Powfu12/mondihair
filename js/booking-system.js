@@ -154,8 +154,7 @@ class BookingSystem {
       console.log('Date:', bookingData.date);
       console.log('Time slot:', bookingData.timeSlot);
 
-      // Step 1: Check if slot is available using existing bookings (backwards compatibility)
-      // This handles old bookings that don't have slot locks
+      // Step 1: Check if slot is available using existing bookings
       const existingBooking = await db.collection('bookings')
         .where('barberId', '==', bookingData.barberId)
         .where('date', '==', bookingData.date)
@@ -171,78 +170,29 @@ class BookingSystem {
         };
       }
 
-      // Step 2: Create unique slot lock ID for atomic operation
-      const slotLockId = `${bookingData.barberId}_${bookingData.date}_${bookingData.timeSlot.replace(':', '')}`;
-      const slotLockRef = db.collection('slotLocks').doc(slotLockId);
-      const bookingRef = db.collection('bookings').doc(); // Auto-generate booking ID
+      // Step 2: Create the booking directly (Cloud Functions will handle SMS)
+      const bookingRef = db.collection('bookings').doc();
 
-      console.log('Slot lock ID:', slotLockId);
-      console.log('Starting atomic transaction...');
-
-      // Step 3: Use Firestore transaction for atomic slot lock + booking creation
-      // This guarantees that only ONE booking can be created for a given slot
-      await db.runTransaction(async (transaction) => {
-        // Check if slot is already locked
-        const slotLockDoc = await transaction.get(slotLockRef);
-
-        if (slotLockDoc.exists) {
-          console.log('TRANSACTION ABORT: Slot already locked by another booking');
-          throw new Error('Αυτή η ώρα δεν είναι πλέον διαθέσιμη. Παρακαλώ επιλέξτε άλλη ώρα.');
-        }
-
-        console.log('Slot is free, creating atomic booking...');
-
-        // Create the booking document
-        const booking = {
-          barberId: bookingData.barberId,
-          barberName: BARBERS[bookingData.barberId].name,
-          customerName: bookingData.customerName,
-          customerPhone: bookingData.customerPhone,
-          customerEmail: bookingData.customerEmail || '',
-          service: bookingData.service,
-          date: bookingData.date,
-          timeSlot: bookingData.timeSlot,
-          status: 'confirmed',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          notes: bookingData.notes || ''
-        };
-
-        // Atomically create BOTH the slot lock AND the booking
-        transaction.set(slotLockRef, {
-          bookingId: bookingRef.id,
-          barberId: bookingData.barberId,
-          date: bookingData.date,
-          timeSlot: bookingData.timeSlot,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        transaction.set(bookingRef, booking);
-
-        console.log('Transaction prepared successfully');
-      });
-
-      console.log('TRANSACTION COMMITTED: Booking created atomically');
-      console.log('Booking ID:', bookingRef.id);
-
-      // Send confirmation SMS (outside transaction - SMS failure shouldn't rollback booking)
       const booking = {
+        barberId: bookingData.barberId,
+        barberName: BARBERS[bookingData.barberId].name,
         customerName: bookingData.customerName,
         customerPhone: bookingData.customerPhone,
+        customerEmail: bookingData.customerEmail || '',
+        service: bookingData.service,
         date: bookingData.date,
         timeSlot: bookingData.timeSlot,
-        service: bookingData.service,
-        barberName: BARBERS[bookingData.barberId].name
+        status: 'confirmed',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        notes: bookingData.notes || ''
       };
 
-      console.log('Sending confirmation SMS...');
-      const smsResult = await this.sendBookingConfirmation(booking);
+      await bookingRef.set(booking);
 
-      if (smsResult.success) {
-        console.log('Confirmation SMS sent successfully');
-      } else {
-        console.warn('Failed to send confirmation SMS:', smsResult.error);
-      }
+      console.log('Booking created successfully');
+      console.log('Booking ID:', bookingRef.id);
+      console.log('SMS will be sent by Cloud Functions');
 
       return {
         success: true,
@@ -252,14 +202,9 @@ class BookingSystem {
     } catch (error) {
       console.error('Error creating booking:', error);
 
-      // Provide user-friendly error message
-      let userMessage = error.message;
-      if (error.message && error.message.includes('Αυτή η ώρα')) {
-        userMessage = error.message; // Already Greek
-      } else if (error.code === 'permission-denied') {
+      let userMessage = 'Αποτυχία δημιουργίας κράτησης. Παρακαλώ δοκιμάστε ξανά.';
+      if (error.code === 'permission-denied') {
         userMessage = 'Δεν έχετε άδεια για αυτή την ενέργεια.';
-      } else {
-        userMessage = 'Αποτυχία δημιουργίας κράτησης. Παρακαλώ δοκιμάστε ξανά.';
       }
 
       return {
@@ -315,38 +260,15 @@ class BookingSystem {
     }
   }
 
-  // Delete/cancel booking and release the slot lock
+  // Delete/cancel booking
   async cancelBooking(bookingId) {
     try {
-      // First, get the booking to find the slot lock
-      const bookingDoc = await db.collection('bookings').doc(bookingId).get();
-
-      if (!bookingDoc.exists) {
-        throw new Error('Booking not found');
-      }
-
-      const bookingData = bookingDoc.data();
-
-      // Create the slot lock ID to delete it
-      const slotLockId = `${bookingData.barberId}_${bookingData.date}_${bookingData.timeSlot.replace(':', '')}`;
-
-      console.log('Cancelling booking and releasing slot lock:', slotLockId);
-
-      // Use a batch to atomically update booking AND delete slot lock
-      const batch = db.batch();
-
-      // Update booking status to cancelled
-      batch.update(db.collection('bookings').doc(bookingId), {
+      await db.collection('bookings').doc(bookingId).update({
         status: 'cancelled',
         cancelledAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      // Delete the slot lock to free up the time slot
-      batch.delete(db.collection('slotLocks').doc(slotLockId));
-
-      await batch.commit();
-
-      console.log('Booking cancelled and slot released successfully');
+      console.log('Booking cancelled successfully');
       return { success: true };
     } catch (error) {
       console.error('Error cancelling booking:', error);
