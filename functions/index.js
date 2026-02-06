@@ -66,11 +66,12 @@ async function sendSMS(to, message) {
     console.log('Sending SMS to:', phoneForVonage, 'from:', fromNumber);
     console.log('Message:', message.substring(0, 50) + '...');
 
-    // Vonage SDK v3 SMS send
+    // Vonage SDK v3 SMS send with Unicode for Greek characters
     const response = await vonage.sms.send({
       to: phoneForVonage,
       from: fromNumber,
-      text: message
+      text: message,
+      type: 'unicode'
     });
 
     console.log('Vonage response:', JSON.stringify(response));
