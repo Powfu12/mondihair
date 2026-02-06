@@ -1,19 +1,27 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const twilio = require('twilio');
+const { Vonage } = require('@vonage/server-sdk');
 
 admin.initializeApp();
 
-// Initialize Twilio - set these with: firebase functions:config:set twilio.account_sid="xxx" twilio.auth_token="xxx" twilio.alpha_sender="MondiHair"
-const accountSid = functions.config().twilio?.account_sid;
-const authToken = functions.config().twilio?.auth_token;
-const alphaSender = functions.config().twilio?.alpha_sender || 'MondiHair';
-const businessPhone = functions.config().twilio?.business_phone || '+35799123456';
+// Initialize Vonage - set these with:
+// firebase functions:config:set vonage.api_key="xxx" vonage.api_secret="xxx" vonage.from="MondiHair"
+const apiKey = functions.config().vonage?.api_key;
+const apiSecret = functions.config().vonage?.api_secret;
+const fromNumber = functions.config().vonage?.from || 'MondiHair';
+const businessPhone = functions.config().vonage?.business_phone || '+306974628335';
+
+let vonage = null;
+if (apiKey && apiSecret) {
+  vonage = new Vonage({
+    apiKey: apiKey,
+    apiSecret: apiSecret
+  });
+}
 
 // Helper function to get current time in Greek timezone
 function getGreekTime() {
   const now = new Date();
-  // Convert to Greek timezone string
   const greekTimeStr = now.toLocaleString('en-US', { timeZone: 'Europe/Athens' });
   return new Date(greekTimeStr);
 }
@@ -27,33 +35,43 @@ function formatDateGreek(date) {
   return `${year}-${month}-${day}`;
 }
 
-let twilioClient = null;
-if (accountSid && authToken) {
-  twilioClient = twilio(accountSid, authToken);
-}
-
-// Helper function to send SMS
+// Helper function to send SMS via Vonage
 async function sendSMS(to, message) {
-  if (!twilioClient) {
-    console.error('Twilio not configured');
-    return { success: false, error: 'Twilio not configured' };
+  if (!vonage) {
+    console.error('Vonage not configured');
+    return { success: false, error: 'Vonage not configured' };
   }
 
   try {
-    // Format phone number
-    let formattedPhone = to.replace(/\s/g, '');
+    // Format phone number for Greece
+    let formattedPhone = to.replace(/\s/g, '').replace(/-/g, '');
     if (!formattedPhone.startsWith('+')) {
-      formattedPhone = '+357' + formattedPhone.replace(/^0+/, '');
+      if (formattedPhone.startsWith('00')) {
+        formattedPhone = '+' + formattedPhone.substring(2);
+      } else if (formattedPhone.startsWith('0')) {
+        formattedPhone = '+30' + formattedPhone.substring(1);
+      } else if (formattedPhone.startsWith('30')) {
+        formattedPhone = '+' + formattedPhone;
+      } else {
+        formattedPhone = '+30' + formattedPhone;
+      }
     }
 
-    const result = await twilioClient.messages.create({
-      body: message,
-      from: alphaSender,
-      to: formattedPhone
+    console.log('Sending SMS to:', formattedPhone);
+
+    const response = await vonage.sms.send({
+      to: formattedPhone.replace('+', ''),
+      from: fromNumber,
+      text: message
     });
 
-    console.log('SMS sent successfully:', result.sid);
-    return { success: true, sid: result.sid };
+    if (response.messages[0].status === '0') {
+      console.log('SMS sent successfully:', response.messages[0]['message-id']);
+      return { success: true, messageId: response.messages[0]['message-id'] };
+    } else {
+      console.error('Vonage error:', response.messages[0]['error-text']);
+      return { success: false, error: response.messages[0]['error-text'] };
+    }
   } catch (error) {
     console.error('Error sending SMS:', error);
     return { success: false, error: error.message };
@@ -67,25 +85,19 @@ exports.send2HourReminders = functions.pubsub
   .schedule('every 10 minutes')
   .timeZone('Europe/Athens')
   .onRun(async (context) => {
-    // Get current time in Greek timezone
     const nowGreek = getGreekTime();
-
-    // Calculate 2 hours from now in Greek time
     const twoHoursLater = new Date(nowGreek.getTime() + 2 * 60 * 60 * 1000);
 
-    // Format dates in Greek timezone as YYYY-MM-DD
     const todayStr = formatDateGreek(nowGreek);
     const tomorrowGreek = new Date(nowGreek.getTime() + 24 * 60 * 60 * 1000);
     const tomorrowStr = formatDateGreek(tomorrowGreek);
 
-    // Target time (2 hours from now in Greek time)
     const targetHour = twoHoursLater.getHours();
     const targetMinute = twoHoursLater.getMinutes();
     const targetTimeMinutes = targetHour * 60 + targetMinute;
 
     console.log(`[Greek Time] Now: ${nowGreek.toLocaleString()}, Target: ${targetHour}:${String(targetMinute).padStart(2, '0')}, Date: ${todayStr}`);
 
-    // Get bookings for today and tomorrow (in case it's late evening)
     const dates = [todayStr];
     const twoHoursLaterDateStr = formatDateGreek(twoHoursLater);
     if (twoHoursLaterDateStr !== todayStr) {
@@ -104,17 +116,12 @@ exports.send2HourReminders = functions.pubsub
       snapshot.forEach(doc => {
         const booking = doc.data();
 
-        // Skip if reminder already sent
         if (booking.reminderSent) {
           return;
         }
 
-        // Parse booking time
         const [bookingHour, bookingMinute] = booking.timeSlot.split(':').map(Number);
         const bookingTimeMinutes = bookingHour * 60 + bookingMinute;
-
-        // Check if booking is approximately 2 hours from now (within 5 minute window)
-        // This accounts for the 10-minute cron interval
         const timeDiff = Math.abs(bookingTimeMinutes - targetTimeMinutes);
 
         if (timeDiff <= 5) {
@@ -167,13 +174,12 @@ exports.sendBookingConfirmationSMS = functions.firestore
   .onCreate(async (snap, context) => {
     const booking = snap.data();
 
-    // Only send if we have a phone number
     if (!booking.customerPhone) {
       console.log('No phone number, skipping SMS');
       return null;
     }
 
-    const message = `Επιβεβαίωση Ραντεβού
+    const message = `Επιβεβαίωση Ραντεβού ✓
 
 Γεια σας ${booking.customerName}!
 
@@ -208,7 +214,6 @@ exports.sendBookingCancellationSMS = functions.firestore
     const before = change.before.data();
     const after = change.after.data();
 
-    // Only send if status changed to cancelled
     if (before.status !== 'cancelled' && after.status === 'cancelled') {
       if (!after.customerPhone) {
         return null;
