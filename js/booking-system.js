@@ -4,7 +4,7 @@
 const BIRD_CONFIG = {
   accessKey: 'j73X26k4Uq7JvLWmpeY64pLeD6u2HdgB63uN',
   workspaceId: '6d56cc80-c572-44fa-9d7f-92de60064047',
-  channelId: '73ecef4c-4128-4848-9ad9-f99244b49a4b',
+  channelId: 'a8fe839d-0a11-5f96-b027-d2ffdc0fe8cc',
   businessPhone: '+306974628335'
 };
 
