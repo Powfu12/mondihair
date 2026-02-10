@@ -1529,6 +1529,9 @@
         }
 
         async function submitBooking() {
+            const submitBtn = document.querySelector('#step4 .btn-primary');
+            if (submitBtn.disabled) return;
+
             const name = document.getElementById('customerName').value.trim();
             const phone = document.getElementById('customerPhone').value.trim();
             const email = document.getElementById('customerEmail').value.trim();
@@ -1538,6 +1541,10 @@
                 alert(t('pleaseFillRequired'));
                 return;
             }
+
+            // Disable button to prevent double-clicks
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (currentLang === 'el' ? 'Υποβολή...' : 'Submitting...');
 
             const booking = {
                 barberId: selectedBarber,
@@ -1594,6 +1601,10 @@
                 } else {
                     alert(t('bookingFailed') + ': ' + (error.message || 'Unknown error'));
                 }
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> ' + (currentLang === 'el' ? 'Επιβεβαίωση' : 'Confirm');
             }
         }
 
