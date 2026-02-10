@@ -1,11 +1,10 @@
 // Booking System Logic
 
-// Twilio Configuration
-// IMPORTANT: Replace these with your actual Twilio credentials
-const TWILIO_CONFIG = {
-  accountSid: 'YOUR_TWILIO_ACCOUNT_SID',     // Replace with your Account SID from Twilio Console
-  authToken: 'YOUR_TWILIO_AUTH_TOKEN',        // Replace with your Auth Token from Twilio Console
-  alphaSender: 'MondiHair',                   // Your alphanumeric sender name
+// Bird SMS Configuration (formerly MessageBird)
+// IMPORTANT: Replace with your actual Bird credentials from https://dashboard.bird.com
+const BIRD_CONFIG = {
+  accessKey: 'YOUR_BIRD_ACCESS_KEY',          // Replace with your API Access Key from Bird Dashboard
+  originator: 'MondiHair',                    // Your alphanumeric sender name (max 11 chars)
   businessPhone: '+306974628335'              // Your business phone for customers to call
 };
 
@@ -353,7 +352,7 @@ class BookingSystem {
     return null;
   }
 
-  // Send SMS via Twilio
+  // Send SMS via Bird (formerly MessageBird)
   async sendSMS(to, message) {
     try {
       const formattedPhone = this.formatGreekPhone(to);
@@ -363,20 +362,18 @@ class BookingSystem {
 
       console.log('Sending SMS to:', formattedPhone);
 
-      const auth = btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`);
-
       const response = await fetch(
-        `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Messages.json`,
+        'https://rest.messagebird.com/messages',
         {
           method: 'POST',
           headers: {
-            'Authorization': `Basic ${auth}`,
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Authorization': `AccessKey ${BIRD_CONFIG.accessKey}`,
+            'Content-Type': 'application/json'
           },
-          body: new URLSearchParams({
-            From: TWILIO_CONFIG.alphaSender,
-            To: formattedPhone,
-            Body: message
+          body: JSON.stringify({
+            originator: BIRD_CONFIG.originator,
+            recipients: [formattedPhone],
+            body: message
           })
         }
       );
@@ -384,11 +381,11 @@ class BookingSystem {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('SMS sent successfully:', data.sid);
-        return { success: true, sid: data.sid };
+        console.log('SMS sent successfully:', data.id);
+        return { success: true, sid: data.id };
       } else {
-        console.error('Twilio error:', data);
-        return { success: false, error: data.message };
+        console.error('Bird error:', data);
+        return { success: false, error: data.errors ? data.errors[0].description : 'Unknown error' };
       }
     } catch (error) {
       console.error('Error sending SMS:', error);
@@ -417,7 +414,7 @@ class BookingSystem {
 💇 Κομμωτής: ${booking.barberName}
 ✂️ Υπηρεσία: ${booking.service}
 
-Για ακύρωση: ${TWILIO_CONFIG.businessPhone}
+Για ακύρωση: ${BIRD_CONFIG.businessPhone}
 
 Mondi Hairstyle`;
 
@@ -442,7 +439,7 @@ Mondi Hairstyle`;
 
 ⏰ Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.
 
-Για ακύρωση: ${TWILIO_CONFIG.businessPhone}
+Για ακύρωση: ${BIRD_CONFIG.businessPhone}
 
 Mondi Hairstyle`;
 

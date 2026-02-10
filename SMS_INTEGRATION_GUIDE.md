@@ -1,529 +1,216 @@
 # SMS Confirmation Integration Guide
 
-This guide explains how to add SMS confirmation notifications to the Mondi Hairstyle booking system.
+This guide explains how to add SMS confirmation notifications to the Mondi Hairstyle booking system using **Bird SMS** (formerly MessageBird).
 
-## 📱 Overview
+## Overview
 
 SMS confirmations will automatically send text messages to customers when:
-- ✅ A new booking is created
-- ✅ A booking is confirmed by the barber
-- ⏰ 24 hours before the appointment (reminder)
-- ❌ A booking is cancelled
+- A new booking is created
+- A booking is confirmed by the barber
+- 2 hours before the appointment (reminder)
+- A booking is cancelled
 
 ---
 
-## 🔧 SMS Service Options
+## SMS Service: Bird (formerly MessageBird)
 
-### Option 1: Twilio (Recommended)
-
-**Pros:**
-- Most popular and reliable
-- Pay-as-you-go pricing (~€0.06 per SMS in Europe)
-- Excellent documentation
-- Free trial credit
-
-**Pricing:**
-- €0.06 per SMS in Cyprus
-- No monthly fees (pay as you go)
-- First €10-15 free trial credit
-
-**Setup Steps:**
-
-1. **Create Twilio Account**
-   - Go to: https://www.twilio.com/try-twilio
-   - Sign up for free trial
-   - Verify your phone number
-
-2. **Get Credentials**
-   - From Twilio Console, get:
-     - Account SID
-     - Auth Token
-     - Buy a phone number (Cyprus: +357)
-
-3. **Install Twilio SDK**
-   ```bash
-   npm install twilio
-   ```
-
-### Option 2: Vonage (formerly Nexmo)
-
-**Pros:**
-- Competitive pricing
-- Good for international SMS
-- Simple API
+**Why Bird:**
+- Simple REST API
+- Competitive pricing (~€0.05-0.07 per SMS in Europe)
+- Alphanumeric sender ID support (shows "MondiHair" instead of a phone number)
+- Good European coverage (Greece/Cyprus)
+- Dashboard at https://dashboard.bird.com
 
 **Pricing:**
-- €0.04-0.07 per SMS
-- Free trial credit
-
-### Option 3: AWS SNS (Amazon Simple Notification Service)
-
-**Pros:**
-- Very cheap if already using AWS
-- Scales automatically
-- Part of AWS free tier
-
-**Pricing:**
-- €0.02-0.06 per SMS
-- First 100 SMS free each month
+- Pay-as-you-go, no monthly fees
+- ~€0.05-0.07 per SMS in Greece/Cyprus
+- Free trial credits available
 
 ---
 
-## 🚀 Implementation: Twilio + Firebase Cloud Functions
+## Setup Steps
 
-The best approach is to use Firebase Cloud Functions to send SMS messages. This keeps your API keys secure on the server.
+### Step 1: Create Bird Account
 
-### Step 1: Set Up Firebase Cloud Functions
+1. Go to https://dashboard.bird.com and sign up
+2. When asked **"What integration type are you building?"** select **Notifications** (transactional SMS for booking confirmations/reminders)
+3. Complete the onboarding wizard
 
-1. **Install Firebase CLI** (if not already done):
-   ```bash
-   npm install -g firebase-tools
-   ```
+### Step 2: Get Your API Access Key
 
-2. **Initialize Cloud Functions**:
-   ```bash
-   firebase login
-   firebase init functions
-   ```
-   - Select TypeScript or JavaScript
-   - Install dependencies when prompted
+1. In the Bird Dashboard, go to **Developers > API access keys**
+2. Create a new access key (or use the default one)
+3. Copy the access key - you'll need it for the config
 
-3. **Install Twilio in Functions Directory**:
-   ```bash
-   cd functions
-   npm install twilio
-   ```
+### Step 3: Configure the Code
 
-### Step 2: Configure Environment Variables
-
-Store your Twilio credentials securely:
-
-```bash
-firebase functions:config:set twilio.account_sid="YOUR_ACCOUNT_SID"
-firebase functions:config:set twilio.auth_token="YOUR_AUTH_TOKEN"
-firebase functions:config:set twilio.phone_number="+357XXXXXXXXX"
-```
-
-### Step 3: Create Cloud Function
-
-Create/edit `functions/index.js` (or `index.ts`):
+Edit `js/booking-system.js` and replace the placeholder values:
 
 ```javascript
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-const twilio = require('twilio');
-
-admin.initializeApp();
-
-// Initialize Twilio
-const accountSid = functions.config().twilio.account_sid;
-const authToken = functions.config().twilio.auth_token;
-const twilioPhoneNumber = functions.config().twilio.phone_number;
-const client = twilio(accountSid, authToken);
-
-// Function to send SMS
-async function sendSMS(to, message) {
-  try {
-    const result = await client.messages.create({
-      body: message,
-      from: twilioPhoneNumber,
-      to: to
-    });
-    console.log('SMS sent successfully:', result.sid);
-    return result;
-  } catch (error) {
-    console.error('Error sending SMS:', error);
-    throw error;
-  }
-}
-
-// Trigger: When a new booking is created
-exports.sendBookingConfirmationSMS = functions.firestore
-  .document('bookings/{bookingId}')
-  .onCreate(async (snap, context) => {
-    const booking = snap.data();
-
-    // Format phone number (ensure it starts with country code)
-    let phoneNumber = booking.customerPhone;
-    if (!phoneNumber.startsWith('+')) {
-      // Assume Cyprus number if no country code
-      phoneNumber = '+357' + phoneNumber.replace(/^0+/, '');
-    }
-
-    // Create confirmation message in Greek
-    const message = `
-Γεια σας ${booking.customerName}!
-
-Το ραντεβού σας επιβεβαιώθηκε:
-📅 ${formatDate(booking.date)}
-🕐 ${booking.timeSlot}
-✂️ ${booking.service}
-👨‍🦰 Κομμωτής: ${booking.barberName}
-
-Mondi Hairstyle
-Τηλ: +357 99 123456
-    `.trim();
-
-    try {
-      await sendSMS(phoneNumber, message);
-
-      // Update booking document to mark SMS sent
-      await snap.ref.update({
-        smsSent: true,
-        smsSentAt: admin.firestore.FieldValue.serverTimestamp()
-      });
-    } catch (error) {
-      console.error('Failed to send SMS:', error);
-      // Don't fail the booking if SMS fails
-    }
-  });
-
-// Trigger: When booking status changes to confirmed
-exports.sendBookingStatusSMS = functions.firestore
-  .document('bookings/{bookingId}')
-  .onUpdate(async (change, context) => {
-    const newData = change.after.data();
-    const oldData = change.before.data();
-
-    // Only send SMS if status changed to confirmed or cancelled
-    if (oldData.status === newData.status) return null;
-
-    let phoneNumber = newData.customerPhone;
-    if (!phoneNumber.startsWith('+')) {
-      phoneNumber = '+357' + phoneNumber.replace(/^0+/, '');
-    }
-
-    let message = '';
-
-    if (newData.status === 'confirmed' && oldData.status === 'pending') {
-      message = `
-Γεια σας ${newData.customerName}!
-
-Το ραντεβού σας επιβεβαιώθηκε από τον κομμωτή!
-📅 ${formatDate(newData.date)} στις ${newData.timeSlot}
-✂️ ${newData.service}
-
-Mondi Hairstyle
-      `.trim();
-    } else if (newData.status === 'cancelled') {
-      message = `
-Γεια σας ${newData.customerName},
-
-Το ραντεβού σας για ${formatDate(newData.date)} στις ${newData.timeSlot} ακυρώθηκε.
-
-Για νέο ραντεβού: +357 99 123456
-
-Mondi Hairstyle
-      `.trim();
-    }
-
-    if (message) {
-      try {
-        await sendSMS(phoneNumber, message);
-      } catch (error) {
-        console.error('Failed to send status SMS:', error);
-      }
-    }
-
-    return null;
-  });
-
-// Scheduled function: Send reminders 24 hours before appointment
-exports.sendDailyReminders = functions.pubsub
-  .schedule('every day 10:00')
-  .timeZone('Europe/Athens')
-  .onRun(async (context) => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
-
-    // Get all confirmed bookings for tomorrow
-    const snapshot = await admin.firestore()
-      .collection('bookings')
-      .where('date', '==', tomorrowStr)
-      .where('status', '==', 'confirmed')
-      .get();
-
-    const promises = [];
-
-    snapshot.forEach(doc => {
-      const booking = doc.data();
-
-      let phoneNumber = booking.customerPhone;
-      if (!phoneNumber.startsWith('+')) {
-        phoneNumber = '+357' + phoneNumber.replace(/^0+/, '');
-      }
-
-      const message = `
-Υπενθύμιση Ραντεβού 📅
-
-Γεια σας ${booking.customerName}!
-
-Έχετε ραντεβού αύριο:
-🕐 ${booking.timeSlot}
-✂️ ${booking.service}
-👨‍🦰 ${booking.barberName}
-
-Σας περιμένουμε!
-Mondi Hairstyle
-      `.trim();
-
-      promises.push(
-        sendSMS(phoneNumber, message)
-          .then(() => {
-            return doc.ref.update({
-              reminderSent: true,
-              reminderSentAt: admin.firestore.FieldValue.serverTimestamp()
-            });
-          })
-          .catch(err => console.error('Reminder failed:', err))
-      );
-    });
-
-    await Promise.all(promises);
-    console.log(`Sent ${promises.length} reminder SMS`);
-    return null;
-  });
-
-// Helper function to format date in Greek
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  };
-  return date.toLocaleDateString('el-GR', options);
-}
+const BIRD_CONFIG = {
+  accessKey: 'YOUR_BIRD_ACCESS_KEY',    // Paste your API Access Key here
+  originator: 'MondiHair',              // Alphanumeric sender name (max 11 chars)
+  businessPhone: '+306974628335'        // Your business phone for cancellations
+};
 ```
 
-### Step 4: Deploy Cloud Functions
+### Step 4: Test
 
-```bash
-firebase deploy --only functions
-```
-
-This will deploy:
-- `sendBookingConfirmationSMS` - Sends SMS when booking is created
-- `sendBookingStatusSMS` - Sends SMS when booking status changes
-- `sendDailyReminders` - Runs daily at 10:00 AM to send 24h reminders
+1. Make a test booking with your own phone number
+2. Verify the SMS arrives correctly
+3. Check the Bird Dashboard logs for delivery status
 
 ---
 
-## 📝 SMS Message Templates
+## How It Works (Current Implementation)
 
-### Booking Confirmation (Greek)
+The SMS integration is built directly into `js/booking-system.js`:
+
+### API Endpoint
+- **URL:** `https://rest.messagebird.com/messages`
+- **Auth:** `AccessKey` header with your Bird API key
+- **Format:** JSON body with `originator`, `recipients`, and `body`
+
+### Functions
+
+| Function | Purpose |
+|----------|---------|
+| `sendSMS(to, message)` | Core function - sends SMS via Bird REST API |
+| `sendBookingConfirmation(booking)` | Sends confirmation when booking is created |
+| `send2HourReminder(booking)` | Sends reminder 2 hours before appointment |
+| `formatGreekPhone(phone)` | Formats phone to E.164 (+30XXXXXXXXXX) |
+| `getBookingsNeedingReminder()` | Finds bookings needing 2-hour reminders |
+| `markReminderSent(bookingId)` | Marks reminder as sent in Firestore |
+
+### Automatic Reminders
+- The admin panel (`admin.html`) runs a scheduler every 5 minutes
+- It checks for bookings 2 hours away and sends reminders
+- Reminders only send once (tracked via `reminderSent` flag in Firestore)
+
+---
+
+## SMS Message Templates (Greek)
+
+### Booking Confirmation
 ```
+✅ Επιβεβαίωση Ραντεβού
+
 Γεια σας [Name]!
 
 Το ραντεβού σας επιβεβαιώθηκε:
+
 📅 [Date]
 🕐 [Time]
-✂️ [Service]
-👨‍🦰 Κομμωτής: [Barber]
+💇 Κομμωτής: [Barber]
+✂️ Υπηρεσία: [Service]
+
+Για ακύρωση: +306974628335
 
 Mondi Hairstyle
-Τηλ: +357 99 123456
 ```
 
-### 24-Hour Reminder
+### 2-Hour Reminder
 ```
-Υπενθύμιση Ραντεβού 📅
+🔔 Υπενθύμιση Ραντεβού
 
-Γεια σας [Name]!
+Έχετε ραντεβού σε 2 ώρες:
 
-Έχετε ραντεβού αύριο:
-🕐 [Time]
-✂️ [Service]
-👨‍🦰 [Barber]
+📅 [Date]
+🕐 [Time] με [Barber]
 
-Σας περιμένουμε!
-Mondi Hairstyle
-```
+⏰ Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.
 
-### Cancellation Notice
-```
-Γεια σας [Name],
-
-Το ραντεβού σας για [Date] στις [Time] ακυρώθηκε.
-
-Για νέο ραντεβού: +357 99 123456
+Για ακύρωση: +306974628335
 
 Mondi Hairstyle
 ```
 
 ---
 
-## 💰 Cost Estimates
-
-### Twilio Pricing for Cyprus
+## Cost Estimates
 
 Based on 100 bookings per month:
-- 100 confirmation SMS: €6.00
-- 100 reminder SMS: €6.00
-- Total: **~€12/month**
+- 100 confirmation SMS: ~€5-7
+- 100 reminder SMS: ~€5-7
+- **Total: ~€10-14/month**
 
 ### Reducing Costs
-
-1. **Only send essentials**: Skip reminder for same-day bookings
-2. **Combine messages**: Send one SMS instead of two
-3. **SMS only for confirmed**: Don't send for pending bookings
-4. **Use email for reminders**: Keep SMS for confirmations only
+1. Skip reminders for same-day bookings
+2. Use email for reminders, SMS only for confirmations
+3. Combine confirmation + reminder into one message when close
 
 ---
 
-## 🧪 Testing
+## Security Notes
 
-### Test Mode with Twilio Trial
+**Current implementation** sends SMS directly from the browser (client-side). This works but exposes the API key in the frontend JavaScript.
 
-During trial, you can only send SMS to verified phone numbers:
-
-1. Verify your phone in Twilio Console
-2. Test the system by making a booking with your verified number
-3. Check that SMS arrives correctly
-4. Upgrade account when ready for production
-
-### Local Testing
-
-```bash
-# In functions directory
-npm run serve
-
-# This starts a local emulator
-# Trigger functions manually to test
-```
-
----
-
-## 🔒 Security Best Practices
-
-1. **Never expose credentials in frontend code**
-   - Use Cloud Functions for all SMS operations
-   - Store credentials in Firebase Config
-
-2. **Validate phone numbers**
-   - Check format before sending
-   - Use international format (+357...)
-
-3. **Rate limiting**
-   - Prevent spam by limiting SMS per customer
-   - Add cooldown between messages
-
-4. **Privacy compliance**
-   - Get consent for SMS notifications
-   - Add opt-out mechanism
-   - Follow GDPR guidelines
-
----
-
-## 🚨 Troubleshooting
-
-### SMS Not Sending
-
-1. **Check Twilio Console**
-   - Go to Logs to see error messages
-   - Verify phone number format
-
-2. **Check Firebase Functions Logs**
-   ```bash
-   firebase functions:log
-   ```
-
-3. **Common Issues**
-   - Phone number format incorrect (must include +357)
-   - Twilio trial limitations (only verified numbers)
-   - Insufficient Twilio credit
-
-### Phone Number Format Issues
-
-Cyprus phone numbers can be tricky. Use this helper:
+**For production**, consider moving SMS sending to Firebase Cloud Functions:
 
 ```javascript
-function formatCyprusPhone(phone) {
-  // Remove spaces and dashes
-  phone = phone.replace(/[\s-]/g, '');
+// functions/index.js - Bird SMS via Cloud Function
+const functions = require('firebase-functions');
+const fetch = require('node-fetch');
 
-  // If starts with 00357, replace with +357
-  if (phone.startsWith('00357')) {
-    return '+' + phone.substring(2);
-  }
+exports.sendSMS = functions.https.onCall(async (data, context) => {
+  const response = await fetch('https://rest.messagebird.com/messages', {
+    method: 'POST',
+    headers: {
+      'Authorization': `AccessKey ${functions.config().bird.access_key}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      originator: 'MondiHair',
+      recipients: [data.to],
+      body: data.message
+    })
+  });
+  return response.json();
+});
+```
 
-  // If starts with 357, add +
-  if (phone.startsWith('357')) {
-    return '+' + phone;
-  }
-
-  // If starts with 0, replace with +357
-  if (phone.startsWith('0')) {
-    return '+357' + phone.substring(1);
-  }
-
-  // If no country code, assume Cyprus
-  if (!phone.startsWith('+')) {
-    return '+357' + phone;
-  }
-
-  return phone;
-}
+Set the key securely:
+```bash
+firebase functions:config:set bird.access_key="YOUR_BIRD_ACCESS_KEY"
 ```
 
 ---
 
-## ✅ Checklist
+## Troubleshooting
 
-- [ ] Sign up for Twilio account
-- [ ] Verify your phone number (for testing)
-- [ ] Buy a Cyprus phone number (+357)
-- [ ] Install Firebase CLI
-- [ ] Initialize Cloud Functions
-- [ ] Install Twilio in functions directory
-- [ ] Set environment variables
-- [ ] Copy cloud function code
-- [ ] Deploy functions
-- [ ] Test with your verified number
-- [ ] Update booking form to get customer consent
-- [ ] Add SMS opt-out mechanism
-- [ ] Monitor costs in Twilio dashboard
-- [ ] Upgrade from trial when ready for production
+### SMS Not Sending
+1. Check Bird Dashboard > Logs for error details
+2. Verify the API access key is correct
+3. Ensure phone number is in E.164 format (+30XXXXXXXXXX)
+4. Check that your Bird account has sufficient credits
 
----
+### Common Bird API Errors
+- `2` - Request not allowed (check access key)
+- `9` - Missing params (check originator/recipients/body)
+- `10` - Invalid originator (must be <= 11 alphanumeric chars)
+- `21` - Insufficient balance (top up your account)
 
-## 💡 Alternative: Simpler Approach Without Cloud Functions
-
-If you want to avoid Cloud Functions, you can use a backend service:
-
-### Option A: Use Zapier/Make.com
-
-1. Create a Zap/Scenario that watches Firestore
-2. When new booking is created → Send SMS via Twilio
-3. No code required, but monthly subscription
-
-### Option B: Simple Backend Script
-
-Create a small Node.js server that:
-1. Listens for Firestore changes
-2. Sends SMS via Twilio
-3. Can run on Heroku free tier or any hosting
+### Phone Number Format
+Greek numbers must be in E.164 format: `+30` followed by 10 digits.
+The `formatGreekPhone()` function handles this automatically.
 
 ---
 
-## 📚 Additional Resources
+## Checklist
 
-- [Twilio SMS Documentation](https://www.twilio.com/docs/sms)
-- [Firebase Cloud Functions Guide](https://firebase.google.com/docs/functions)
-- [Twilio Pricing for Cyprus](https://www.twilio.com/sms/pricing/cy)
-- [Firebase Functions Samples](https://github.com/firebase/functions-samples)
+- [ ] Sign up at https://dashboard.bird.com
+- [ ] Select "Notifications" as integration type
+- [ ] Get your API Access Key from Developers section
+- [ ] Replace `YOUR_BIRD_ACCESS_KEY` in `js/booking-system.js`
+- [ ] Test with your own phone number
+- [ ] Verify SMS delivery in Bird Dashboard logs
+- [ ] Monitor costs in Bird Dashboard
+- [ ] (Optional) Move to Firebase Cloud Functions for production security
 
 ---
 
-## 🎯 Quick Start Summary
+## Bird API Reference
 
-1. **Sign up for Twilio** → Get Account SID, Auth Token, Phone Number
-2. **Set up Firebase Functions** → `firebase init functions`
-3. **Add Twilio credentials** → `firebase functions:config:set`
-4. **Copy the code above** → Paste into `functions/index.js`
-5. **Deploy** → `firebase deploy --only functions`
-6. **Test** → Create a booking with your verified number
-
-That's it! Your booking system will now send SMS confirmations automatically.
+- [Bird SMS API Docs](https://docs.bird.com/api/channels/sms)
+- [MessageBird REST API](https://developers.messagebird.com/api/sms-messaging/)
+- [Dashboard](https://dashboard.bird.com)
