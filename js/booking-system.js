@@ -3,7 +3,7 @@
 // Bird SMS Configuration (formerly MessageBird)
 // IMPORTANT: Replace with your actual Bird credentials from https://dashboard.bird.com
 const BIRD_CONFIG = {
-  accessKey: 'YOUR_BIRD_ACCESS_KEY',          // Replace with your API Access Key from Bird Dashboard
+  accessKey: 'j73X26k4Uq7JvLWmpeY64pLeD6u2HdgB63uN',  // Bird API Access Key
   originator: 'MondiHair',                    // Your alphanumeric sender name (max 11 chars)
   businessPhone: '+306974628335'              // Your business phone for customers to call
 };
