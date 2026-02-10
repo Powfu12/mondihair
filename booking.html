@@ -1617,14 +1617,10 @@
                 console.log('Day of week:', date.getDay());
                 console.log('Day name:', ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][date.getDay()]);
 
-                // Use cache for faster loading
+                // Always fetch fresh slots (don't use stale cache)
                 const cacheKey = `${selectedBarber}_${selectedDate}`;
-                let slots = slotsCache[cacheKey];
-
-                if (!slots) {
-                    slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
-                    slotsCache[cacheKey] = slots;
-                }
+                let slots = await bookingSystem.getAvailableTimeSlots(selectedBarber, date);
+                slotsCache[cacheKey] = slots;
 
                 console.log('Available slots:', slots);
 
@@ -1657,6 +1653,9 @@
         }
 
         async function submitBooking() {
+            const submitBtn = document.querySelector('#customerForm .btn-primary');
+            if (submitBtn.disabled) return;
+
             const name = document.getElementById('customerName').value.trim();
             const phone = document.getElementById('customerPhone').value.trim();
             const email = document.getElementById('customerEmail').value.trim();
@@ -1666,6 +1665,10 @@
                 alert(t('pleaseFillRequired'));
                 return;
             }
+
+            // Disable button to prevent double-clicks
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (currentLanguage === 'el' ? 'Υποβολή...' : 'Submitting...');
 
             console.log('Submitting booking with data:', {
                 barberId: selectedBarber,
@@ -1699,6 +1702,10 @@
             } catch (error) {
                 console.error('Error submitting booking:', error);
                 alert(t('bookingFailed') + ': ' + (error.message || 'Unknown error'));
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> ' + (currentLanguage === 'el' ? 'Επιβεβαίωση Ραντεβού' : 'Confirm Booking');
             }
         }
 
