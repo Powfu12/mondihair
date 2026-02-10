@@ -1,11 +1,11 @@
 // Booking System Logic
 
-// Bird SMS Configuration (formerly MessageBird)
-// IMPORTANT: Replace with your actual Bird credentials from https://dashboard.bird.com
+// Bird SMS Configuration
 const BIRD_CONFIG = {
-  accessKey: 'j73X26k4Uq7JvLWmpeY64pLeD6u2HdgB63uN',  // Bird API Access Key
-  originator: 'MondiHair',                    // Your alphanumeric sender name (max 11 chars)
-  businessPhone: '+306974628335'              // Your business phone for customers to call
+  accessKey: 'j73X26k4Uq7JvLWmpeY64pLeD6u2HdgB63uN',
+  workspaceId: '6d56cc80-c572-44fa-9d7f-92de60064047',
+  channelId: '73ecef4c-4128-4848-9ad9-f99244b49a4b',
+  businessPhone: '+306974628335'
 };
 
 class BookingSystem {
@@ -352,7 +352,7 @@ class BookingSystem {
     return null;
   }
 
-  // Send SMS via Bird (formerly MessageBird)
+  // Send SMS via Bird API
   async sendSMS(to, message) {
     try {
       const formattedPhone = this.formatGreekPhone(to);
@@ -362,30 +362,37 @@ class BookingSystem {
 
       console.log('Sending SMS to:', formattedPhone);
 
-      const response = await fetch(
-        'https://rest.messagebird.com/messages',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `AccessKey ${BIRD_CONFIG.accessKey}`,
-            'Content-Type': 'application/json'
+      const url = `https://api.bird.com/workspaces/${BIRD_CONFIG.workspaceId}/channels/${BIRD_CONFIG.channelId}/messages`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `AccessKey ${BIRD_CONFIG.accessKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          receiver: {
+            contacts: [
+              { identifierValue: formattedPhone }
+            ]
           },
-          body: JSON.stringify({
-            originator: BIRD_CONFIG.originator,
-            recipients: [formattedPhone],
-            body: message
-          })
-        }
-      );
+          body: {
+            type: 'text',
+            text: {
+              text: message
+            }
+          }
+        })
+      });
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (response.status === 202 || response.ok) {
+        const data = await response.json();
         console.log('SMS sent successfully:', data.id);
         return { success: true, sid: data.id };
       } else {
+        const data = await response.json();
         console.error('Bird error:', data);
-        return { success: false, error: data.errors ? data.errors[0].description : 'Unknown error' };
+        return { success: false, error: data.title || data.detail || 'Unknown error' };
       }
     } catch (error) {
       console.error('Error sending SMS:', error);
