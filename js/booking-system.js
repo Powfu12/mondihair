@@ -147,43 +147,18 @@ class BookingSystem {
   // Create a new booking
   async createBooking(bookingData) {
     try {
-      // Validate that the time slot is still available
-      // Fix: Parse date correctly to avoid timezone issues
-      const [year, month, day] = bookingData.date.split('-').map(Number);
-      const bookingDate = new Date(year, month - 1, day);
+      // Check if this specific slot is already booked (direct check, no recalculation)
+      const existingBooking = await db.collection('bookings')
+        .where('barberId', '==', bookingData.barberId)
+        .where('date', '==', bookingData.date)
+        .where('timeSlot', '==', bookingData.timeSlot)
+        .where('status', 'in', ['pending', 'confirmed'])
+        .get();
 
-      console.log('=== BOOKING VALIDATION DEBUG ===');
-      console.log('Barber ID:', bookingData.barberId);
-      console.log('Date string:', bookingData.date);
-      console.log('Date object:', bookingDate);
-      console.log('Day of week:', bookingDate.getDay());
-      console.log('Time slot:', bookingData.timeSlot);
-      console.log('Time slot type:', typeof bookingData.timeSlot);
-
-      const availableSlots = await this.getAvailableTimeSlots(
-        bookingData.barberId,
-        bookingDate
-      );
-
-      console.log('Available slots:', availableSlots);
-      console.log('Available slots length:', availableSlots.length);
-      console.log('First few available slots:', availableSlots.slice(0, 5));
-      console.log('Checking if slot exists...');
-      console.log('Exact match test:', availableSlots.includes(bookingData.timeSlot));
-
-      // Check if any slot matches (in case of spacing or format issues)
-      const matchingSlots = availableSlots.filter(slot => slot.trim() === bookingData.timeSlot.trim());
-      console.log('Matching slots after trim:', matchingSlots);
-
-      if (!availableSlots.includes(bookingData.timeSlot)) {
-        console.error('VALIDATION FAILED: Time slot not found in available slots');
-        console.error('Requested:', JSON.stringify(bookingData.timeSlot));
-        console.error('Available:', JSON.stringify(availableSlots));
+      if (!existingBooking.empty) {
+        console.error('Slot already booked:', bookingData.timeSlot);
         throw new Error('This time slot is no longer available');
       }
-
-      console.log('Validation passed, creating booking...');
-      console.log('=== END DEBUG ===');
 
       // Create booking document (automatically confirmed)
       const booking = {
@@ -203,9 +178,9 @@ class BookingSystem {
 
       const docRef = await db.collection('bookings').add(booking);
 
-      console.log('Booking created, sending confirmation SMS...');
+      console.log('Booking created successfully:', docRef.id);
 
-      // Send confirmation SMS
+      // Send confirmation SMS (don't fail booking if SMS fails)
       const smsResult = await this.sendBookingConfirmation({
         ...booking,
         barberName: booking.barberName
@@ -215,7 +190,6 @@ class BookingSystem {
         console.log('Confirmation SMS sent successfully');
       } else {
         console.warn('Failed to send confirmation SMS:', smsResult.error);
-        // Don't fail the booking if SMS fails
       }
 
       return {
