@@ -2,7 +2,7 @@
 
 // Bird SMS Configuration
 const BIRD_CONFIG = {
-  accessKey: 'j73X26k4Uq7JvLWmpeY64pLeD6u2HdgB63uN',
+  accessKey: 't22Ajcb993Kp0XPH2gxiGpqGU7VML74xAsPW',
   workspaceId: '6d56cc80-c572-44fa-9d7f-92de60064047',
   channelId: 'a8fe839d-0a11-5f96-b027-d2ffdc0fe8cc',
   businessPhone: '+306974628335'
@@ -441,21 +441,16 @@ Mondi Hairstyle`;
     return await this.sendSMS(booking.customerPhone, message);
   }
 
-  // Get bookings needing reminder (2 hours before)
+  // Get bookings needing reminder (~2 hours before appointment)
   async getBookingsNeedingReminder() {
     try {
       const now = new Date();
-      const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
 
       // Format as YYYY-MM-DD
       const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-      // Get target hour for comparison (2 hours from now)
-      const targetHour = String(twoHoursLater.getHours()).padStart(2, '0');
-      const targetMinute = String(twoHoursLater.getMinutes()).padStart(2, '0');
-      const targetTime = `${targetHour}:${targetMinute}`;
-
-      console.log('Looking for bookings at:', todayStr, targetTime);
+      console.log('Checking reminders at:', todayStr, `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`);
 
       const snapshot = await db.collection('bookings')
         .where('date', '==', todayStr)
@@ -467,15 +462,20 @@ Mondi Hairstyle`;
       snapshot.docs.forEach(doc => {
         const booking = { id: doc.id, ...doc.data() };
 
-        // Check if booking time is approximately 2 hours from now (within 5 min window)
-        const bookingTime = booking.timeSlot;
-        const [bookingHour, bookingMinute] = bookingTime.split(':').map(Number);
-        const [targetH, targetM] = [parseInt(targetHour), parseInt(targetMinute)];
+        // Skip if reminder already sent
+        if (booking.reminderSent) return;
 
-        // Within 5 minute window
-        const timeDiff = Math.abs((bookingHour * 60 + bookingMinute) - (targetH * 60 + targetM));
+        const [bookingHour, bookingMinute] = booking.timeSlot.split(':').map(Number);
+        const bookingMinutes = bookingHour * 60 + bookingMinute;
 
-        if (timeDiff <= 5 && !booking.reminderSent) {
+        // Minutes until the appointment
+        const minutesUntilAppointment = bookingMinutes - currentMinutes;
+
+        // Send reminder when appointment is 90-150 minutes away (1.5h to 2.5h)
+        // This gives a wide 1-hour window so the scheduler (every 5 min) won't miss it
+        // The reminderSent flag prevents duplicate sends
+        if (minutesUntilAppointment >= 90 && minutesUntilAppointment <= 150) {
+          console.log(`Booking ${booking.id} at ${booking.timeSlot} needs reminder (${minutesUntilAppointment} min away)`);
           bookingsNeedingReminder.push(booking);
         }
       });
