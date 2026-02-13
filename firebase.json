@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "source": "functions"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "functions",
+      "FIREBASE_SETUP.md",
+      "SMS_INTEGRATION_GUIDE.md"
+    ]
+  }
+}
