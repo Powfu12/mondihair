@@ -35,36 +35,36 @@ const BARBERS = {
       monday: {
         ranges: [
           { start: '09:00', end: '14:40' },
-          { start: '16:40', end: '21:00' }
+          { start: '16:40', end: '21:40' }
         ]
       },
       tuesday: {
         ranges: [
           { start: '09:00', end: '14:40' },
-          { start: '16:40', end: '21:00' }
+          { start: '16:40', end: '21:40' }
         ]
       },
       wednesday: {
         ranges: [
-          { start: '09:00', end: '17:00' }
+          { start: '09:00', end: '18:00' }
         ]
       },
       thursday: {
         ranges: [
           { start: '09:00', end: '14:40' },
-          { start: '16:40', end: '21:00' }
+          { start: '16:40', end: '21:40' }
         ]
       },
       friday: {
         ranges: [
           { start: '09:00', end: '14:40' },
-          { start: '16:40', end: '21:00' }
+          { start: '16:40', end: '21:40' }
         ]
       },
       saturday: {
         ranges: [
           { start: '09:00', end: '14:40' },
-          { start: '16:40', end: '21:00' }
+          { start: '16:40', end: '21:40' }
         ]
       },
       sunday: { closed: true }
@@ -79,36 +79,33 @@ const BARBERS = {
     workingHours: {
       monday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
-          { start: '17:00', end: '21:00' }
+          { start: '16:30', end: '21:00' }
         ]
       },
       tuesday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
-          { start: '17:00', end: '21:00' }
+          { start: '16:30', end: '21:00' }
         ]
       },
       wednesday: {
         ranges: [
-          { start: '09:00', end: '17:00' }
+          { start: '15:00', end: '18:00' }
         ]
       },
       thursday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
-          { start: '17:00', end: '21:00' }
+          { start: '16:30', end: '21:00' }
         ]
       },
       friday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
-          { start: '17:00', end: '21:00' }
+          { start: '16:30', end: '21:00' }
         ]
       },
       saturday: {
         ranges: [
-          { start: '09:00', end: '21:00' }
+          { start: '09:00', end: '15:00' },
+          { start: '16:30', end: '21:00' }
         ]
       },
       sunday: { closed: true }
@@ -123,13 +120,13 @@ const BARBERS = {
     workingHours: {
       monday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
+          { start: '09:00', end: '13:30' },
           { start: '17:00', end: '21:00' }
         ]
       },
       tuesday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
+          { start: '09:00', end: '13:30' },
           { start: '17:00', end: '21:00' }
         ]
       },
@@ -140,13 +137,13 @@ const BARBERS = {
       },
       thursday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
+          { start: '09:00', end: '13:30' },
           { start: '17:00', end: '21:00' }
         ]
       },
       friday: {
         ranges: [
-          { start: '09:00', end: '14:00' },
+          { start: '09:00', end: '13:30' },
           { start: '17:00', end: '21:00' }
         ]
       },
@@ -172,10 +169,11 @@ const TIME_SLOTS_30 = [
 const TIME_SLOTS_20 = [
   '09:00', '09:20', '09:40', '10:00', '10:20', '10:40',
   '11:00', '11:20', '11:40', '12:00', '12:20', '12:40',
-  '13:00', '13:20', '13:40', '14:00', '14:20',
-  '15:00', '15:20', '15:40', '16:00', '16:40',
+  '13:00', '13:20', '13:40', '14:00', '14:20', '14:40',
+  '15:00', '15:20', '15:40', '16:00', '16:20', '16:40',
   '17:00', '17:20', '17:40', '18:00', '18:20', '18:40',
-  '19:00', '19:20', '19:40', '20:00', '20:20', '20:40', '21:00'
+  '19:00', '19:20', '19:40', '20:00', '20:20', '20:40',
+  '21:00', '21:20', '21:40'
 ];
 
 // Helper function to get time slots for a specific barber
