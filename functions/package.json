@@ -2,7 +2,7 @@
   "name": "mondi-hair-functions",
   "description": "Cloud Functions for Mondi Hairstyle booking system",
   "engines": {
-    "node": "18"
+    "node": "22"
   },
   "main": "index.js",
   "dependencies": {
