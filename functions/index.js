@@ -36,6 +36,13 @@ async function sendSMS(to, message) {
   const formattedPhone = formatGreekPhone(to);
   if (!formattedPhone) throw new Error('Invalid phone number: ' + to);
 
+  // Log config to verify env vars are loaded
+  console.log(`SMS to: ${formattedPhone}, accessKey set: ${!!BIRD_CONFIG.accessKey}, workspace: ${BIRD_CONFIG.workspaceId}, channel: ${BIRD_CONFIG.channelId}`);
+
+  if (!BIRD_CONFIG.accessKey) throw new Error('BIRD_ACCESS_KEY env variable is not set');
+  if (!BIRD_CONFIG.workspaceId) throw new Error('BIRD_WORKSPACE_ID env variable is not set');
+  if (!BIRD_CONFIG.channelId) throw new Error('BIRD_CHANNEL_ID env variable is not set');
+
   const url = `https://api.bird.com/workspaces/${BIRD_CONFIG.workspaceId}/channels/${BIRD_CONFIG.channelId}/messages`;
 
   const response = await fetch(url, {
@@ -55,12 +62,14 @@ async function sendSMS(to, message) {
     })
   });
 
+  const responseText = await response.text();
+  console.log(`Bird API response: status=${response.status}, body=${responseText}`);
+
   if (response.status === 202 || response.ok) {
-    const data = await response.json();
+    const data = JSON.parse(responseText);
     return { success: true, id: data.id };
   } else {
-    const data = await response.json();
-    throw new Error(data.title || data.detail || 'SMS send failed');
+    throw new Error(`Bird API error ${response.status}: ${responseText}`);
   }
 }
 
