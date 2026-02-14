@@ -5,12 +5,12 @@ const { getFirestore } = require('firebase-admin/firestore');
 initializeApp();
 const db = getFirestore();
 
-// Bird SMS config from environment variables (.env file)
+// Bird SMS Configuration
 const BIRD_CONFIG = {
-  accessKey: process.env.BIRD_ACCESS_KEY,
-  workspaceId: process.env.BIRD_WORKSPACE_ID,
-  channelId: process.env.BIRD_CHANNEL_ID,
-  businessPhone: process.env.BIRD_BUSINESS_PHONE || '+306974628335'
+  accessKey: 't22Ajcb993Kp0XPH2gxiGpqGU7VML74xAsPW',
+  workspaceId: '6d56cc80-c572-44fa-9d7f-92de60064047',
+  channelId: 'a8fe839d-0a11-5f96-b027-d2ffdc0fe8cc',
+  businessPhone: '+306974628335'
 };
 
 // Format Greek phone number to E.164 (+30XXXXXXXXXX)
