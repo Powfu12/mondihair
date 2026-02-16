@@ -282,10 +282,11 @@ class BookingSystem {
 
   // Listen for real-time updates
   listenToBookings(barberId, callback) {
-    return db.collection('bookings')
-      .where('barberId', '==', barberId)
-      .limit(100)
-      .onSnapshot(snapshot => {
+    let query = db.collection('bookings');
+    if (barberId !== 'all') {
+      query = query.where('barberId', '==', barberId);
+    }
+    return query.limit(300).onSnapshot(snapshot => {
         const bookings = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()

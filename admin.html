@@ -1671,6 +1671,7 @@
                     <label>Επιλέξτε Προφίλ Κομμωτή</label>
                     <select id="barberSelect" required>
                         <option value="">Επιλέξτε το προφίλ σας...</option>
+                        <option value="all">Όλοι (All)</option>
                         <option value="mondi">Mondi</option>
                         <option value="ervin">Ervin</option>
                         <option value="marios">Marios</option>
@@ -2075,6 +2076,10 @@
 
         // Load Barber Schedule from Firestore
         async function loadBarberSchedule() {
+            if (currentBarberId === 'all') {
+                barberSchedule = BARBERS['mondi'].workingHours;
+                return;
+            }
             try {
                 const scheduleDoc = await db.collection('schedules').doc(currentBarberId).get();
                 if (scheduleDoc.exists) {
@@ -2093,7 +2098,7 @@
         function showDashboard() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
-            document.getElementById('dashboardTitle').textContent = 'Πίνακας Διαχείρισης - ' + BARBERS[currentBarberId].name;
+            document.getElementById('dashboardTitle').textContent = 'Πίνακας Διαχείρισης - ' + (currentBarberId === 'all' ? 'Όλοι' : BARBERS[currentBarberId].name);
             document.getElementById('userEmail').textContent = currentUser.email;
 
             loadBookings();
@@ -2139,6 +2144,10 @@
 
         // Open Add Booking Modal
         function openAddBookingModal() {
+            if (currentBarberId === 'all') {
+                alert('Επιλέξτε συγκεκριμένο κομμωτή για να προσθέσετε ραντεβού');
+                return;
+            }
             document.getElementById('addBookingModal').classList.add('active');
             document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
         }
@@ -2234,7 +2243,8 @@
             html += '</div>';
 
             Object.keys(days).forEach(day => {
-                const schedule = barberSchedule[day] || BARBERS[currentBarberId].workingHours[day];
+                const defaultBarber = currentBarberId === 'all' ? 'mondi' : currentBarberId;
+                const schedule = barberSchedule[day] || BARBERS[defaultBarber].workingHours[day];
                 const isClosed = schedule.closed || false;
 
                 // Format the time ranges for display
@@ -2285,7 +2295,8 @@
                 const isOpen = document.getElementById(`toggle-${day}`).checked;
                 if (isOpen) {
                     // Use default ranges from BARBERS config
-                    newSchedule[day] = BARBERS[currentBarberId].workingHours[day];
+                    const scheduleBarber = currentBarberId === 'all' ? 'mondi' : currentBarberId;
+                    newSchedule[day] = BARBERS[scheduleBarber].workingHours[day];
                 } else {
                     newSchedule[day] = { closed: true };
                 }
@@ -2624,8 +2635,19 @@
                 b.date === dateStr && b.status !== 'cancelled'
             );
 
-            // Get barber-specific time slots (20 min for Mondi, 30 min for others)
-            const timeSlots = getTimeSlotsForBarber(currentBarberId);
+            // Get time slots - for "all" mode, merge all slot intervals
+            let timeSlots;
+            if (currentBarberId === 'all') {
+                const slots20 = getTimeSlotsForBarber('mondi');
+                const slots30 = getTimeSlotsForBarber('ervin');
+                const merged = [...new Set([...slots20, ...slots30])];
+                merged.sort();
+                timeSlots = merged;
+            } else {
+                timeSlots = getTimeSlotsForBarber(currentBarberId);
+            }
+
+            const isAllMode = currentBarberId === 'all';
 
             // Create time slots using barber-specific intervals
             let html = '';
@@ -2638,6 +2660,7 @@
                         <div class="time-slot-content">
                             ${bookingsAtTime.map(booking => `
                                 <div class="calendar-booking-item status-${booking.status}">
+                                    ${isAllMode ? `<div class="calendar-booking-barber" style="font-size:0.7rem;color:#C3E321;font-weight:600;margin-bottom:2px;">${booking.barberName || booking.barberId}</div>` : ''}
                                     <div class="calendar-booking-name">${booking.customerName}</div>
                                     <div class="calendar-booking-service">${booking.service}</div>
                                 </div>
@@ -2685,6 +2708,7 @@
                             ${dayBookings.map(booking => `
                                 <div class="week-booking-item status-${booking.status}">
                                     <div class="week-booking-time">${booking.timeSlot}</div>
+                                    ${currentBarberId === 'all' ? `<div style="font-size:0.65rem;color:#C3E321;font-weight:600;">${booking.barberName || booking.barberId}</div>` : ''}
                                     <div class="week-booking-name">${booking.customerName}</div>
                                 </div>
                             `).join('')}
