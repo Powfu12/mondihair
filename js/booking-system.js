@@ -1,10 +1,8 @@
 // Booking System Logic
 
-// Brevo Email Configuration
-const BREVO_CONFIG = {
-  apiKey: '2tC0rXq7SDGFPsAm',
-  senderEmail: 'booking@mondihair.com',
-  senderName: 'Mondi Hairstyle',
+// Email is sent via Cloud Function - no API key needed client-side
+const EMAIL_CONFIG = {
+  confirmationUrl: 'https://europe-west1-mondi-2aeae.cloudfunctions.net/sendConfirmation',
   businessPhone: '+306974628335'
 };
 
@@ -307,130 +305,36 @@ class BookingSystem {
       });
   }
 
-  // Send email via Brevo API
-  async sendEmail(to, subject, htmlContent) {
-    try {
-      if (!to) {
-        throw new Error('No email address provided');
-      }
-
-      console.log('Sending email to:', to);
-
-      const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': BREVO_CONFIG.apiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: {
-            name: BREVO_CONFIG.senderName,
-            email: BREVO_CONFIG.senderEmail
-          },
-          to: [{ email: to }],
-          subject: subject,
-          htmlContent: htmlContent
-        })
-      });
-
-      const responseText = await response.text();
-      console.log('Brevo response:', response.status, responseText);
-
-      if (response.ok) {
-        const data = JSON.parse(responseText);
-        console.log('Email sent successfully:', data.messageId);
-        return { success: true, messageId: data.messageId };
-      } else {
-        console.error('Brevo error:', responseText);
-        return { success: false, error: responseText };
-      }
-    } catch (error) {
-      console.error('Error sending email:', error);
-      return { success: false, error: error.message };
-    }
-  }
-
-  // Send booking confirmation email
+  // Send booking confirmation email via Cloud Function
   async sendBookingConfirmation(booking) {
     if (!booking.customerEmail) {
       console.warn('No email address for booking, skipping confirmation');
       return { success: false, error: 'No email address' };
     }
 
-    const date = new Date(booking.date + 'T00:00:00');
-    const dateStr = date.toLocaleDateString('el-GR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+    try {
+      console.log('Sending confirmation email via Cloud Function to:', booking.customerEmail);
 
-    const subject = `Επιβεβαίωση Ραντεβού - Mondi Hairstyle`;
+      const response = await fetch(EMAIL_CONFIG.confirmationUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerEmail: booking.customerEmail,
+          customerName: booking.customerName,
+          date: booking.date,
+          timeSlot: booking.timeSlot,
+          barberName: booking.barberName,
+          service: booking.service
+        })
+      });
 
-    const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a2e; color: #ffffff; border-radius: 12px; overflow: hidden;">
-        <div style="background: #C3E321; padding: 20px; text-align: center;">
-          <h1 style="margin: 0; color: #1a1a2e; font-size: 22px;">Mondi Hairstyle</h1>
-        </div>
-        <div style="padding: 25px;">
-          <h2 style="color: #C3E321; margin-top: 0;">Επιβεβαίωση Ραντεβού</h2>
-          <p>Γεια σας <strong>${booking.customerName}</strong>!</p>
-          <p>Το ραντεβού σας επιβεβαιώθηκε:</p>
-          <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
-            <tr><td style="padding: 8px 0; color: #aaa;">Ημερομηνία</td><td style="padding: 8px 0; font-weight: bold;">${dateStr}</td></tr>
-            <tr><td style="padding: 8px 0; color: #aaa;">Ωρα</td><td style="padding: 8px 0; font-weight: bold;">${booking.timeSlot}</td></tr>
-            <tr><td style="padding: 8px 0; color: #aaa;">Κομμωτής</td><td style="padding: 8px 0; font-weight: bold;">${booking.barberName}</td></tr>
-            <tr><td style="padding: 8px 0; color: #aaa;">Υπηρεσία</td><td style="padding: 8px 0; font-weight: bold;">${booking.service}</td></tr>
-          </table>
-          <p style="color: #aaa; font-size: 13px;">Για ακύρωση καλέστε: ${BREVO_CONFIG.businessPhone}</p>
-        </div>
-        <div style="background: #111; padding: 15px; text-align: center; color: #666; font-size: 12px;">
-          Mondi Hairstyle - Zakynthos
-        </div>
-      </div>`;
-
-    return await this.sendEmail(booking.customerEmail, subject, htmlContent);
-  }
-
-  // Send 2-hour reminder email
-  async send2HourReminder(booking) {
-    if (!booking.customerEmail) {
-      console.warn('No email address for booking, skipping reminder');
-      return { success: false, error: 'No email address' };
+      const data = await response.json();
+      console.log('Confirmation result:', data);
+      return data;
+    } catch (error) {
+      console.error('Error sending confirmation email:', error);
+      return { success: false, error: error.message };
     }
-
-    const date = new Date(booking.date + 'T00:00:00');
-    const dateStr = date.toLocaleDateString('el-GR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long'
-    });
-
-    const subject = `Υπενθύμιση Ραντεβού σε 2 ώρες - Mondi Hairstyle`;
-
-    const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a2e; color: #ffffff; border-radius: 12px; overflow: hidden;">
-        <div style="background: #C3E321; padding: 20px; text-align: center;">
-          <h1 style="margin: 0; color: #1a1a2e; font-size: 22px;">Mondi Hairstyle</h1>
-        </div>
-        <div style="padding: 25px;">
-          <h2 style="color: #C3E321; margin-top: 0;">Υπενθύμιση Ραντεβού</h2>
-          <p>Γεια σας <strong>${booking.customerName}</strong>!</p>
-          <p>Έχετε ραντεβού σε <strong>2 ώρες</strong>:</p>
-          <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
-            <tr><td style="padding: 8px 0; color: #aaa;">Ημερομηνία</td><td style="padding: 8px 0; font-weight: bold;">${dateStr}</td></tr>
-            <tr><td style="padding: 8px 0; color: #aaa;">Ωρα</td><td style="padding: 8px 0; font-weight: bold;">${booking.timeSlot}</td></tr>
-            <tr><td style="padding: 8px 0; color: #aaa;">Κομμωτής</td><td style="padding: 8px 0; font-weight: bold;">${booking.barberName}</td></tr>
-          </table>
-          <p style="color: #C3E321;">Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.</p>
-          <p style="color: #aaa; font-size: 13px;">Για ακύρωση καλέστε: ${BREVO_CONFIG.businessPhone}</p>
-        </div>
-        <div style="background: #111; padding: 15px; text-align: center; color: #666; font-size: 12px;">
-          Mondi Hairstyle - Zakynthos
-        </div>
-      </div>`;
-
-    return await this.sendEmail(booking.customerEmail, subject, htmlContent);
   }
 
   // Get bookings needing reminder (~2 hours before appointment)
