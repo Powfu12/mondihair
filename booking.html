@@ -1056,12 +1056,12 @@
                     <input type="text" class="input-field" id="customerName" placeholder="Γιάννης Παπαδόπουλος" required>
                 </div>
                 <div class="input-group">
-                    <label class="input-label">Τηλέφωνο *</label>
-                    <input type="tel" class="input-field" id="customerPhone" placeholder="+30 69 12345678" required>
+                    <label class="input-label">Email *</label>
+                    <input type="email" class="input-field" id="customerEmail" placeholder="email@example.com" required>
                 </div>
                 <div class="input-group">
-                    <label class="input-label">Email (Προαιρετικό)</label>
-                    <input type="email" class="input-field" id="customerEmail" placeholder="email@example.com">
+                    <label class="input-label">Τηλέφωνο *</label>
+                    <input type="tel" class="input-field" id="customerPhone" placeholder="+30 69 12345678" required>
                 </div>
                 <div class="input-group">
                     <label class="input-label">Ειδικές Απαιτήσεις (Προαιρετικό)</label>
@@ -1135,7 +1135,7 @@
                 bookingConfirmed: 'Το Ραντεβού Επιβεβαιώθηκε!',
                 fullName: 'Ονοματεπώνυμο',
                 phoneNumber: 'Τηλέφωνο',
-                email: 'Email (Προαιρετικό)',
+                email: 'Email',
                 specialRequests: 'Ειδικές Απαιτήσεις (Προαιρετικό)',
                 next: 'Επόμενο',
                 back: 'Πίσω',
@@ -1172,7 +1172,7 @@
                 bookingConfirmed: 'Booking Confirmed!',
                 fullName: 'Full Name',
                 phoneNumber: 'Phone Number',
-                email: 'Email (Optional)',
+                email: 'Email',
                 specialRequests: 'Special Requests (Optional)',
                 next: 'Next',
                 back: 'Back',
@@ -1537,7 +1537,7 @@
             const email = document.getElementById('customerEmail').value.trim();
             const notes = document.getElementById('customerNotes').value.trim();
 
-            if (!name || !phone) {
+            if (!name || !email || !phone) {
                 alert(t('pleaseFillRequired'));
                 return;
             }
@@ -1556,6 +1556,9 @@
                 customerEmail: email,
                 notes: notes
             };
+
+            // Save customer details for next time
+            localStorage.setItem('mondi_customer', JSON.stringify({ name, email, phone }));
 
             try {
                 const result = await bookingSystem.createBooking(booking);
@@ -1642,6 +1645,17 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             updateLanguage();
+
+            // Pre-fill customer details from last booking
+            const saved = localStorage.getItem('mondi_customer');
+            if (saved) {
+                try {
+                    const customer = JSON.parse(saved);
+                    if (customer.name) document.getElementById('customerName').value = customer.name;
+                    if (customer.email) document.getElementById('customerEmail').value = customer.email;
+                    if (customer.phone) document.getElementById('customerPhone').value = customer.phone;
+                } catch (e) {}
+            }
         });
     </script>
 </body>
