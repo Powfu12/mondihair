@@ -12,7 +12,7 @@ const db = getFirestore();
 const brevoApiKey = defineSecret('BREVO_API_KEY');
 
 const BREVO_SENDER = {
-  email: 'booking@mondihair.com',
+  email: 'reply@mondihairstyle.com',
   name: 'Mondi Hairstyle'
 };
 const BUSINESS_PHONE = '+306974628335';
