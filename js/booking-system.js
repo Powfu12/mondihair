@@ -1,10 +1,10 @@
 // Booking System Logic
 
-// Bird SMS Configuration
-const BIRD_CONFIG = {
-  accessKey: 't22Ajcb993Kp0XPH2gxiGpqGU7VML74xAsPW',
-  workspaceId: '6d56cc80-c572-44fa-9d7f-92de60064047',
-  channelId: 'a8fe839d-0a11-5f96-b027-d2ffdc0fe8cc',
+// Brevo Email Configuration
+const BREVO_CONFIG = {
+  apiKey: '2tC0rXq7SDGFPsAm',
+  senderEmail: 'booking@mondihair.com',
+  senderName: 'Mondi Hairstyle',
   businessPhone: '+306974628335'
 };
 
@@ -194,16 +194,16 @@ class BookingSystem {
 
       console.log('Booking created successfully:', docRef.id);
 
-      // Send confirmation SMS (don't fail booking if SMS fails)
-      const smsResult = await this.sendBookingConfirmation({
+      // Send confirmation email (don't fail booking if email fails)
+      const emailResult = await this.sendBookingConfirmation({
         ...booking,
         barberName: booking.barberName
       });
 
-      if (smsResult.success) {
-        console.log('Confirmation SMS sent successfully');
+      if (emailResult.success) {
+        console.log('Confirmation email sent successfully');
       } else {
-        console.warn('Failed to send confirmation SMS:', smsResult.error);
+        console.warn('Failed to send confirmation email:', emailResult.error);
       }
 
       return {
@@ -307,90 +307,56 @@ class BookingSystem {
       });
   }
 
-  // Format Greek phone number to E.164 format (+30XXXXXXXXXX)
-  formatGreekPhone(phone) {
-    if (!phone) return null;
-
-    // Remove all non-digit characters
-    let cleaned = phone.replace(/\D/g, '');
-
-    // Handle different formats
-    if (cleaned.startsWith('00300')) {
-      cleaned = cleaned.substring(4); // Remove 0030
-    } else if (cleaned.startsWith('0030')) {
-      cleaned = cleaned.substring(4); // Remove 0030
-    } else if (cleaned.startsWith('300')) {
-      cleaned = cleaned.substring(2); // Remove 30
-    } else if (cleaned.startsWith('30')) {
-      cleaned = cleaned.substring(2); // Remove 30
-    } else if (cleaned.startsWith('0')) {
-      cleaned = cleaned.substring(1); // Remove leading 0
-    }
-
-    // Should be 10 digits now (Greek number without country code)
-    if (cleaned.length === 10) {
-      return '+30' + cleaned;
-    }
-
-    // If it's already 12 digits (30 + 10 digits), add +
-    if (cleaned.length === 12 && cleaned.startsWith('30')) {
-      return '+' + cleaned;
-    }
-
-    console.error('Invalid Greek phone number format:', phone);
-    return null;
-  }
-
-  // Send SMS via Bird API
-  async sendSMS(to, message) {
+  // Send email via Brevo API
+  async sendEmail(to, subject, htmlContent) {
     try {
-      const formattedPhone = this.formatGreekPhone(to);
-      if (!formattedPhone) {
-        throw new Error('Invalid phone number format');
+      if (!to) {
+        throw new Error('No email address provided');
       }
 
-      console.log('Sending SMS to:', formattedPhone);
+      console.log('Sending email to:', to);
 
-      const url = `https://api.bird.com/workspaces/${BIRD_CONFIG.workspaceId}/channels/${BIRD_CONFIG.channelId}/messages`;
-
-      const response = await fetch(url, {
+      const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
-          'Authorization': `AccessKey ${BIRD_CONFIG.accessKey}`,
+          'api-key': BREVO_CONFIG.apiKey,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          receiver: {
-            contacts: [
-              { identifierValue: formattedPhone }
-            ]
+          sender: {
+            name: BREVO_CONFIG.senderName,
+            email: BREVO_CONFIG.senderEmail
           },
-          body: {
-            type: 'text',
-            text: {
-              text: message
-            }
-          }
+          to: [{ email: to }],
+          subject: subject,
+          htmlContent: htmlContent
         })
       });
 
-      if (response.status === 202 || response.ok) {
-        const data = await response.json();
-        console.log('SMS sent successfully:', data.id);
-        return { success: true, sid: data.id };
+      const responseText = await response.text();
+      console.log('Brevo response:', response.status, responseText);
+
+      if (response.ok) {
+        const data = JSON.parse(responseText);
+        console.log('Email sent successfully:', data.messageId);
+        return { success: true, messageId: data.messageId };
       } else {
-        const data = await response.json();
-        console.error('Bird error:', data);
-        return { success: false, error: data.title || data.detail || 'Unknown error' };
+        console.error('Brevo error:', responseText);
+        return { success: false, error: responseText };
       }
     } catch (error) {
-      console.error('Error sending SMS:', error);
+      console.error('Error sending email:', error);
       return { success: false, error: error.message };
     }
   }
 
-  // Send booking confirmation SMS
+  // Send booking confirmation email
   async sendBookingConfirmation(booking) {
+    if (!booking.customerEmail) {
+      console.warn('No email address for booking, skipping confirmation');
+      return { success: false, error: 'No email address' };
+    }
+
     const date = new Date(booking.date + 'T00:00:00');
     const dateStr = date.toLocaleDateString('el-GR', {
       weekday: 'long',
@@ -399,26 +365,40 @@ class BookingSystem {
       year: 'numeric'
     });
 
-    const message = `✅ Επιβεβαίωση Ραντεβού
+    const subject = `Επιβεβαίωση Ραντεβού - Mondi Hairstyle`;
 
-Γεια σας ${booking.customerName}!
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a2e; color: #ffffff; border-radius: 12px; overflow: hidden;">
+        <div style="background: #C3E321; padding: 20px; text-align: center;">
+          <h1 style="margin: 0; color: #1a1a2e; font-size: 22px;">Mondi Hairstyle</h1>
+        </div>
+        <div style="padding: 25px;">
+          <h2 style="color: #C3E321; margin-top: 0;">Επιβεβαίωση Ραντεβού</h2>
+          <p>Γεια σας <strong>${booking.customerName}</strong>!</p>
+          <p>Το ραντεβού σας επιβεβαιώθηκε:</p>
+          <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+            <tr><td style="padding: 8px 0; color: #aaa;">Ημερομηνία</td><td style="padding: 8px 0; font-weight: bold;">${dateStr}</td></tr>
+            <tr><td style="padding: 8px 0; color: #aaa;">Ωρα</td><td style="padding: 8px 0; font-weight: bold;">${booking.timeSlot}</td></tr>
+            <tr><td style="padding: 8px 0; color: #aaa;">Κομμωτής</td><td style="padding: 8px 0; font-weight: bold;">${booking.barberName}</td></tr>
+            <tr><td style="padding: 8px 0; color: #aaa;">Υπηρεσία</td><td style="padding: 8px 0; font-weight: bold;">${booking.service}</td></tr>
+          </table>
+          <p style="color: #aaa; font-size: 13px;">Για ακύρωση καλέστε: ${BREVO_CONFIG.businessPhone}</p>
+        </div>
+        <div style="background: #111; padding: 15px; text-align: center; color: #666; font-size: 12px;">
+          Mondi Hairstyle - Zakynthos
+        </div>
+      </div>`;
 
-Το ραντεβού σας επιβεβαιώθηκε:
-
-📅 ${dateStr}
-🕐 ${booking.timeSlot}
-💇 Κομμωτής: ${booking.barberName}
-✂️ Υπηρεσία: ${booking.service}
-
-Για ακύρωση: ${BIRD_CONFIG.businessPhone}
-
-Mondi Hairstyle`;
-
-    return await this.sendSMS(booking.customerPhone, message);
+    return await this.sendEmail(booking.customerEmail, subject, htmlContent);
   }
 
-  // Send 2-hour reminder SMS
+  // Send 2-hour reminder email
   async send2HourReminder(booking) {
+    if (!booking.customerEmail) {
+      console.warn('No email address for booking, skipping reminder');
+      return { success: false, error: 'No email address' };
+    }
+
     const date = new Date(booking.date + 'T00:00:00');
     const dateStr = date.toLocaleDateString('el-GR', {
       weekday: 'long',
@@ -426,20 +406,31 @@ Mondi Hairstyle`;
       month: 'long'
     });
 
-    const message = `🔔 Υπενθύμιση Ραντεβού
+    const subject = `Υπενθύμιση Ραντεβού σε 2 ώρες - Mondi Hairstyle`;
 
-Έχετε ραντεβού σε 2 ώρες:
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a2e; color: #ffffff; border-radius: 12px; overflow: hidden;">
+        <div style="background: #C3E321; padding: 20px; text-align: center;">
+          <h1 style="margin: 0; color: #1a1a2e; font-size: 22px;">Mondi Hairstyle</h1>
+        </div>
+        <div style="padding: 25px;">
+          <h2 style="color: #C3E321; margin-top: 0;">Υπενθύμιση Ραντεβού</h2>
+          <p>Γεια σας <strong>${booking.customerName}</strong>!</p>
+          <p>Έχετε ραντεβού σε <strong>2 ώρες</strong>:</p>
+          <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+            <tr><td style="padding: 8px 0; color: #aaa;">Ημερομηνία</td><td style="padding: 8px 0; font-weight: bold;">${dateStr}</td></tr>
+            <tr><td style="padding: 8px 0; color: #aaa;">Ωρα</td><td style="padding: 8px 0; font-weight: bold;">${booking.timeSlot}</td></tr>
+            <tr><td style="padding: 8px 0; color: #aaa;">Κομμωτής</td><td style="padding: 8px 0; font-weight: bold;">${booking.barberName}</td></tr>
+          </table>
+          <p style="color: #C3E321;">Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.</p>
+          <p style="color: #aaa; font-size: 13px;">Για ακύρωση καλέστε: ${BREVO_CONFIG.businessPhone}</p>
+        </div>
+        <div style="background: #111; padding: 15px; text-align: center; color: #666; font-size: 12px;">
+          Mondi Hairstyle - Zakynthos
+        </div>
+      </div>`;
 
-📅 ${dateStr}
-🕐 ${booking.timeSlot} με ${booking.barberName}
-
-⏰ Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.
-
-Για ακύρωση: ${BIRD_CONFIG.businessPhone}
-
-Mondi Hairstyle`;
-
-    return await this.sendSMS(booking.customerPhone, message);
+    return await this.sendEmail(booking.customerEmail, subject, htmlContent);
   }
 
   // Get bookings needing reminder (~2 hours before appointment)

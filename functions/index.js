@@ -5,75 +5,47 @@ const { getFirestore } = require('firebase-admin/firestore');
 initializeApp();
 const db = getFirestore();
 
-// Bird SMS Configuration
-const BIRD_CONFIG = {
-  accessKey: 't22Ajcb993Kp0XPH2gxiGpqGU7VML74xAsPW',
-  workspaceId: '6d56cc80-c572-44fa-9d7f-92de60064047',
-  channelId: 'a8fe839d-0a11-5f96-b027-d2ffdc0fe8cc',
+// Brevo Email Configuration
+const BREVO_CONFIG = {
+  apiKey: '2tC0rXq7SDGFPsAm',
+  senderEmail: 'booking@mondihair.com',
+  senderName: 'Mondi Hairstyle',
   businessPhone: '+306974628335'
 };
 
-// Format Greek phone number to E.164 (+30XXXXXXXXXX)
-function formatGreekPhone(phone) {
-  if (!phone) return null;
-  let cleaned = phone.replace(/\D/g, '');
+// Send email via Brevo API
+async function sendEmail(to, subject, htmlContent) {
+  console.log(`Sending email to: ${to}, subject: ${subject}`);
 
-  if (cleaned.startsWith('0030')) {
-    cleaned = cleaned.substring(4);
-  } else if (cleaned.startsWith('30') && cleaned.length === 12) {
-    cleaned = cleaned.substring(2);
-  } else if (cleaned.startsWith('0')) {
-    cleaned = cleaned.substring(1);
-  }
-
-  if (cleaned.length === 10) return '+30' + cleaned;
-  if (cleaned.length === 12 && cleaned.startsWith('30')) return '+' + cleaned;
-  return null;
-}
-
-// Send SMS via Bird API
-async function sendSMS(to, message) {
-  const formattedPhone = formatGreekPhone(to);
-  if (!formattedPhone) throw new Error('Invalid phone number: ' + to);
-
-  // Log config to verify env vars are loaded
-  console.log(`SMS to: ${formattedPhone}, accessKey set: ${!!BIRD_CONFIG.accessKey}, workspace: ${BIRD_CONFIG.workspaceId}, channel: ${BIRD_CONFIG.channelId}`);
-
-  if (!BIRD_CONFIG.accessKey) throw new Error('BIRD_ACCESS_KEY env variable is not set');
-  if (!BIRD_CONFIG.workspaceId) throw new Error('BIRD_WORKSPACE_ID env variable is not set');
-  if (!BIRD_CONFIG.channelId) throw new Error('BIRD_CHANNEL_ID env variable is not set');
-
-  const url = `https://api.bird.com/workspaces/${BIRD_CONFIG.workspaceId}/channels/${BIRD_CONFIG.channelId}/messages`;
-
-  const response = await fetch(url, {
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
-      'Authorization': `AccessKey ${BIRD_CONFIG.accessKey}`,
+      'api-key': BREVO_CONFIG.apiKey,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      receiver: {
-        contacts: [{ identifierValue: formattedPhone }]
+      sender: {
+        name: BREVO_CONFIG.senderName,
+        email: BREVO_CONFIG.senderEmail
       },
-      body: {
-        type: 'text',
-        text: { text: message }
-      }
+      to: [{ email: to }],
+      subject: subject,
+      htmlContent: htmlContent
     })
   });
 
   const responseText = await response.text();
-  console.log(`Bird API response: status=${response.status}, body=${responseText}`);
+  console.log(`Brevo response: status=${response.status}, body=${responseText}`);
 
-  if (response.status === 202 || response.ok) {
+  if (response.ok) {
     const data = JSON.parse(responseText);
-    return { success: true, id: data.id };
+    return { success: true, messageId: data.messageId };
   } else {
-    throw new Error(`Bird API error ${response.status}: ${responseText}`);
+    throw new Error(`Brevo error ${response.status}: ${responseText}`);
   }
 }
 
-// Scheduled function: runs every 5 minutes, checks for bookings ~2 hours away
+// Scheduled function: runs every 5 minutes, sends reminder emails ~2 hours before
 exports.sendReminders = onSchedule(
   {
     schedule: 'every 5 minutes',
@@ -116,6 +88,10 @@ exports.sendReminders = onSchedule(
       const booking = { id: doc.id, ...doc.data() };
 
       if (booking.reminderSent) continue;
+      if (!booking.customerEmail) {
+        console.log(`Skipping ${booking.id}: no email address`);
+        continue;
+      }
 
       const [bookingHour, bookingMinute] = booking.timeSlot.split(':').map(Number);
       const bookingMinutes = bookingHour * 60 + bookingMinute;
@@ -130,16 +106,38 @@ exports.sendReminders = onSchedule(
           month: 'long'
         });
 
-        const message = `🔔 Υπενθύμιση Ραντεβού\n\nΈχετε ραντεβού σε 2 ώρες:\n\n📅 ${dateStr}\n🕐 ${booking.timeSlot} με ${booking.barberName}\n\n⏰ Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.\n\nΓια ακύρωση: ${BIRD_CONFIG.businessPhone}\n\nMondi Hairstyle`;
+        const subject = `Υπενθύμιση Ραντεβού σε 2 ώρες - Mondi Hairstyle`;
+
+        const htmlContent = `
+          <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a2e; color: #ffffff; border-radius: 12px; overflow: hidden;">
+            <div style="background: #C3E321; padding: 20px; text-align: center;">
+              <h1 style="margin: 0; color: #1a1a2e; font-size: 22px;">Mondi Hairstyle</h1>
+            </div>
+            <div style="padding: 25px;">
+              <h2 style="color: #C3E321; margin-top: 0;">Υπενθύμιση Ραντεβού</h2>
+              <p>Γεια σας <strong>${booking.customerName}</strong>!</p>
+              <p>Έχετε ραντεβού σε <strong>2 ώρες</strong>:</p>
+              <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <tr><td style="padding: 8px 0; color: #aaa;">Ημερομηνία</td><td style="padding: 8px 0; font-weight: bold;">${dateStr}</td></tr>
+                <tr><td style="padding: 8px 0; color: #aaa;">Ωρα</td><td style="padding: 8px 0; font-weight: bold;">${booking.timeSlot}</td></tr>
+                <tr><td style="padding: 8px 0; color: #aaa;">Κομμωτής</td><td style="padding: 8px 0; font-weight: bold;">${booking.barberName}</td></tr>
+              </table>
+              <p style="color: #C3E321;">Παρακαλούμε να είστε εκεί 5 λεπτά νωρίτερα.</p>
+              <p style="color: #aaa; font-size: 13px;">Για ακύρωση καλέστε: ${BREVO_CONFIG.businessPhone}</p>
+            </div>
+            <div style="background: #111; padding: 15px; text-align: center; color: #666; font-size: 12px;">
+              Mondi Hairstyle - Zakynthos
+            </div>
+          </div>`;
 
         try {
-          await sendSMS(booking.customerPhone, message);
+          await sendEmail(booking.customerEmail, subject, htmlContent);
           await db.collection('bookings').doc(booking.id).update({
             reminderSent: true,
             reminderSentAt: new Date()
           });
           sentCount++;
-          console.log(`Reminder sent for booking ${booking.id} at ${booking.timeSlot} to ${booking.customerPhone}`);
+          console.log(`Reminder sent for booking ${booking.id} at ${booking.timeSlot} to ${booking.customerEmail}`);
         } catch (error) {
           console.error(`Failed to send reminder for ${booking.id}:`, error.message);
         }
